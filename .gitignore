@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# documents de travail (brouillons et notes personnelles, pas le livrable)
+contenu-site-a2o.md
+notes.md
