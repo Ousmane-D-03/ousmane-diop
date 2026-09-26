@@ -1,0 +1,35 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+
+interface Props {
+	titre: string;
+	description: string;
+}
+
+const { titre, description } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{titre}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={url} />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:locale" content="fr_FR" />
+		<meta property="og:title" content={titre} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={url} />
+
+		<Font cssVariable="--font-titres" preload />
+		<Font cssVariable="--font-corps" preload />
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

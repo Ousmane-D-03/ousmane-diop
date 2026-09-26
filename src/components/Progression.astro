@@ -1,0 +1,49 @@
+---
+// Indicateur d'avancement. Pour l'instant : simple navigation statique
+// vers les quatre étapes. Le suivi du défilement viendra plus tard.
+interface Props {
+	etapes: { numero: string; titre: string; id: string }[];
+}
+
+const { etapes } = Astro.props;
+---
+
+<nav class="progression" aria-label="Étapes">
+	<ol>
+		{
+			etapes.map((e) => (
+				<li>
+					<a href={`#${e.id}`}>
+						<span class="numero">{e.numero}</span> {e.titre}
+					</a>
+				</li>
+			))
+		}
+	</ol>
+</nav>
+
+<style>
+	.progression ol {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+		font-size: 0.9375rem;
+	}
+
+	a {
+		color: var(--texte-discret);
+		text-decoration: none;
+	}
+
+	a:hover {
+		color: var(--accent);
+	}
+
+	.numero {
+		font-family: var(--font-titres);
+		font-variant-numeric: tabular-nums;
+	}
+</style>

@@ -1,0 +1,50 @@
+/* Variables, reset minimal, typographie de base. */
+
+:root {
+	/* Fond clair, gris très légèrement froid (pas de crème). */
+	--fond: #f7f8f6;
+	--texte: #1a1c1a;
+	--texte-discret: #5b615c; /* 5,96:1 sur --fond */
+
+	/* Accent unique. #0a5c36 : 7,59:1 sur --fond (AA et AAA).
+	   Le vert du drapeau (#00853f) ne fait que 4,45:1 : insuffisant en AA. */
+	--accent: #0a5c36;
+
+	--trait: #d4d8d4;
+
+	--mesure: 68ch;
+	--marge: clamp(1rem, 4vw, 3rem);
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background: var(--fond);
+	color: var(--texte);
+	font-family: var(--font-corps);
+	font-size: 1.0625rem;
+	line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+	font-family: var(--font-titres);
+	font-weight: 700;
+	line-height: 1.15;
+	margin: 0;
+}
+
+a {
+	color: var(--accent);
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 3px;
+}
