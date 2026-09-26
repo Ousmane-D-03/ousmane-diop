@@ -15,7 +15,9 @@ La config se place dans `src/content.config.ts` (et non plus `src/content/config
 Chaque collection déclare un `loader` (`glob()` importé depuis `astro/loaders`) ; `z` s'importe depuis `astro/zod`. Les entrées exposent un `id` (dérivé du nom de fichier) ; l'ancien champ `slug` n'existe plus en tant que tel.
 
 **Adaptateur Cloudflare : abandonné, inutile ici.**
-La doc Astro précise que `@astrojs/cloudflare` ne sert qu'au rendu à la demande (SSR). Le site est 100 % statique : `npm run build` produit `dist/`, que Cloudflare sert tel quel. Ajouter l'adaptateur aurait été une dépendance sans usage.
+Le brief demandait de vérifier « l'adaptateur Cloudflare », ce qui laissait supposer qu'il en fallait un. La doc Astro dit le contraire pour un site comme celui-ci : `@astrojs/cloudflare` sert au rendu à la demande, c'est-à-dire générer une page côté serveur au moment de la requête.
+Ici, aucune page n'en a besoin : pas de backend, pas de base, pas de contenu qui change selon le visiteur. `npm run build` produit des fichiers HTML/CSS/polices dans `dist/`, et n'importe quel hébergeur statique les sert tels quels, Pages comme Workers.
+L'ajouter aurait coûté une dépendance, de la configuration et une surface de mise à jour pour une fonctionnalité non utilisée. Ne pas l'ajouter garde aussi la question Pages/Workers ouverte : le même `dist/` convient aux deux.
 
 **Cloudflare Pages vs Workers : point ouvert.**
 La doc Astro indique que Cloudflare recommande désormais Workers (static assets) pour les nouveaux projets, et renvoie vers un guide de migration depuis Pages. Le brief prévoit Pages et l'URL `ousmane-diop.pages.dev`. Décision à prendre au moment du déploiement.
@@ -24,10 +26,36 @@ La doc Astro indique que Cloudflare recommande désormais Workers (static assets
 Écartés du template : son `CLAUDE.md`/`AGENTS.md` génériques, son README, et les favicons au logo Astro (marqueur typique de site généré depuis un template).
 
 **Polices : préconnexion Google Fonts abandonnée au profit de l'API Fonts d'Astro.**
-L'API (stable en v7) télécharge Space Grotesk et Inter au build et les sert depuis `dist/_astro/fonts/`. Résultat vérifié : aucune requête vers Google chez le visiteur, `font-display: swap` appliqué par défaut, préchargement via `<Font preload />`. Moins de connexions tierces, et pas d'IP transmise à Google (sujet RGPD connu).
+Le brief prévoyait le chargement classique : `<link>` vers fonts.googleapis.com, avec une préconnexion pour gagner du temps. En lisant la doc Astro 7, j'ai trouvé une API Fonts stable qui télécharge les polices au build et les sert depuis le site (`dist/_astro/fonts/`).
+Pourquoi c'est mieux :
+- Performance : le navigateur n'ouvre pas de connexion vers deux domaines Google (DNS + TLS) avant de pouvoir afficher le texte. L'argument historique « la police est déjà en cache grâce à un autre site » ne tient plus : les navigateurs cloisonnent leur cache par site depuis 2020 (Chrome 86).
+- RGPD : charger une police depuis Google transmet l'adresse IP du visiteur à un tiers sans son consentement. Le tribunal régional de Munich (LG München I, janvier 2022) a condamné un site pour exactement ça. C'est le genre de question que pose le bloc « gouvernance numérique » de l'offre : quelles données sortent, vers qui.
+- Moins de choses à maintenir : pas de balises de préconnexion à écrire, `font-display: swap` et le préchargement (`<Font preload />`) sont gérés par Astro.
+Vérifié dans le HTML généré : 12 déclarations `font-display: swap`, zéro occurrence de googleapis/gstatic, trois fichiers woff2 servis localement.
+Conséquence : la ligne « préconnexion à Google Fonts » du CLAUDE.md devient sans objet.
 
 **Vert du drapeau sénégalais refusé pour l'accent.**
-#00853F ne fait que 4,45:1 sur le fond #F7F8F6, sous le seuil WCAG AA (4,5:1). Retenu : #0A5C36, 7,59:1.
+Le choix du vert venait d'une idée (double lecture drapeau / « build passing »), pas d'une mesure. Or l'accent sert aussi à écrire du texte (numéros d'étape, liens, lignes « En lien avec »), donc il doit être lisible.
+J'ai calculé le rapport de contraste avec la formule WCAG (luminance relative de chaque couleur, puis (L1 + 0,05) / (L2 + 0,05)) plutôt que de le juger à l'œil :
+- #00853F (vert du drapeau) : 4,45:1 sur le fond #F7F8F6. Sous le seuil AA de 4,5:1 pour le texte courant. Il passerait sur blanc pur (4,74:1), mais de justesse.
+- #0B6E3F : 5,94:1, conforme AA.
+- #0A5C36 : 7,59:1, conforme AA et même AAA (7:1).
+Retenu : #0A5C36. Le lien au drapeau reste lisible (c'est un vert profond de la même famille), et la marge au-dessus du seuil évite de repasser en échec si le fond bouge un peu.
+Même vérification pour le gris secondaire #5B615C : 5,96:1.
 
 **Indicateur de progression : version statique pour l'instant.**
 Une simple navigation par ancres vers les quatre étapes, sans JavaScript. Le suivi du défilement viendra une fois la structure validée.
+
+---
+
+## 2026-09-26 — Contenu et collection de projets
+
+**Trait du pipeline qui continuait après l'étape 04.** Le trait était un `border-left` sur chaque section : il allait forcément jusqu'en bas de la dernière. Remplacé par un pseudo-élément dont la hauteur, sur la dernière étape seulement, s'arrête au centre du jalon. La position du jalon est une variable CSS partagée par le jalon et le trait, pour qu'ils ne puissent pas se désaligner.
+
+**Stack : stockée dans la collection, pas affichée.** Le CLAUDE.md prévoit un champ `stack`. Les descriptions rédigées citent déjà les technologies : les réafficher en liste ferait doublon, et remettrait la stack au premier plan alors que les projets sont présentés par mission. Le champ est rempli uniquement avec les technologies citées dans le texte (vide pour Jokko, qui n'en cite aucune).
+
+**Lien GitHub de Xëy Invest : absent.** Le contenu indique « → [Code sur GitHub] » sans URL. Pas d'URL inventée : le champ `lien` est prêt mais commenté. La flèche `→` du contenu n'est pas reprise (interdite par le CLAUDE.md).
+
+**Capture « mobile » trompeuse.** La capture à 390 px montrait du texte coupé à droite. En mesurant `innerWidth`, Edge headless impose en fait un minimum de 504 px et rogne l'image : le défaut venait de l'outil, pas du site. Rendu réel vérifié dans une iframe de 390 px : pas de débordement.
+
+**Typographie française.** Le Markdown des projets transforme automatiquement les apostrophes en ’, pas le texte écrit directement dans le `.astro` : deux styles d'apostrophe cohabitaient sur la page. Et un guillemet « se retrouvait seul en fin de ligne. Uniformisé : apostrophes typographiques partout, `&nbsp;` avant `:` et `%` et à l'intérieur des guillemets. Aucun mot modifié.
