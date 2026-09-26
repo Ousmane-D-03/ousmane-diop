@@ -59,3 +59,20 @@ Une simple navigation par ancres vers les quatre étapes, sans JavaScript. Le su
 **Capture « mobile » trompeuse.** La capture à 390 px montrait du texte coupé à droite. En mesurant `innerWidth`, Edge headless impose en fait un minimum de 504 px et rogne l'image : le défaut venait de l'outil, pas du site. Rendu réel vérifié dans une iframe de 390 px : pas de débordement.
 
 **Typographie française.** Le Markdown des projets transforme automatiquement les apostrophes en ’, pas le texte écrit directement dans le `.astro` : deux styles d'apostrophe cohabitaient sur la page. Et un guillemet « se retrouvait seul en fin de ligne. Uniformisé : apostrophes typographiques partout, `&nbsp;` avant `:` et `%` et à l'intérieur des guillemets. Aucun mot modifié.
+
+---
+
+## 2026-09-26 — Indicateur de progression
+
+**Barre en CSS pur, étape active en JS minimal.** La barre qui suit le défilement utilise `animation-timeline: scroll()` : aucune ligne de JavaScript. Vérifié sur caniuse avant de choisir : Chrome/Edge 115+, Firefox 159+, Safari 26+, environ 87 % des visiteurs. Pour les autres, `@supports` masque la barre et la navigation reste utilisable.
+Le marquage de l'étape en cours (`aria-current="location"`) passe par un script d'environ 600 octets : un lecteur d'écran annonce l'étape courante, ce qu'une solution 100 % CSS ne permet pas.
+
+**IntersectionObserver abandonné au profit d'un écouteur de défilement.** L'observateur ne signale une section que lorsqu'elle traverse une zone de l'écran. La section 04, courte et en bas de page, n'atteint jamais cette zone : elle ne serait jamais marquée active. L'écouteur calcule « dernière section dont le haut a passé 40 % de l'écran », avec un cas explicite pour le bas de page. Limité à un calcul par image affichée (`requestAnimationFrame`).
+
+**Bug du minifieur CSS.** Écrit avec le raccourci `animation: avancement linear both` suivi de `animation-timeline: scroll(root)`, le CSS était fusionné au build en `animation: linear both avancement scroll(root)`. Edge rejette cette forme : la barre s'affichait pleine largeur en permanence. Invisible en lisant le code source, visible seulement en lisant le style calculé dans le navigateur (`animation-name: none`). Corrigé en écrivant les propriétés détaillées, que le minifieur laisse intactes.
+
+**Outil de vérification, deuxième fois.** Les captures d'Edge headless sur une page défilée (URL avec ancre) sortaient blanches. Remplacé par Playwright piloté sur l'Edge installé, qui permet de défiler, d'appuyer sur Tab, d'émuler `prefers-reduced-motion` et de lire les styles calculés. Tests passés : barre à 0 / 0,5 / 1 selon la position, barre absente en mouvement réduit, ordre de tabulation, titre non masqué sous la navigation après un saut d'ancre.
+
+**Navigation sur deux lignes en mobile.** Sous 34rem, seuls les numéros sont visibles ; les titres sont masqués visuellement mais restent dans le nom accessible des liens (« 03 Mes projets »).
+
+**Décalage de colonne causé par l'unité `ch`.** La largeur de colonne (`68ch`) dépend de la taille de police de l'élément. La liste de navigation ayant une police plus petite, sa colonne était plus étroite et décalée de 43 px. Taille de police déplacée sur les liens ; alignement mesuré à 323 px pour navigation, titre et trait.
