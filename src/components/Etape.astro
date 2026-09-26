@@ -20,25 +20,47 @@ const { numero, titre, id } = Astro.props;
 
 <style>
 	.etape {
+		/* Position verticale du jalon, partagée par le jalon et le trait. */
+		--jalon-haut: 0.45em;
+		--jalon-taille: 12px;
+
 		position: relative;
 		padding: 0 0 6rem 2rem;
-		border-left: 2px solid var(--trait);
 	}
 
-	/* Jalon sur le trait du pipeline. */
+	/* Trait du pipeline. */
+	.etape::after {
+		content: '';
+		position: absolute;
+		left: -1px;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		background: var(--trait);
+	}
+
+	/* Dernière étape : le trait s'arrête au jalon, il ne continue pas dans le vide. */
+	.etape:last-of-type::after {
+		bottom: auto;
+		height: calc(var(--jalon-haut) + var(--jalon-taille) / 2);
+	}
+
+	/* Jalon, dessiné par-dessus le trait. */
 	.etape::before {
 		content: '';
 		position: absolute;
-		left: -7px;
-		top: 0.45em;
-		width: 12px;
-		height: 12px;
+		z-index: 1;
+		left: calc(var(--jalon-taille) / -2);
+		top: var(--jalon-haut);
+		width: var(--jalon-taille);
+		height: var(--jalon-taille);
 		background: var(--fond);
 		border: 2px solid var(--accent);
 	}
 
 	h2 {
 		font-size: clamp(1.6rem, 3vw, 2.2rem);
+		margin-bottom: 1.5rem;
 	}
 
 	.numero {
