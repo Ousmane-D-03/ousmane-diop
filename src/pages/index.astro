@@ -25,8 +25,10 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 		<p class="accroche">
 			Je viens du backend et de l’infrastructure. Je veux apprendre le web du côté de la production.
 		</p>
-		<Progression etapes={etapes} />
 	</header>
+
+	{/* Hors du header : un élément sticky reste prisonnier de son parent. */}
+	<Progression etapes={etapes} />
 
 	<main class="pipeline">
 		<Etape {...qui}>
@@ -129,19 +131,43 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 			{/* Section 04 : écrite par Ousmane lui-même. Ne pas générer ce texte. */}
 		</Etape>
 	</main>
+
+	<footer class="pied">
+		<ul>
+			<li><a href="https://github.com/Ousmane-D-03" rel="me">GitHub</a></li>
+			<li><a href="https://www.linkedin.com/in/ousmane-sarr-diop-505891278" rel="me">LinkedIn</a></li>
+		</ul>
+	</footer>
 </Base>
 
 <style>
 	.entete,
-	.pipeline {
+	.pipeline,
+	.pied {
 		max-width: var(--mesure);
 		margin-inline: auto;
 		padding-inline: var(--marge);
 	}
 
 	.entete {
-		padding-block: 4rem 3rem;
+		padding-block: 4rem 2.5rem;
 		display: grid;
+		gap: 1.5rem;
+	}
+
+	.pipeline {
+		padding-top: 3rem;
+	}
+
+	.pied {
+		padding-block: 2rem 4rem;
+	}
+
+	.pied ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
 		gap: 1.5rem;
 	}
 
