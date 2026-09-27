@@ -39,7 +39,9 @@ import Derive from '../components/Derive.astro';
 
 	h1 {
 		font-size: clamp(2.8rem, 8vw, 5.5rem);
-		line-height: 1.02;
+		/* Même interligne que sur /candidature/ : sinon les proportions du nom
+		   diffèrent (12,7 % mesurés) et le glissement saute. */
+		line-height: 1.05;
 		/* Même nom sur /candidature/ : le nom glisse d’une page à l’autre. */
 		view-transition-name: nom;
 		/* Largeur du texte, pas de la colonne : même proportions sur les deux
@@ -75,12 +77,15 @@ import Derive from '../components/Derive.astro';
 		background: #084a2c;
 	}
 
-	/* Écran étroit : le nom et l’accroche ne se coupent pas pareil sur les
-	   deux pages, le glissement déformerait le texte. Simple fondu. */
+	/* Écran étroit : le nom se coupe après « Sarr » sur les deux pages.
+	   Limite en em : elle suit la taille de police, donc même coupure et mêmes
+	   proportions quelle que soit la taille, et le glissement reste propre. */
 	@media (max-width: 32rem) {
-		h1,
-		.accroche {
-			view-transition-name: none;
+		h1 {
+			max-width: min(8em, 100%);
+			/* « Ousmane Sarr » fait environ 8em : la taille suit la largeur
+			   disponible pour que cette première ligne tienne toujours. */
+			font-size: min(2.8rem, calc((100vw - 2 * var(--marge)) / 8.2));
 		}
 	}
 </style>

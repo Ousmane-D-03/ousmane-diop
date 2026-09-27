@@ -85,20 +85,24 @@ a {
 	}
 }
 
+/* Glissement du nom et de l’accroche : 0,7 s, courbe douce aux deux bouts
+   (démarre lentement, accélère, se pose). */
 ::view-transition-group(*),
 ::view-transition-old(*),
 ::view-transition-new(*) {
-	animation-duration: 0.45s;
-	animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+	animation-duration: 0.7s;
+	animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-/* Fondu de la page : l'ancienne s'efface avant que la nouvelle n'apparaisse,
-   pour éviter deux textes superposés à mi-parcours. Durée totale inchangée. */
+/* Fondu de la page : l’ancienne s’efface avant que la nouvelle n’apparaisse,
+   pour éviter deux textes superposés à mi-parcours. Durée totale : 0,7 s. */
 ::view-transition-old(root) {
-	animation-duration: 0.2s;
+	animation-duration: 0.3s;
+	animation-timing-function: ease-out;
 }
 
 ::view-transition-new(root) {
-	animation-delay: 0.15s;
-	animation-duration: 0.3s;
+	animation-delay: 0.2s;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-in-out;
 }

@@ -173,6 +173,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 
 	h1 {
 		font-size: clamp(2.2rem, 5vw, 3.5rem);
+		line-height: 1.05; /* comme l’accueil, pour le glissement */
 		/* Même nom sur l’accueil : le nom glisse d’une page à l’autre. */
 		view-transition-name: nom;
 		/* Largeur du texte, pas de la colonne : même proportions sur les deux
@@ -194,12 +195,17 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 		width: fit-content;
 	}
 
-	/* Écran étroit : le nom et l’accroche ne se coupent pas pareil sur les
-	   deux pages, le glissement déformerait le texte. Simple fondu. */
+	/* Écran étroit : le nom se coupe après « Sarr » sur les deux pages.
+	   Limite en em : elle suit la taille de police, donc même coupure et mêmes
+	   proportions quelle que soit la taille, et le glissement reste propre. */
 	@media (max-width: 32rem) {
-		h1,
+		h1 {
+			max-width: min(8em, 100%);
+		}
+
+		/* Même taille que sur l’accueil à cette largeur : même coupure. */
 		.accroche {
-			view-transition-name: none;
+			font-size: 1.15rem;
 		}
 	}
 </style>
