@@ -9,62 +9,78 @@ import Derive from '../components/Derive.astro';
 >
 	<main class="accueil">
 		<Derive />
-		<div class="colonne centre">
-			<h1>Ousmane Sarr Diop</h1>
+		<div class="centre">
+			<h1 class="nom">Ousmane Sarr Diop</h1>
 			<p class="accroche">
 				Je viens du backend et de l’infrastructure. Je veux apprendre le web du côté de la production.
 			</p>
-		</div>
-		<p class="colonne bas">
 			<a href="/candidature/" class="decouvrir">Découvrir</a>
-		</p>
+		</div>
 	</main>
 </Base>
 
 <style>
 	/* Un écran plein. svh : la hauteur visible quand la barre d’adresse
-	   mobile est déployée, pour que le lien du bas ne passe pas dessous. */
+	   mobile est déployée. */
 	.accueil {
 		position: relative;
 		min-height: 100svh;
 		display: grid;
-		grid-template-rows: 1fr auto;
+		align-items: center;
 	}
 
-	/* Bloc centré dans l’écran, texte aligné à gauche. */
-	.colonne {
+	/* Bloc centré dans l’écran, texte aligné à gauche, devant le fond. */
+	.centre {
+		position: relative;
 		width: min(56rem, 100% - 2 * var(--marge));
 		margin-inline: auto;
-	}
-
-	.centre {
-		align-self: center;
-	}
-
-	/* Le texte passe devant le fond qui dérive. */
-	.centre,
-	.bas {
-		position: relative;
+		padding-block: 3rem;
 	}
 
 	h1 {
 		font-size: clamp(2.8rem, 8vw, 5.5rem);
 		line-height: 1.02;
+		/* Même nom sur /candidature/ : le nom glisse d’une page à l’autre. */
+		view-transition-name: nom;
+		/* Largeur du texte, pas de la colonne : même proportions sur les deux
+		   pages, sinon les deux images de la transition se décalent. */
+		width: fit-content;
 	}
 
 	.accroche {
 		margin: 1.5rem 0 0;
 		font-size: clamp(1.15rem, 2.2vw, 1.5rem);
 		max-width: 38ch;
+		view-transition-name: accroche;
+		width: fit-content;
 	}
 
-	.bas {
-		margin-block: 0 clamp(2rem, 6vh, 3.5rem);
-	}
-
+	/* Bouton plein. Coins carrés comme les jalons et les traits du site.
+	   Texte #f7f8f6 sur #0a5c36 : 7,59:1 ; au survol, vert plus sombre
+	   #084a2c : 9,73:1. Pas de transition de couleur : changement net.
+	   Focus clavier : contour global (2px accent, décalé de 3px). */
 	.decouvrir {
-		font-size: 1.125rem;
+		display: inline-block;
+		margin-top: 2.5rem;
+		padding: 0.85em 1.75em;
+		background: var(--accent);
+		color: var(--fond);
+		font-size: 1.0625rem;
 		font-weight: 600;
-		text-underline-offset: 0.3em;
+		line-height: 1;
+		text-decoration: none;
+	}
+
+	.decouvrir:hover {
+		background: #084a2c;
+	}
+
+	/* Écran étroit : le nom et l’accroche ne se coupent pas pareil sur les
+	   deux pages, le glissement déformerait le texte. Simple fondu. */
+	@media (max-width: 32rem) {
+		h1,
+		.accroche {
+			view-transition-name: none;
+		}
 	}
 </style>

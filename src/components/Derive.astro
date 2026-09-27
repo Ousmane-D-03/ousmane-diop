@@ -9,7 +9,7 @@ import Linux from '../assets/logos/linux.svg';
 import PostgreSql from '../assets/logos/postgresql.svg';
 
 // Profondeur 1 = loin (petit, clair, lent) ; 3 = près (grand, plus foncé, plus rapide).
-// Sous 85 % de hauteur (ligne du lien « Découvrir ») : profondeur 1 seulement.
+// Sous 85 % de hauteur : profondeur 1 seulement (bas d’écran plus calme).
 // x, y : position de repos en % de l'écran, utilisée telle quelle si le
 // visiteur demande à réduire les animations.
 type Element = { x: number; y: number; profondeur: 1 | 2 | 3 } & (
@@ -85,7 +85,7 @@ const variation = [1, 0.92, 1.08, 0.96, 1.04];
 
 	/* Les mots portent le caractère du site : plus grands et un cran plus
 	   foncés que les logos. Contraste du nom (#1a1c1a) sur le gris le plus
-	   foncé (#dce0dc) : 12,85:1 ; lien vert : 6,06:1. */
+	   foncé (#dce0dc) : 12,85:1. Le bouton a son propre fond. */
 	.mot {
 		font-family: var(--font-titres);
 		font-weight: 700;

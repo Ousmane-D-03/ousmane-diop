@@ -173,6 +173,11 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 
 	h1 {
 		font-size: clamp(2.2rem, 5vw, 3.5rem);
+		/* Même nom sur l’accueil : le nom glisse d’une page à l’autre. */
+		view-transition-name: nom;
+		/* Largeur du texte, pas de la colonne : même proportions sur les deux
+		   pages, sinon les deux images de la transition se décalent. */
+		width: fit-content;
 	}
 
 	/* Le nom ramène à l’accueil, sans changer d’apparence. */
@@ -184,6 +189,17 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 	.accroche {
 		margin: 0;
 		font-size: 1.25rem;
-		max-width: 40ch;
+		max-width: 38ch; /* comme l’accueil : même coupure, même proportions pour la transition */
+		view-transition-name: accroche;
+		width: fit-content;
+	}
+
+	/* Écran étroit : le nom et l’accroche ne se coupent pas pareil sur les
+	   deux pages, le glissement déformerait le texte. Simple fondu. */
+	@media (max-width: 32rem) {
+		h1,
+		.accroche {
+			view-transition-name: none;
+		}
 	}
 </style>

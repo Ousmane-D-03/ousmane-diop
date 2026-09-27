@@ -72,3 +72,33 @@ a {
 	outline: 2px solid var(--accent);
 	outline-offset: 3px;
 }
+
+/* Transition entre l'accueil et la page de contenu : transitions de vue
+   natives du navigateur, sans JavaScript. Le nom et l'accroche, présents
+   sur les deux pages, glissent d'une position à l'autre (view-transition-name
+   dans chaque page) ; le reste apparaît en fondu. Activée seulement sans
+   préférence de mouvement réduit. Navigateur non compatible (Firefox à ce
+   jour) : navigation instantanée, rien de cassé. */
+@media (prefers-reduced-motion: no-preference) {
+	@view-transition {
+		navigation: auto;
+	}
+}
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+	animation-duration: 0.45s;
+	animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Fondu de la page : l'ancienne s'efface avant que la nouvelle n'apparaisse,
+   pour éviter deux textes superposés à mi-parcours. Durée totale inchangée. */
+::view-transition-old(root) {
+	animation-duration: 0.2s;
+}
+
+::view-transition-new(root) {
+	animation-delay: 0.15s;
+	animation-duration: 0.3s;
+}
