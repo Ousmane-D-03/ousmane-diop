@@ -48,42 +48,59 @@ const boucle =
 	const sections = liens.map((a) => document.querySelector<HTMLElement>(a.hash));
 	const boucle = document.querySelector<SVGElement>('.progression .boucle');
 
+	// Positions des sections et hauteur du document, mémorisées. Mesurées dans
+	// le ResizeObserver, qui s'exécute après la mise en page : la lecture ne
+	// force aucun calcul. Au défilement, seul scrollY est lu (il n'en force
+	// pas non plus). Recalculées quand la taille change, y compris quand les
+	// polices finissent de charger et modifient la hauteur des textes.
+	let debuts: number[] = [];
+	let hauteur = 0;
+	let actifAffiche: number | null = null;
 	let enAttente = false;
+
+	function mesurer() {
+		debuts = sections.map((s) => (s ? s.getBoundingClientRect().top + scrollY : Infinity));
+		hauteur = document.documentElement.scrollHeight;
+		actifAffiche = null; // les positions ont changé : tout remettre à jour
+		planifier();
+	}
 
 	function marquerEtapeActive() {
 		enAttente = false;
-		const seuil = innerHeight * 0.4;
-		const course = document.documentElement.scrollHeight - innerHeight;
+		const course = hauteur - innerHeight;
+		const seuil = scrollY + innerHeight * 0.4;
 		let actif = -1;
-		sections.forEach((s, i) => {
-			if (s && s.getBoundingClientRect().top <= seuil) actif = i;
+		debuts.forEach((d, i) => {
+			if (d <= seuil) actif = i;
 		});
 		// Tout en bas de page, la dernière étape est active même si elle est courte.
 		const enBas = scrollY >= course - 2;
 		if (enBas) actif = sections.length - 1;
+		if (actif === actifAffiche) return;
+		actifAffiche = actif;
 		liens.forEach((a, i) => {
 			if (i === actif) a.setAttribute('aria-current', 'location');
 			else a.removeAttribute('aria-current');
 		});
 		// Position de secours du point : début de la section en cours, en % de
 		// la page. Utilisée par le CSS seulement si l'animation n'a pas lieu.
-		const debut = actif < 0 ? 0 : sections[actif]!.getBoundingClientRect().top + scrollY;
+		const debut = actif < 0 ? 0 : debuts[actif];
 		const progres = enBas ? 100 : Math.min(100, Math.max(0, (debut / course) * 100));
 		boucle?.style.setProperty('--progres', progres.toFixed(1));
 	}
 
 	// Au plus un calcul par image affichée, quel que soit le nombre d'événements.
-	const planifier = () => {
+	function planifier() {
 		if (!enAttente) {
 			enAttente = true;
 			requestAnimationFrame(marquerEtapeActive);
 		}
-	};
+	}
+
 	addEventListener('scroll', planifier, { passive: true });
 	addEventListener('resize', planifier);
-	// Première mesure au prochain affichage, pas pendant le chargement :
-	// évite de forcer le calcul de la mise en page trop tôt.
-	planifier();
+	// Première mesure à l'observation, puis à chaque changement de taille.
+	new ResizeObserver(mesurer).observe(document.documentElement);
 </script>
 
 <style>
