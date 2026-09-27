@@ -1,0 +1,28 @@
+---
+// Mot wolof dans le texte : en accent, avec sa traduction visible juste après
+// (accessible à tous : ni infobulle, ni texte masqué). lang="wo" indique la
+// langue aux lecteurs d'écran et aux outils de traduction.
+// Usage : <Wolof mot="jàng" sens="apprendre" />
+interface Props {
+	mot: string;
+	sens: string;
+}
+
+const { mot, sens } = Astro.props;
+---
+
+<span class="wolof"><i lang="wo">{mot}</i> <span class="sens">({sens})</span></span>
+
+<style>
+	/* Italique : convention typographique pour un mot étranger en français.
+	   Accent #0a5c36 : 7,59:1 sur le fond. */
+	i {
+		color: var(--accent);
+		font-weight: 600;
+	}
+
+	.sens {
+		color: var(--texte-discret);
+		font-size: 0.9em;
+	}
+</style>

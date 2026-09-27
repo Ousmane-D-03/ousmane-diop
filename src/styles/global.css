@@ -106,3 +106,15 @@ a {
 	animation-duration: 0.5s;
 	animation-timing-function: ease-in-out;
 }
+
+/* Surlignage façon marqueur, statique : vert très pâle, quelques mots
+   seulement. Texte #1a1c1a sur #cfe7d7 : 13,11:1. Aplat uni (pas de
+   dégradé) ; box-decoration-break pour que chaque ligne ait sa marge
+   quand le passage surligné passe à la ligne. */
+mark {
+	background: #cfe7d7;
+	color: inherit;
+	padding: 0.05em 0.15em;
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}

@@ -4,6 +4,7 @@ import Base from '../layouts/Base.astro';
 import Etape from '../components/Etape.astro';
 import Progression from '../components/Progression.astro';
 import Projet from '../components/Projet.astro';
+import Exergue from '../components/Exergue.astro';
 
 const etapes = [
 	{ numero: '01', titre: 'Qui je suis', id: 'qui-je-suis' },
@@ -48,6 +49,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 				Ce que j’aime dans ce métier, c’est le moment où quelque chose passe de «&nbsp;ça marche sur ma
 				machine&nbsp;» à «&nbsp;c’est en ligne et ça tient&nbsp;». Le reste — le langage, le framework — s’apprend.
 			</p>
+			<Exergue>Ma spécialisation ne vient pas d’un cursus&nbsp;: je l’ai construite à côté.</Exergue>
 		</Etape>
 
 		<Etape {...missions}>
@@ -58,6 +60,12 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 
 			<h3>Bloc 1 — Concevoir, développer et faire évoluer des sites web</h3>
 			<p><em>C’est le cœur du stage, et c’est là que j’ai le plus à apprendre.</em></p>
+			{/* Exergue placé avant sa phrase source (deux paragraphes plus bas) :
+			    il l’annonce au lieu de la répéter juste après sa lecture. */}
+			<Exergue>
+				J’ai souvent été le client — celui qui sait ce qu’il veut sans savoir le formuler en termes
+				techniques.
+			</Exergue>
 			<p>
 				J’ai développé des interfaces&nbsp;: une application de traitement d’images avec un front Vue.js et
 				TypeScript sur un backend Spring Boot, un CMS complet en Laravel pour une entreprise de conseil.
@@ -70,7 +78,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 				d’ailleurs mon premier vrai exercice dans cette direction.
 			</p>
 			<p>
-				Il y a un point sur lequel j’arrive avec un angle particulier&nbsp;: le recueil du besoin. J’ai
+				Il y a un point sur lequel j’arrive avec un angle particulier&nbsp;: <mark>le recueil du besoin</mark>. J’ai
 				souvent été le client — celui qui sait ce qu’il veut sans savoir le formuler en termes
 				techniques. Je connais la frustration des deux côtés de cette conversation. Apprendre à être de
 				l’autre côté, à reformuler un besoin flou en périmètre clair, fait partie de ce que je viens
@@ -80,8 +88,8 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 			<h3>Bloc 2 — Déploiement, exploitation et automatisation</h3>
 			<p><em>C’est ce que je fais déjà.</em></p>
 			<p>
-				Sur mes projets, la chaîne de livraison n’est pas une étape finale mais une partie de la
-				conception. Sur Xëy Invest, une plateforme de financement participatif que j’ai développée de
+				Sur mes projets, la chaîne de livraison n’est pas une étape finale mais <mark>une partie de la
+				conception</mark>. Sur Xëy Invest, une plateforme de financement participatif que j’ai développée de
 				bout en bout, j’ai construit une pipeline GitHub Actions complète&nbsp;: tests automatisés, build et
 				publication d’images Docker, et trois contrôles de sécurité exécutés à chaque commit — détection
 				de secrets exposés, analyse statique du code, scan de vulnérabilités des images.
@@ -95,8 +103,8 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 			</p>
 			<p>
 				Les briques que vous mentionnez et que je n’ai pas encore pratiquées&nbsp;: Cloudflare en production,
-				la gestion de noms de domaine et de certificats sur des sites clients, et le diagnostic
-				d’incidents sur des systèmes que je n’ai pas construits moi-même. C’est différent de déboguer
+				la gestion de noms de domaine et de certificats sur des sites clients, et le <mark>diagnostic
+				d’incidents</mark> sur des systèmes que je n’ai pas construits moi-même. C’est différent de déboguer
 				son propre code, et c’est une des choses que je veux apprendre ici.
 			</p>
 
@@ -106,7 +114,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 				Recenser les applications et services d’une organisation, identifier qui en est responsable,
 				documenter les données et les dépendances, transformer un état des lieux en actions
 				priorisées&nbsp;: c’est un travail de modélisation avant d’être un travail de documentation. Il faut
-				comprendre un système existant, poser les bonnes questions, et le rendre lisible.
+				comprendre un système existant, <mark>poser les bonnes questions</mark>, et le rendre lisible.
 			</p>
 			<p>
 				C’est exactement la démarche que j’ai suivie sur SunuDossier, un projet de dossier patient
@@ -125,6 +133,11 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 
 		<Etape {...projetsEtape}>
 			{projets.map((projet) => <Projet projet={projet} />)}
+			{/* Phrase du projet API de traduction ; en clôture de l’étape plutôt que
+			    juste après sa source, dont c’est la dernière phrase. */}
+			<Exergue>
+				En architecture serverless, une décision de conception est aussi une décision de facture.
+			</Exergue>
 		</Etape>
 
 		<Etape {...demarche}>
