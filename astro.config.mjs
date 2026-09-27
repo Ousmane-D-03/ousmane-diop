@@ -4,6 +4,10 @@ import { defineConfig, fontProviders } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://ousmane-diop.pages.dev',
+	// CSS toujours intégré à la page : sur deux pages, quelques Ko dupliqués
+	// coûtent moins qu’une requête qui bloque l’affichage (au-delà de 4 Ko,
+	// Astro le sortait dans un fichier séparé).
+	build: { inlineStylesheets: 'always' },
 	// Polices téléchargées au build et servies depuis le site :
 	// aucune requête vers Google chez le visiteur.
 	fonts: [

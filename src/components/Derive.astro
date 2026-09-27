@@ -1,12 +1,12 @@
 ---
 // Fond de l'accueil : trois mots wolof et six logos qui dérivent lentement.
 // Décoratif (aria-hidden), CSS pur, aucun JavaScript.
-import Docker from '../assets/logos/docker.svg';
-import GithubActions from '../assets/logos/githubactions.svg';
-import Python from '../assets/logos/python.svg';
-import FastApi from '../assets/logos/fastapi.svg';
-import Linux from '../assets/logos/linux.svg';
-import PostgreSql from '../assets/logos/postgresql.svg';
+import { logos, type Logo } from '../lib/logos';
+
+const { Docker, Python, Linux } = logos;
+const GithubActions = logos['GitHub Actions'];
+const FastApi = logos.FastAPI;
+const PostgreSql = logos.PostgreSQL;
 
 // Profondeur 1 = loin (petit, clair, lent) ; 3 = près (grand, plus foncé, plus rapide).
 // Sous 85 % de hauteur : profondeur 1 seulement (bas d’écran plus calme).
@@ -14,7 +14,7 @@ import PostgreSql from '../assets/logos/postgresql.svg';
 // visiteur demande à réduire les animations.
 type Element = { x: number; y: number; profondeur: 1 | 2 | 3 } & (
 	| { mot: string }
-	| { logo: typeof Docker }
+	| { logo: Logo }
 );
 
 const elements: Element[] = [
