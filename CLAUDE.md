@@ -48,9 +48,10 @@ Deux niveaux :
 |---|---|---|
 | Accueil | Dérive continue des mots et logos de fond | CSS (`transform`), aucun JS |
 | Contenu | Barre d'avancement liée au défilement | CSS (`animation-timeline: scroll()`), masquée si non supportée |
-| Entre les deux pages | Transition d'entrée : le nom et l'accroche glissent, le reste apparaît en fondu | Transitions de vue natives (`@view-transition`), aucun JS, pas de `<ClientRouter />` |
+| Entre les deux pages | Transition d'entrée (0,7 s, courbe douce) : le nom et l'accroche glissent, le reste apparaît en fondu | Transitions de vue natives (`@view-transition`), aucun JS, pas de `<ClientRouter />`. Le nom et l'accroche doivent garder **les mêmes proportions sur les deux pages** (même interligne, même coupure), sinon le glissement saute |
+| Projets (bureau avec souris) | Icônes des outils : apparition en fondu (opacité, 0,35 s) au survol du projet ou au focus dans le projet, dans la colonne des numéros | CSS (`:hover`, `:focus-within`). Sur tactile : icônes affichées en permanence, sans animation. Jamais de révélation au défilement |
 
-Les trois sont désactivées par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; la barre disparaît ; la navigation est instantanée). **Ne pas en ajouter d'autre.**
+Tous sont désactivés par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; la barre disparaît ; la navigation est instantanée ; les icônes apparaissent sans fondu). **Ne pas en ajouter d'autre.**
 
 Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `Progression.astro`, environ 600 octets.
 
@@ -66,7 +67,7 @@ Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `
 | Structure | Progression verticale en étapes, pas des sections empilées. Grille éditoriale sur bureau : colonne étroite des numéros, colonne du texte ; une colonne en mobile |
 | Rythme | Écart entre étapes (6 à 9rem) nettement plus grand qu'à l'intérieur d'une étape |
 | Coins | Carrés partout (jalons, bouton) |
-| Mouvement | Les trois listés ci-dessus, pas plus |
+| Mouvement | Ceux listés ci-dessus, pas plus |
 | Logos de fond | Docker, GitHub Actions, Python, FastAPI, Linux, PostgreSQL (Simple Icons 16.32.0), monochromes dans les gris du site. **Pas d'AWS** : absent de Simple Icons, et le logo officiel ne peut pas être recoloré |
 
 ### Interdits explicites
@@ -79,7 +80,7 @@ Ces éléments sont la signature du rendu « IA générique ». Ne jamais les pr
 - Dégradés, glassmorphism, ombres portées molles, effets de flou
 - Icônes génériques : fusée, ampoule, chevrons de code, engrenage
 - Le couple fond crème + accent terracotta
-- Toute animation au-delà des trois listées, et en particulier les effets d'apparition sur chaque section au défilement
+- Toute animation au-delà de celles listées, et en particulier les effets d'apparition sur chaque section au défilement
 - Texte centré sur toute la largeur
 
 Si une proposition ressemble à un template de portfolio développeur, elle est à rejeter.
@@ -97,7 +98,9 @@ src/
 │   ├── Derive.astro         # fond animé de l'accueil (mots wolof, logos)
 │   ├── Etape.astro          # un temps du pipeline
 │   ├── Progression.astro    # indicateur de défilement
-│   └── Projet.astro         # une fiche projet
+│   └── Projet.astro         # une fiche projet (icônes des outils via lib/logos.ts)
+├── lib/
+│   └── logos.ts             # les six logos, source unique (fond de l'accueil et projets)
 ├── assets/
 │   └── logos/               # SVG Simple Icons, sans <title> (décoratifs)
 ├── content/
@@ -108,7 +111,7 @@ src/
 public/                      # favicon (jalon du pipeline), apple-touch-icon, og.png
 ```
 
-Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, angle, mission liée, ordre, stack, statut, lien éventuel ; la description est le corps du fichier Markdown. La stack est gardée dans les données mais **n'est pas affichée** (les projets sont présentés par mission).
+Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, angle, mission liée, ordre, stack, statut, lien éventuel ; la description est le corps du fichier Markdown. La stack n'est **pas affichée en texte** (les projets sont présentés par mission) ; elle sert seulement à choisir les icônes d'outils, pour les outils qui ont un logo parmi les six.
 
 ## Contenu
 
