@@ -52,9 +52,7 @@ const variation = [1, 0.92, 1.08, 0.96, 1.04];
 				`--phase: ${e.x / 100}`,
 			].join('; ');
 			return 'mot' in e ? (
-				<span class={`flotte mot p${e.profondeur}`} style={style}>
-					{e.mot}
-				</span>
+				<span class={`flotte mot p${e.profondeur}`} style={style} data-mot={e.mot} />
 			) : (
 				<span class={`flotte logo p${e.profondeur}`} style={style}>
 					<e.logo width="1em" height="1em" />
@@ -91,6 +89,14 @@ const variation = [1, 0.92, 1.08, 0.96, 1.04];
 	.mot {
 		font-family: var(--font-titres);
 		font-weight: 700;
+	}
+
+	/* Le mot est écrit par le CSS, pas dans le HTML : c’est de la décoration,
+	   pas du contenu. Il n’apparaît ni dans le texte de la page, ni dans
+	   l’indexation, ni dans l’audit de contraste (le WCAG exempte de toute
+	   façon le texte purement décoratif, critère 1.4.3). */
+	.mot::before {
+		content: attr(data-mot);
 	}
 
 	.mot.p1 { font-size: clamp(1.4rem, 2.6vw, 2.2rem); color: #e8ebe8; }
