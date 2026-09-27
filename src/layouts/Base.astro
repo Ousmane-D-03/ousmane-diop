@@ -5,9 +5,11 @@ import '../styles/global.css';
 interface Props {
 	titre: string;
 	description: string;
+	// false pour la page 404 : ni URL canonique, ni indexation.
+	indexable?: boolean;
 }
 
-const { titre, description } = Astro.props;
+const { titre, description, indexable = true } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site);
 // Open Graph exige une URL absolue.
 const image = new URL('/og.png', Astro.site);
@@ -20,7 +22,7 @@ const image = new URL('/og.png', Astro.site);
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{titre}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href={url} />
+		{indexable ? <link rel="canonical" href={url} /> : <meta name="robots" content="noindex" />}
 
 		<link rel="icon" href="/favicon.ico" sizes="32x32" />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />

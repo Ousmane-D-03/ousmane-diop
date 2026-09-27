@@ -1,36 +1,31 @@
 ---
-// Fond de l'accueil : trois mots wolof et six logos qui dérivent lentement.
+// Fond de l'accueil : trois mots wolof (Jàng, Liggéey, Jokko) qui dérivent
+// lentement, chacun cinq fois à des tailles différentes.
 // Décoratif (aria-hidden), CSS pur, aucun JavaScript.
-import { logos, type Logo } from '../lib/logos';
-
-const { Docker, Python, Linux } = logos;
-const GithubActions = logos['GitHub Actions'];
-const FastApi = logos.FastAPI;
-const PostgreSql = logos.PostgreSQL;
+// Pas de logos d'outils : leurs règles de marque interdisent de les recolorer
+// (Docker, GitHub, PostgreSQL, Spring…), et en couleurs de marque ils
+// formeraient la constellation de logos qu'on veut éviter.
 
 // Profondeur 1 = loin (petit, clair, lent) ; 3 = près (grand, plus foncé, plus rapide).
-// Sous 85 % de hauteur : profondeur 1 seulement (bas d’écran plus calme).
+// Sous 85 % de hauteur : profondeur 1 seulement (bas d'écran plus calme).
 // x, y : position de repos en % de l'écran, utilisée telle quelle si le
 // visiteur demande à réduire les animations.
-type Element = { x: number; y: number; profondeur: 1 | 2 | 3 } & (
-	| { mot: string }
-	| { logo: Logo }
-);
+type Element = { mot: string; x: number; y: number; profondeur: 1 | 2 | 3 };
 
 const elements: Element[] = [
 	{ mot: 'Jàng', x: 8, y: 6, profondeur: 3 },
-	{ logo: Docker, x: 70, y: 5, profondeur: 1 },
+	{ mot: 'Jàng', x: 70, y: 5, profondeur: 1 },
 	{ mot: 'Liggéey', x: 52, y: 15, profondeur: 2 },
-	{ logo: Python, x: 22, y: 24, profondeur: 2 },
+	{ mot: 'Jokko', x: 22, y: 24, profondeur: 2 },
 	{ mot: 'Jokko', x: 82, y: 27, profondeur: 1 },
-	{ logo: GithubActions, x: 38, y: 35, profondeur: 1 },
+	{ mot: 'Liggéey', x: 38, y: 35, profondeur: 1 },
 	{ mot: 'Jàng', x: 4, y: 44, profondeur: 1 },
 	{ mot: 'Jokko', x: 60, y: 49, profondeur: 3 },
-	{ logo: PostgreSql, x: 88, y: 58, profondeur: 2 },
+	{ mot: 'Jokko', x: 88, y: 58, profondeur: 2 },
 	{ mot: 'Liggéey', x: 24, y: 61, profondeur: 1 },
-	{ logo: Linux, x: 46, y: 71, profondeur: 3 },
-	{ mot: 'Jàng', x: 74, y: 70, profondeur: 2 },
-	{ logo: FastApi, x: 12, y: 84, profondeur: 1 },
+	{ mot: 'Jàng', x: 46, y: 71, profondeur: 2 },
+	{ mot: 'Liggéey', x: 74, y: 70, profondeur: 2 },
+	{ mot: 'Jàng', x: 12, y: 84, profondeur: 1 },
 	{ mot: 'Liggéey', x: 32, y: 80, profondeur: 2 },
 	{ mot: 'Jokko', x: 90, y: 92, profondeur: 1 },
 ];
@@ -51,13 +46,7 @@ const variation = [1, 0.92, 1.08, 0.96, 1.04];
 				// Décalage de départ : l'élément démarre à sa position de repos.
 				`--phase: ${e.x / 100}`,
 			].join('; ');
-			return 'mot' in e ? (
-				<span class={`flotte mot p${e.profondeur}`} style={style} data-mot={e.mot} />
-			) : (
-				<span class={`flotte logo p${e.profondeur}`} style={style}>
-					<e.logo width="1em" height="1em" />
-				</span>
-			);
+			return <span class={`flotte p${e.profondeur}`} style={style} data-mot={e.mot} />;
 		})
 	}
 </div>
@@ -76,36 +65,23 @@ const variation = [1, 0.92, 1.08, 0.96, 1.04];
 		left: var(--x);
 		line-height: 1;
 		white-space: nowrap;
-	}
-
-	.flotte :global(svg) {
-		display: block;
-		fill: currentColor;
-	}
-
-	/* Les mots portent le caractère du site : plus grands et un cran plus
-	   foncés que les logos. Contraste du nom (#1a1c1a) sur le gris le plus
-	   foncé (#dce0dc) : 12,85:1. Le bouton a son propre fond. */
-	.mot {
 		font-family: var(--font-titres);
 		font-weight: 700;
 	}
 
-	/* Le mot est écrit par le CSS, pas dans le HTML : c’est de la décoration,
-	   pas du contenu. Il n’apparaît ni dans le texte de la page, ni dans
-	   l’indexation, ni dans l’audit de contraste (le WCAG exempte de toute
+	/* Le mot est écrit par le CSS, pas dans le HTML : c'est de la décoration,
+	   pas du contenu. Il n'apparaît ni dans le texte de la page, ni dans
+	   l'indexation, ni dans l'audit de contraste (le WCAG exempte de toute
 	   façon le texte purement décoratif, critère 1.4.3). */
-	.mot::before {
+	.flotte::before {
 		content: attr(data-mot);
 	}
 
-	.mot.p1 { font-size: clamp(1.4rem, 2.6vw, 2.2rem); color: #e8ebe8; }
-	.mot.p2 { font-size: clamp(2.2rem, 4.6vw, 4rem); color: #e2e5e2; }
-	.mot.p3 { font-size: clamp(3.4rem, 8vw, 7rem); color: #dce0dc; }
-
-	.logo.p1 { font-size: clamp(1.5rem, 2.4vw, 2rem); color: #eceeec; }
-	.logo.p2 { font-size: clamp(2rem, 3.4vw, 2.75rem); color: #e8ebe8; }
-	.logo.p3 { font-size: clamp(2.6rem, 4.6vw, 3.6rem); color: #e2e5e2; }
+	/* Contraste du nom (#1a1c1a) sur le gris le plus foncé (#dce0dc) :
+	   12,85:1. Le bouton a son propre fond. */
+	.p1 { font-size: clamp(1.4rem, 2.6vw, 2.2rem); color: #e8ebe8; }
+	.p2 { font-size: clamp(2.2rem, 4.6vw, 4rem); color: #e2e5e2; }
+	.p3 { font-size: clamp(3.4rem, 8vw, 7rem); color: #dce0dc; }
 
 	/* Dérive : traversée complète de gauche à droite, en boucle, à vitesse
 	   constante (linear) — pas d'aller-retour, pas de rebond. Seule la

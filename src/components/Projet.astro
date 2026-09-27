@@ -1,13 +1,12 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
-import { logos } from '../lib/logos';
 
 interface Props {
 	projet: CollectionEntry<'projets'>;
 }
 
 const { projet } = Astro.props;
-const { titre, angle, mission, statut, lien, stack } = projet.data;
+const { titre, angle, mission, statut, lien } = projet.data;
 const { Content } = await render(projet);
 
 // Libellés repris tels quels du contenu rédigé.
@@ -15,23 +14,11 @@ const statuts = {
 	'en-cours': 'Projet en cours.',
 	conception: 'Phase de conception.',
 };
-
-// Icônes : uniquement les outils de la stack pour lesquels un logo existe.
-const icones = stack.filter((outil) => outil in logos).map((outil) => logos[outil]);
 ---
 
 <article class="projet" aria-labelledby={`projet-${projet.id}`}>
 	<h3 id={`projet-${projet.id}`}>{titre} — {angle}</h3>
 	<p class="mission">En lien avec&nbsp;: {mission}</p>
-	{
-		icones.length > 0 && (
-			<div class="outils" aria-hidden="true">
-				{icones.map((Icone) => (
-					<Icone width="1em" height="1em" />
-				))}
-			</div>
-		)
-	}
 	<Content />
 	{statut && <p class="statut"><em>{statuts[statut]}</em></p>}
 	{lien && <p><a href={lien.url}>{lien.libelle}</a></p>}
@@ -39,7 +26,6 @@ const icones = stack.filter((outil) => outil in logos).map((outil) => logos[outi
 
 <style>
 	.projet {
-		position: relative;
 		padding-top: 1.5rem;
 		border-top: 1px solid var(--trait);
 	}
@@ -48,62 +34,20 @@ const icones = stack.filter((outil) => outil in logos).map((outil) => logos[outi
 		margin-top: 2.5rem;
 	}
 
+	/* Étiquette forte : fond vert, texte clair, coins carrés comme le bouton
+	   de l'accueil. #f7f8f6 sur #0a5c36 : 7,59:1. */
 	.mission {
-		margin-top: 0.4rem;
-		color: var(--accent);
+		display: inline-block;
+		margin: 0.6rem 0 1rem;
+		padding: 0.3em 0.6em;
+		background: var(--accent);
+		color: var(--fond);
 		font-weight: 600;
-		font-size: 0.9375rem;
+		font-size: 0.875rem;
+		line-height: 1.35;
 	}
 
 	.statut {
 		color: var(--texte-discret);
-	}
-
-	/* Icônes des outils. Par défaut (mobile, tablette tactile) : visibles en
-	   permanence, discrètes, sur une ligne sous « En lien avec ». Pas de
-	   révélation au défilement : c'est l'effet d'apparition par section que
-	   le site s'interdit. */
-	.outils {
-		display: flex;
-		gap: 0.75rem;
-		margin: -0.25rem 0 1rem;
-		font-size: 1.1rem;
-		color: var(--texte-discret);
-	}
-
-	.outils :global(svg) {
-		display: block;
-		fill: currentColor;
-	}
-
-	/* Écran large avec souris : les icônes vont dans la colonne des numéros,
-	   vide à hauteur des projets (aucune place prise dans le texte, aucun
-	   décalage), et n'apparaissent qu'au survol du projet ou quand le focus
-	   clavier y entre. */
-	@media (min-width: 48rem) and (hover: hover) and (pointer: fine) {
-		.outils {
-			position: absolute;
-			top: 1.85rem;
-			left: calc(-1 * (var(--gouttiere) + var(--col-numero)));
-			width: var(--col-numero);
-			flex-direction: column;
-			gap: 0.6rem;
-			margin: 0;
-			font-size: 1.25rem;
-			opacity: 0;
-		}
-
-		.projet:hover .outils,
-		.projet:focus-within .outils {
-			opacity: 1;
-		}
-	}
-
-	/* Apparition douce (opacité seule, pas de mouvement) ; instantanée si
-	   le visiteur demande à réduire les animations. */
-	@media (min-width: 48rem) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-		.outils {
-			transition: opacity 0.35s ease;
-		}
 	}
 </style>
