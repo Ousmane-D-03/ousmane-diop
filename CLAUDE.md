@@ -39,19 +39,23 @@ Le site est structuré comme un **pipeline de livraison**, en quatre étapes num
 
 Deux niveaux :
 
-- **`/` — accueil.** Un écran plein : le nom, l'accroche et le bouton « Découvrir » en un seul bloc centré (texte aligné à gauche). En fond, trois mots wolof (Jàng, Liggéey, Jokko) et six logos d'outils dérivent lentement (`Derive.astro`). C'est la seule page avec une décoration en mouvement.
-- **`/candidature/` — contenu.** Les quatre temps du pipeline, avec la navigation collante et l'indicateur d'avancement qui suit le défilement. Aucune décoration en mouvement.
+- **`/` — accueil.** Un écran plein : le nom, l'accroche et le bouton « Découvrir » en un seul bloc centré (texte aligné à gauche). En fond, trois mots wolof (Jàng, Liggéey, Jokko), cinq fois chacun à des tailles différentes, dérivent lentement (`Derive.astro`). C'est la seule page avec une décoration en mouvement.
+- **`/candidature/` — contenu.** Les quatre temps du pipeline, avec la navigation collante et l'indicateur d'avancement qui suit le défilement. **Page calme** : c'est celle qu'ils lisent pour juger la compréhension des missions. La hiérarchie passe par des procédés statiques :
+  - **Exergues** (`Exergue.astro`) : deux ou trois phrases du texte, reprises mot pour mot en grande échelle, sur toute la largeur de la grille. Placés *avant* leur phrase source (ils l'annoncent, ils ne la répètent pas juste après). `aria-hidden` : la phrase est déjà dans le texte.
+  - **Surlignage** statique vert pâle (`<mark>`, `#cfe7d7`) sur quelques mots de l'étape 02.
+  - **Étiquette forte** pour « En lien avec : … » (fond vert, texte clair, coins carrés).
+  - **Mots wolof** : composant `Wolof.astro` (mot en accent, `lang="wo"`, traduction visible). Aucun mot wolof n'est dans le texte actuel : à utiliser seulement dans un texte écrit par l'auteur.
+- **`/404`** : page introuvable (`404.astro`, `noindex`). Sans elle, Cloudflare Pages servirait l'accueil avec un code 200 pour toute adresse inconnue.
 
 ### Mouvement : ce qui existe, et rien d'autre
 
 | Où | Quoi | Technique |
 |---|---|---|
-| Accueil | Dérive continue des mots et logos de fond | CSS (`transform`), aucun JS |
+| Accueil | Dérive continue des mots de fond | CSS (`transform`), aucun JS |
 | Contenu | Barre d'avancement liée au défilement | CSS (`animation-timeline: scroll()`), masquée si non supportée |
 | Entre les deux pages | Transition d'entrée (0,7 s, courbe douce) : le nom et l'accroche glissent, le reste apparaît en fondu | Transitions de vue natives (`@view-transition`), aucun JS, pas de `<ClientRouter />`. Le nom et l'accroche doivent garder **les mêmes proportions sur les deux pages** (même interligne, même coupure), sinon le glissement saute |
-| Projets (bureau avec souris) | Icônes des outils : apparition en fondu (opacité, 0,35 s) au survol du projet ou au focus dans le projet, dans la colonne des numéros | CSS (`:hover`, `:focus-within`). Sur tactile : icônes affichées en permanence, sans animation. Jamais de révélation au défilement |
 
-Tous sont désactivés par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; la barre disparaît ; la navigation est instantanée ; les icônes apparaissent sans fondu). **Ne pas en ajouter d'autre.**
+Tous sont désactivés par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; la barre disparaît ; la navigation est instantanée). **Ne pas en ajouter d'autre.**
 
 Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `Progression.astro`, environ 600 octets.
 
@@ -68,7 +72,8 @@ Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `
 | Rythme | Écart entre étapes (6 à 9rem) nettement plus grand qu'à l'intérieur d'une étape |
 | Coins | Carrés partout (jalons, bouton) |
 | Mouvement | Ceux listés ci-dessus, pas plus |
-| Logos de fond | Docker, GitHub Actions, Python, FastAPI, Linux, PostgreSQL (Simple Icons 16.32.0), monochromes dans les gris du site. **Pas d'AWS** : absent de Simple Icons, et le logo officiel ne peut pas être recoloré |
+| Logos d'outils | **Aucun**, nulle part. Les règles de marque de Docker, GitHub, PostgreSQL, Spring interdisent de les recolorer (Python : accord préalable ; Vue.js : licence CC BY-NC-SA) ; en couleurs de marque, ils formeraient une constellation de logos. Ne pas en réintroduire |
+| Interdits d'animation (page de contenu) | Soulignement qui se trace, texte lettre par lettre (typewriter), révélation au défilement |
 
 ### Interdits explicites
 
@@ -91,18 +96,17 @@ Si une proposition ressemble à un template de portfolio développeur, elle est 
 src/
 ├── pages/
 │   ├── index.astro          # accueil plein écran
-│   └── candidature.astro    # les quatre étapes (/candidature/)
+│   ├── candidature.astro    # les quatre étapes (/candidature/)
+│   └── 404.astro            # page introuvable (noindex)
 ├── layouts/
 │   └── Base.astro           # <head>, polices, styles globaux
 ├── components/
-│   ├── Derive.astro         # fond animé de l'accueil (mots wolof, logos)
+│   ├── Derive.astro         # fond animé de l'accueil (mots wolof)
 │   ├── Etape.astro          # un temps du pipeline
 │   ├── Progression.astro    # indicateur de défilement
-│   └── Projet.astro         # une fiche projet (icônes des outils via lib/logos.ts)
-├── lib/
-│   └── logos.ts             # les six logos, source unique (fond de l'accueil et projets)
-├── assets/
-│   └── logos/               # SVG Simple Icons, sans <title> (décoratifs)
+│   ├── Exergue.astro        # phrase clé en grande échelle
+│   ├── Projet.astro         # une fiche projet
+│   └── Wolof.astro          # mot wolof + traduction visible
 ├── content/
 │   └── projets/             # collection de contenu — un fichier par projet
 ├── content.config.ts        # schéma de la collection (loader glob)
@@ -111,7 +115,7 @@ src/
 public/                      # favicon (jalon du pipeline), apple-touch-icon, og.png
 ```
 
-Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, angle, mission liée, ordre, stack, statut, lien éventuel ; la description est le corps du fichier Markdown. La stack n'est **pas affichée en texte** (les projets sont présentés par mission) ; elle sert seulement à choisir les icônes d'outils, pour les outils qui ont un logo parmi les six.
+Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, angle, mission liée, ordre, stack, statut, lien éventuel ; la description est le corps du fichier Markdown. La stack est gardée dans les données mais **n'est pas affichée** (les projets sont présentés par mission).
 
 ## Contenu
 
