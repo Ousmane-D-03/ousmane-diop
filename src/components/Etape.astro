@@ -22,46 +22,13 @@ const { numero, titre, id } = Astro.props;
 
 <style>
 	.etape {
-		/* Position verticale du jalon, partagée par le jalon et le trait. */
-		--jalon-haut: 0.45em;
-		--jalon-taille: 12px;
-
-		position: relative;
 		/* Rythme : l'espace entre deux étapes est nettement plus grand
-		   que l'espace entre deux blocs d'une même étape (2,5rem). */
-		padding: 0 0 var(--entre-etapes) 2rem;
+		   que l'espace entre deux blocs d'une même étape (2,5rem).
+		   Plus de trait vertical ni de jalons : l'avancement est porté par la
+		   boucle du cycle DevOps, dans la navigation collante. */
+		padding-bottom: var(--entre-etapes);
 		/* Au clic sur un lien d'étape, le titre s'arrête sous la navigation collante. */
 		scroll-margin-top: 4.5rem;
-	}
-
-	/* Trait du pipeline. */
-	.etape::after {
-		content: '';
-		position: absolute;
-		left: -1px;
-		top: 0;
-		bottom: 0;
-		width: 2px;
-		background: var(--trait);
-	}
-
-	/* Dernière étape : le trait s'arrête au jalon, il ne continue pas dans le vide. */
-	.etape:last-of-type::after {
-		bottom: auto;
-		height: calc(var(--jalon-haut) + var(--jalon-taille) / 2);
-	}
-
-	/* Jalon, dessiné par-dessus le trait. */
-	.etape::before {
-		content: '';
-		position: absolute;
-		z-index: 1;
-		left: calc(var(--jalon-taille) / -2);
-		top: var(--jalon-haut);
-		width: var(--jalon-taille);
-		height: var(--jalon-taille);
-		background: var(--fond);
-		border: 2px solid var(--accent);
 	}
 
 	h2 {

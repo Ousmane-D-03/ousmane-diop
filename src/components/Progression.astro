@@ -1,67 +1,89 @@
 ---
-// Indicateur d'avancement, collé en haut de l'écran.
-// - La barre suit le défilement en CSS pur (animation-timeline) : aucun JS.
-// - Le script ne fait qu'une chose : marquer l'étape en cours (aria-current).
-// Sans JS, la navigation par ancres et la barre fonctionnent toujours.
+// Navigation collante en haut de la page de contenu, avec la boucle du cycle
+// DevOps comme indicateur d'avancement.
+// - Le point parcourt la boucle selon la position de lecture, et la portion
+//   parcourue se colore : CSS pur (animation-timeline + offset-path), aucun JS.
+// - Le script marque l'étape en cours (aria-current). Il place aussi le point
+//   à la position de la section en cours quand l'animation n'a pas lieu
+//   (mouvement réduit, ou navigateur qui ne lie pas l'animation au défilement).
+// La boucle est une signature et un indicateur, pas un plan : les huit étapes
+// du cycle ne sont pas nommées, et les quatre sections n'y sont pas associées.
 interface Props {
 	etapes: { numero: string; titre: string; id: string }[];
 }
 
 const { etapes } = Astro.props;
+
+// Boucle de l'infini dans une boîte 100 × 40, départ au croisement central :
+// lobe droit, retour au centre, lobe gauche, retour au centre.
+// Un seul tracé, utilisé pour le dessin et pour le trajet du point.
+const boucle =
+	'M50,20 C62,5 92,5 92,20 C92,35 62,35 50,20 C38,5 8,5 8,20 C8,35 38,35 50,20 Z';
 ---
 
 <nav class="progression" aria-label="Étapes">
-	<ol>
-		{
-			etapes.map((e) => (
-				<li>
-					<a href={`#${e.id}`}>
-						<span class="numero">{e.numero}</span>
-						<span class="titre"> {e.titre}</span>
-					</a>
-				</li>
-			))
-		}
-	</ol>
-	<div class="barre" aria-hidden="true"></div>
+	<div class="barre-nav">
+		<ol>
+			{
+				etapes.map((e) => (
+					<li>
+						<a href={`#${e.id}`}>
+							<span class="numero">{e.numero}</span>
+							<span class="titre"> {e.titre}</span>
+						</a>
+					</li>
+				))
+			}
+		</ol>
+		<svg class="boucle" viewBox="0 0 100 40" aria-hidden="true" focusable="false">
+			<path class="fond-boucle" d={boucle} pathLength="100" />
+			<path class="parcouru" d={boucle} pathLength="100" />
+			<circle class="point" r="3.6" style={`offset-path: path('${boucle}')`} />
+		</svg>
+	</div>
 </nav>
 
 <script>
 	const liens = [...document.querySelectorAll<HTMLAnchorElement>('.progression a')];
 	const sections = liens.map((a) => document.querySelector<HTMLElement>(a.hash));
+	const boucle = document.querySelector<SVGElement>('.progression .boucle');
 
 	let enAttente = false;
 
 	function marquerEtapeActive() {
 		enAttente = false;
 		const seuil = innerHeight * 0.4;
+		const course = document.documentElement.scrollHeight - innerHeight;
 		let actif = -1;
 		sections.forEach((s, i) => {
 			if (s && s.getBoundingClientRect().top <= seuil) actif = i;
 		});
 		// Tout en bas de page, la dernière étape est active même si elle est courte.
-		if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) {
-			actif = sections.length - 1;
-		}
+		const enBas = scrollY >= course - 2;
+		if (enBas) actif = sections.length - 1;
 		liens.forEach((a, i) => {
 			if (i === actif) a.setAttribute('aria-current', 'location');
 			else a.removeAttribute('aria-current');
 		});
+		// Position de secours du point : début de la section en cours, en % de
+		// la page. Utilisée par le CSS seulement si l'animation n'a pas lieu.
+		const debut = actif < 0 ? 0 : sections[actif]!.getBoundingClientRect().top + scrollY;
+		const progres = enBas ? 100 : Math.min(100, Math.max(0, (debut / course) * 100));
+		boucle?.style.setProperty('--progres', progres.toFixed(1));
 	}
 
 	// Au plus un calcul par image affichée, quel que soit le nombre d'événements.
-	addEventListener(
-		'scroll',
-		() => {
-			if (!enAttente) {
-				enAttente = true;
-				requestAnimationFrame(marquerEtapeActive);
-			}
-		},
-		{ passive: true },
-	);
-	addEventListener('resize', marquerEtapeActive);
-	marquerEtapeActive();
+	const planifier = () => {
+		if (!enAttente) {
+			enAttente = true;
+			requestAnimationFrame(marquerEtapeActive);
+		}
+	};
+	addEventListener('scroll', planifier, { passive: true });
+	addEventListener('resize', planifier);
+	// Première mesure au prochain affichage, pas pendant le chargement :
+	// évite de forcer le calcul de la mise en page trop tôt.
+	planifier();
 </script>
 
 <style>
@@ -73,11 +95,20 @@ const { etapes } = Astro.props;
 		border-bottom: 1px solid var(--trait);
 	}
 
+	.barre-nav {
+		max-width: var(--largeur-page);
+		margin: 0 auto;
+		padding: 0.5rem var(--marge);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.5rem;
+	}
+
 	ol {
 		list-style: none;
-		margin: 0 auto;
-		max-width: var(--largeur-page);
-		padding: 0.75rem var(--marge);
+		margin: 0;
+		padding: 0;
 		display: flex;
 		gap: 1.5rem;
 	}
@@ -106,11 +137,47 @@ const { etapes } = Astro.props;
 		font-weight: 700;
 	}
 
-	/* Écran étroit : les numéros seuls tiennent sur une ligne.
-	   Les titres restent lus par les lecteurs d'écran. */
+	/* Boucle : forme reconnaissable, pas de texte. */
+	.boucle {
+		flex: none;
+		width: 5.75rem;
+		height: 2.3rem;
+		overflow: visible;
+	}
+
+	.boucle path {
+		fill: none;
+		stroke-width: 2.2;
+		stroke-linejoin: round;
+	}
+
+	.fond-boucle {
+		stroke: #c3c9c4;
+	}
+
+	/* Portion parcourue, en accent. Longueur normalisée à 100 (pathLength) :
+	   décalage 100 = rien de parcouru, 0 = boucle complète. */
+	.parcouru {
+		stroke: var(--accent);
+		stroke-dasharray: 100;
+		/* Avec unité : sans elle, Chromium et Gecko jugent la valeur invalide
+		   (boucle entière dessinée). Dans un trait SVG, 1px = 1 unité du tracé. */
+		stroke-dashoffset: calc((100 - var(--progres, 0)) * 1px);
+	}
+
+	.point {
+		fill: var(--accent);
+		stroke: var(--fond);
+		stroke-width: 1.4;
+		offset-rotate: 0deg;
+		offset-distance: calc(var(--progres, 0) * 1%);
+	}
+
+	/* Écran étroit : les numéros seuls tiennent sur une ligne, et la boucle
+	   se réduit un peu. Les titres restent lus par les lecteurs d'écran. */
 	@media (max-width: 34rem) {
 		ol {
-			gap: 2rem;
+			gap: 1.4rem;
 		}
 
 		.titre {
@@ -121,42 +188,53 @@ const { etapes } = Astro.props;
 			clip-path: inset(50%);
 			white-space: nowrap;
 		}
+
+		.boucle {
+			width: 4.75rem;
+			height: 1.9rem;
+		}
 	}
 
-	/* La seule animation du site. Absente si le navigateur ne sait pas la lier
-	   au défilement, ou si le visiteur a demandé à réduire les animations. */
-	.barre {
-		display: none;
-	}
-
+	/* Mouvement lié à la lecture : le point avance avec le défilement de la
+	   page, sans JavaScript. Seulement si le navigateur sait lier une animation
+	   au défilement et si le visiteur n'a pas demandé à réduire les animations.
+	   Sinon : position de secours fixée par le script, sans animation.
+	   Propriétés détaillées plutôt que le raccourci `animation` : le minifieur
+	   fusionnait le raccourci avec animation-timeline en une forme invalide. */
 	@supports (animation-timeline: scroll()) {
 		@media (prefers-reduced-motion: no-preference) {
-			.barre {
-				display: block;
-				position: absolute;
-				left: 0;
-				right: 0;
-				bottom: -1px;
-				height: 2px;
-				background: var(--accent);
-				transform-origin: 0 50%;
-				/* Propriétés détaillées, pas le raccourci `animation` : au build, le
-				   minifieur fusionnait tout en `animation: … scroll(root)`, forme que
-				   le navigateur rejette (la barre restait pleine en permanence). */
-				animation-name: avancement;
+			.parcouru,
+			.point {
 				animation-timing-function: linear;
 				animation-fill-mode: both;
 				animation-timeline: scroll(root);
 			}
+
+			.parcouru {
+				animation-name: trace;
+			}
+
+			.point {
+				animation-name: parcours;
+			}
 		}
 	}
 
-	@keyframes avancement {
+	@keyframes trace {
 		from {
-			transform: scaleX(0);
+			stroke-dashoffset: 100;
 		}
 		to {
-			transform: scaleX(1);
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@keyframes parcours {
+		from {
+			offset-distance: 0%;
+		}
+		to {
+			offset-distance: 100%;
 		}
 	}
 </style>

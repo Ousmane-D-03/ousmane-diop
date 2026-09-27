@@ -17,8 +17,8 @@
 	--col-numero: 4.5rem;
 	--gouttiere: 2rem;
 	--entre-etapes: clamp(6rem, 11vw, 9rem);
-	/* Largeur totale : trait (2rem) + numéros + gouttière + texte. */
-	--largeur-page: calc(2rem + var(--col-numero) + var(--gouttiere) + var(--mesure));
+	/* Largeur totale : numéros + gouttière + texte. */
+	--largeur-page: calc(var(--col-numero) + var(--gouttiere) + var(--mesure));
 	--marge: clamp(1rem, 4vw, 3rem);
 }
 
