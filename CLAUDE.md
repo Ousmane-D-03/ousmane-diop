@@ -21,10 +21,11 @@ Conséquence directe : **un site qui sent le template généré par IA est un é
 
 ## Stack imposée
 
-- **Astro** — c'est le framework maison de l'entreprise. L'auteur ne le connaît pas encore ; c'est assumé et fait partie de l'exercice.
+- **Astro 7** — c'est le framework maison de l'entreprise. L'auteur ne le connaît pas encore ; c'est assumé et fait partie de l'exercice.
+- Node 24 (`.node-version`), Astro exige ≥ 22.12.
 - Déploiement **Cloudflare Pages** (build déclenché au push sur `main`, commande `npm run build`, sortie `dist/`).
 - Pas de framework CSS lourd (pas de Bootstrap, pas de Tailwind sauf demande explicite). CSS écrit à la main, ou les styles scopés d'Astro.
-- Pas de base de données, pas de backend. Site statique.
+- Pas de base de données, pas de backend. Site statique : **pas d'adaptateur Cloudflare** (il ne sert qu'au rendu à la demande).
 
 **Important :** la connaissance d'Astro dans les données d'entraînement peut être en retard sur la version actuelle. Vérifier la documentation à jour avant d'utiliser une API Astro, en particulier les collections de contenu et l'adaptateur Cloudflare.
 
@@ -36,18 +37,37 @@ Le site est structuré comme un **pipeline de livraison**, en quatre étapes num
 01 · Qui je suis  →  02 · Vos missions  →  03 · Mes projets  →  04 · Ma démarche
 ```
 
-Une seule page, quatre temps, avec un indicateur d'avancement discret qui suit le défilement. **C'est le seul élément interactif du site.**
+Deux niveaux :
+
+- **`/` — accueil.** Un écran plein : le nom, l'accroche et le bouton « Découvrir » en un seul bloc centré (texte aligné à gauche). En fond, trois mots wolof (Jàng, Liggéey, Jokko) et six logos d'outils dérivent lentement (`Derive.astro`). C'est la seule page avec une décoration en mouvement.
+- **`/candidature/` — contenu.** Les quatre temps du pipeline, avec la navigation collante et l'indicateur d'avancement qui suit le défilement. Aucune décoration en mouvement.
+
+### Mouvement : ce qui existe, et rien d'autre
+
+| Où | Quoi | Technique |
+|---|---|---|
+| Accueil | Dérive continue des mots et logos de fond | CSS (`transform`), aucun JS |
+| Contenu | Barre d'avancement liée au défilement | CSS (`animation-timeline: scroll()`), masquée si non supportée |
+| Entre les deux pages | Transition d'entrée : le nom et l'accroche glissent, le reste apparaît en fondu | Transitions de vue natives (`@view-transition`), aucun JS, pas de `<ClientRouter />` |
+
+Les trois sont désactivées par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; la barre disparaît ; la navigation est instantanée). **Ne pas en ajouter d'autre.**
+
+Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `Progression.astro`, environ 600 octets.
 
 ### Décisions arrêtées
 
 | Élément | Choix |
 |---|---|
 | Fond | Clair (la majorité des portfolios dev sont sombres — se démarquer) |
-| Titres | Space Grotesk (Google Fonts) |
-| Corps | Inter (Google Fonts) |
+| Titres | Space Grotesk, auto-hébergée via l'API Fonts d'Astro (aucune requête vers Google) |
+| Corps | Inter, idem |
 | Accent | Un seul : vert profond. Double lecture — drapeau sénégalais sans faire du drapeau une décoration, et « build passing » d'une CI |
-| Structure | Progression verticale en étapes, pas des sections empilées |
-| Animation | Une seule dans tout le site |
+| Accent (valeur) | `#0a5c36` : 7,59:1 sur le fond. Le vert du drapeau `#00853f` est refusé (4,45:1, sous AA) |
+| Structure | Progression verticale en étapes, pas des sections empilées. Grille éditoriale sur bureau : colonne étroite des numéros, colonne du texte ; une colonne en mobile |
+| Rythme | Écart entre étapes (6 à 9rem) nettement plus grand qu'à l'intérieur d'une étape |
+| Coins | Carrés partout (jalons, bouton) |
+| Mouvement | Les trois listés ci-dessus, pas plus |
+| Logos de fond | Docker, GitHub Actions, Python, FastAPI, Linux, PostgreSQL (Simple Icons 16.32.0), monochromes dans les gris du site. **Pas d'AWS** : absent de Simple Icons, et le logo officiel ne peut pas être recoloré |
 
 ### Interdits explicites
 
@@ -59,7 +79,7 @@ Ces éléments sont la signature du rendu « IA générique ». Ne jamais les pr
 - Dégradés, glassmorphism, ombres portées molles, effets de flou
 - Icônes génériques : fusée, ampoule, chevrons de code, engrenage
 - Le couple fond crème + accent terracotta
-- Plusieurs animations, effets d'apparition sur chaque section
+- Toute animation au-delà des trois listées, et en particulier les effets d'apparition sur chaque section au défilement
 - Texte centré sur toute la largeur
 
 Si une proposition ressemble à un template de portfolio développeur, elle est à rejeter.
@@ -69,24 +89,30 @@ Si une proposition ressemble à un template de portfolio développeur, elle est 
 ```
 src/
 ├── pages/
-│   └── index.astro          # page unique
+│   ├── index.astro          # accueil plein écran
+│   └── candidature.astro    # les quatre étapes (/candidature/)
 ├── layouts/
 │   └── Base.astro           # <head>, polices, styles globaux
 ├── components/
+│   ├── Derive.astro         # fond animé de l'accueil (mots wolof, logos)
 │   ├── Etape.astro          # un temps du pipeline
 │   ├── Progression.astro    # indicateur de défilement
 │   └── Projet.astro         # une fiche projet
+├── assets/
+│   └── logos/               # SVG Simple Icons, sans <title> (décoratifs)
 ├── content/
 │   └── projets/             # collection de contenu — un fichier par projet
+├── content.config.ts        # schéma de la collection (loader glob)
 └── styles/
-    └── global.css           # variables, typographie, reset
+    └── global.css           # variables, typographie, reset, transitions de vue
+public/                      # favicon (jalon du pipeline), apple-touch-icon, og.png
 ```
 
-Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, mission liée, description, stack, statut, lien éventuel.
+Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, angle, mission liée, ordre, stack, statut, lien éventuel ; la description est le corps du fichier Markdown. La stack est gardée dans les données mais **n'est pas affichée** (les projets sont présentés par mission).
 
 ## Contenu
 
-Le contenu rédigé se trouve dans `contenu-site-a2o.md` à la racine du projet. Il fait autorité — ne pas le réécrire, le mettre en forme.
+Le contenu rédigé se trouve dans `contenu-site-a2o.md` à la racine du projet (fichier local, exclu du dépôt par `.gitignore`). Il fait autorité — ne pas le réécrire, le mettre en forme.
 
 Trois points de vigilance sur le contenu :
 
@@ -97,7 +123,7 @@ Trois points de vigilance sur le contenu :
 ## Méthode de travail
 
 - **Commits progressifs.** Un historique qui montre une construction itérative, pas un unique commit « site complet ». L'entreprise peut regarder le dépôt.
-- **Tenir `notes.md`** à la racine : à chaque difficulté rencontrée (problème de déploiement, notion Astro mal comprise, choix abandonné), trois lignes. Ces notes alimenteront la section 04.
+- **Tenir `notes.md`** à la racine (fichier local, exclu du dépôt) : à chaque difficulté rencontrée (problème de déploiement, notion Astro mal comprise, choix abandonné), trois lignes. Ces notes alimenteront la section 04.
 - **Vérifier le rendu réel** avant de déclarer une section terminée. Pas seulement la validité du code.
 - Expliquer chaque décision technique au fil de l'eau — l'auteur doit pouvoir la défendre sans l'avoir subie.
 
@@ -108,7 +134,9 @@ L'offre mentionne explicitement « optimisations de performance, d'accessibilit�
 - HTML sémantique, un seul `<h1>`, hiérarchie de titres correcte
 - Contrastes conformes WCAG AA (vérifier l'accent vert sur fond clair)
 - Navigation au clavier fonctionnelle, focus visible
-- L'animation respecte `prefers-reduced-motion`
-- Polices chargées avec `font-display: swap`, préconnexion à Google Fonts
+- Chaque mouvement respecte `prefers-reduced-motion`
+- Les éléments décoratifs (fond de l'accueil) sont `aria-hidden`, et les mots y sont écrits en CSS (`content: attr(data-mot)`), pas dans le HTML
+- Polices auto-hébergées (API Fonts d'Astro), `font-display: swap`, préchargement du romain seulement
 - Balises meta : titre, description, Open Graph
 - Pas de JavaScript inutile — Astro n'en envoie aucun par défaut, garder cet avantage
+- Référence Lighthouse : 100 / 100 / 100 / 100 sur les deux pages, mobile et bureau. Toute modification qui fait baisser un score doit être signalée
