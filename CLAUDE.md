@@ -40,7 +40,7 @@ Le site est structuré comme un **pipeline de livraison**, en quatre étapes num
 Deux niveaux :
 
 - **`/` — accueil.** Un écran plein : le nom, l'accroche et le bouton « Découvrir » en un seul bloc centré (texte aligné à gauche). En fond, trois mots wolof (Jàng, Liggéey, Jokko), cinq fois chacun à des tailles différentes, dérivent lentement (`Derive.astro`). C'est la seule page avec une décoration en mouvement.
-- **`/candidature/` — contenu.** Les quatre temps du pipeline, avec la navigation collante et l'indicateur d'avancement qui suit le défilement. **Page calme** : c'est celle qu'ils lisent pour juger la compréhension des missions. La hiérarchie passe par des procédés statiques :
+- **`/candidature/` — contenu.** Les quatre temps du pipeline, avec la navigation collante. L'indicateur d'avancement est **la boucle de l'infini du cycle DevOps** (dans la navigation, à droite, à toutes les largeurs) : un point la parcourt selon la position de lecture et la portion parcourue se colore en vert. C'est une signature et un indicateur, **pas un plan de contenu** : les huit étapes du cycle ne sont pas nommées, et les quatre sections ne leur sont pas associées. Plus de trait vertical ni de jalons. **Page calme** : c'est celle qu'ils lisent pour juger la compréhension des missions. La hiérarchie passe par des procédés statiques :
   - **Exergues** (`Exergue.astro`) : deux ou trois phrases du texte, reprises mot pour mot en grande échelle, sur toute la largeur de la grille. Placés *avant* leur phrase source (ils l'annoncent, ils ne la répètent pas juste après). `aria-hidden` : la phrase est déjà dans le texte.
   - **Surlignage** statique vert pâle (`<mark>`, `#cfe7d7`) sur quelques mots de l'étape 02.
   - **Étiquette forte** pour « En lien avec : … » (fond vert, texte clair, coins carrés).
@@ -52,10 +52,10 @@ Deux niveaux :
 | Où | Quoi | Technique |
 |---|---|---|
 | Accueil | Dérive continue des mots de fond | CSS (`transform`), aucun JS |
-| Contenu | Barre d'avancement liée au défilement | CSS (`animation-timeline: scroll()`), masquée si non supportée |
+| Contenu | Point et trait qui parcourent la boucle selon le défilement | CSS (`animation-timeline: scroll()` sur `offset-distance` et `stroke-dashoffset`), aucun JS. Secours (mouvement réduit ou navigateur sans animation liée au défilement) : le script de `Progression.astro` place le point au début de la section en cours, sans animation |
 | Entre les deux pages | Transition d'entrée (0,7 s, courbe douce) : le nom et l'accroche glissent, le reste apparaît en fondu | Transitions de vue natives (`@view-transition`), aucun JS, pas de `<ClientRouter />`. Le nom et l'accroche doivent garder **les mêmes proportions sur les deux pages** (même interligne, même coupure), sinon le glissement saute |
 
-Tous sont désactivés par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; la barre disparaît ; la navigation est instantanée). **Ne pas en ajouter d'autre.**
+Tous sont désactivés par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; le point de la boucle se place par section, sans animation ; la navigation est instantanée). **Ne pas en ajouter d'autre.**
 
 Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `Progression.astro`, environ 600 octets.
 
@@ -70,7 +70,7 @@ Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `
 | Accent (valeur) | `#0a5c36` : 7,59:1 sur le fond. Le vert du drapeau `#00853f` est refusé (4,45:1, sous AA) |
 | Structure | Progression verticale en étapes, pas des sections empilées. Grille éditoriale sur bureau : colonne étroite des numéros, colonne du texte ; une colonne en mobile |
 | Rythme | Écart entre étapes (6 à 9rem) nettement plus grand qu'à l'intérieur d'une étape |
-| Coins | Carrés partout (jalons, bouton) |
+| Coins | Carrés partout (bouton, étiquettes) |
 | Mouvement | Ceux listés ci-dessus, pas plus |
 | Logos d'outils | **Aucun**, nulle part. Les règles de marque de Docker, GitHub, PostgreSQL, Spring interdisent de les recolorer (Python : accord préalable ; Vue.js : licence CC BY-NC-SA) ; en couleurs de marque, ils formeraient une constellation de logos. Ne pas en réintroduire |
 | Interdits d'animation (page de contenu) | Soulignement qui se trace, texte lettre par lettre (typewriter), révélation au défilement |
@@ -103,7 +103,7 @@ src/
 ├── components/
 │   ├── Derive.astro         # fond animé de l'accueil (mots wolof)
 │   ├── Etape.astro          # un temps du pipeline
-│   ├── Progression.astro    # indicateur de défilement
+│   ├── Progression.astro    # navigation collante + boucle du cycle DevOps
 │   ├── Exergue.astro        # phrase clé en grande échelle
 │   ├── Projet.astro         # une fiche projet
 │   └── Wolof.astro          # mot wolof + traduction visible
@@ -112,7 +112,7 @@ src/
 ├── content.config.ts        # schéma de la collection (loader glob)
 └── styles/
     └── global.css           # variables, typographie, reset, transitions de vue
-public/                      # favicon (jalon du pipeline), apple-touch-icon, og.png
+public/                      # favicon (carré vert, ancien jalon), apple-touch-icon, og.png
 ```
 
 Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, angle, mission liée, ordre, stack, statut, lien éventuel ; la description est le corps du fichier Markdown. La stack est gardée dans les données mais **n'est pas affichée** (les projets sont présentés par mission).
