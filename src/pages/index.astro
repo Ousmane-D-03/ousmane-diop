@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Derive from '../components/Derive.astro';
 ---
 
 <Base
@@ -7,6 +8,7 @@ import Base from '../layouts/Base.astro';
 	description="Candidature de stage d’Ousmane Sarr Diop chez Alpha to Omega."
 >
 	<main class="accueil">
+		<Derive />
 		<div class="colonne centre">
 			<h1>Ousmane Sarr Diop</h1>
 			<p class="accroche">
@@ -37,6 +39,12 @@ import Base from '../layouts/Base.astro';
 
 	.centre {
 		align-self: center;
+	}
+
+	/* Le texte passe devant le fond qui dérive. */
+	.centre,
+	.bas {
+		position: relative;
 	}
 
 	h1 {
