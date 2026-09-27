@@ -1,5 +1,6 @@
 ---
 // Un temps du pipeline : numéro, titre, puis le contenu passé en slot.
+// Bureau : deux colonnes (numéros | texte). Mobile : une seule.
 interface Props {
 	numero: string;
 	titre: string;
@@ -12,10 +13,11 @@ const { numero, titre, id } = Astro.props;
 <section class="etape" id={id} aria-labelledby={`${id}-titre`}>
 	<h2 id={`${id}-titre`}>
 		<span class="numero">{numero}</span>
-		<span class="sep" aria-hidden="true">·</span>
-		{titre}
+		<span class="titre"><span class="sep" aria-hidden="true">·</span>{titre}</span>
 	</h2>
-	<slot />
+	{/* Bloc unique en colonne 2 : dans une grille les marges ne fusionnent
+	    plus, ce qui dilaterait le rythme entre paragraphes et intertitres. */}
+	<div class="corps"><slot /></div>
 </section>
 
 <style>
@@ -25,7 +27,9 @@ const { numero, titre, id } = Astro.props;
 		--jalon-taille: 12px;
 
 		position: relative;
-		padding: 0 0 6rem 2rem;
+		/* Rythme : l'espace entre deux étapes est nettement plus grand
+		   que l'espace entre deux blocs d'une même étape (2,5rem). */
+		padding: 0 0 var(--entre-etapes) 2rem;
 		/* Au clic sur un lien d'étape, le titre s'arrête sous la navigation collante. */
 		scroll-margin-top: 4.5rem;
 	}
@@ -73,5 +77,33 @@ const { numero, titre, id } = Astro.props;
 	.sep {
 		color: var(--texte-discret);
 		margin-inline: 0.2em;
+	}
+
+	/* Grille éditoriale : colonne étroite pour le numéro, colonne principale
+	   pour le texte. Le h2 s'étend sur les deux colonnes et en reprend le
+	   découpage (subgrid) : le numéro reste dans le titre pour les lecteurs
+	   d'écran (« 01 Qui je suis »). */
+	@media (min-width: 48rem) {
+		.etape {
+			display: grid;
+			grid-template-columns: var(--col-numero) minmax(0, var(--mesure));
+			column-gap: var(--gouttiere);
+			align-content: start;
+		}
+
+		.corps {
+			grid-column: 2;
+		}
+
+		.etape > h2 {
+			grid-column: 1 / -1;
+			display: grid;
+			grid-template-columns: subgrid;
+			align-items: baseline;
+		}
+
+		.sep {
+			display: none;
+		}
 	}
 </style>

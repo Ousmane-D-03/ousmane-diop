@@ -13,6 +13,12 @@
 	--trait: #d4d8d4;
 
 	--mesure: 68ch;
+	/* Grille éditoriale de la page de contenu. */
+	--col-numero: 4.5rem;
+	--gouttiere: 2rem;
+	--entre-etapes: clamp(6rem, 11vw, 9rem);
+	/* Largeur totale : trait (2rem) + numéros + gouttière + texte. */
+	--largeur-page: calc(2rem + var(--col-numero) + var(--gouttiere) + var(--mesure));
 	--marge: clamp(1rem, 4vw, 3rem);
 }
 
