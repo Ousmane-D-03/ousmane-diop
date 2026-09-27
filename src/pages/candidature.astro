@@ -5,7 +5,6 @@ import Etape from '../components/Etape.astro';
 import Progression from '../components/Progression.astro';
 import Projet from '../components/Projet.astro';
 import Exergue from '../components/Exergue.astro';
-import Cycle from '../components/Cycle.astro';
 
 const etapes = [
 	{ numero: '01', titre: 'Qui je suis', id: 'qui-je-suis' },
@@ -28,10 +27,6 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 			Je viens du backend et de l’infrastructure. Je veux apprendre le web du côté de la production.
 		</p>
 	</header>
-
-	{/* Illustration du métier, séparée des sections 01–04 par un grand espace
-	    et par la barre de navigation. */}
-	<Cycle />
 
 	{/* Hors du header : un élément sticky reste prisonnier de son parent. */}
 	<Progression etapes={etapes} />
