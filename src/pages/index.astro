@@ -1,183 +1,62 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Etape from '../components/Etape.astro';
-import Progression from '../components/Progression.astro';
-import Projet from '../components/Projet.astro';
-
-const etapes = [
-	{ numero: '01', titre: 'Qui je suis', id: 'qui-je-suis' },
-	{ numero: '02', titre: 'Vos missions', id: 'vos-missions' },
-	{ numero: '03', titre: 'Mes projets', id: 'mes-projets' },
-	{ numero: '04', titre: 'Ma démarche', id: 'ma-demarche' },
-];
-const [qui, missions, projetsEtape, demarche] = etapes;
-
-const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b.data.ordre);
 ---
 
 <Base
 	titre="Ousmane Sarr Diop — candidature Alpha to Omega"
 	description="Candidature de stage d’Ousmane Sarr Diop chez Alpha to Omega."
 >
-	<header class="entete">
-		<h1>Ousmane Sarr Diop</h1>
-		<p class="accroche">
-			Je viens du backend et de l’infrastructure. Je veux apprendre le web du côté de la production.
+	<main class="accueil">
+		<div class="colonne centre">
+			<h1>Ousmane Sarr Diop</h1>
+			<p class="accroche">
+				Je viens du backend et de l’infrastructure. Je veux apprendre le web du côté de la production.
+			</p>
+		</div>
+		<p class="colonne bas">
+			<a href="/candidature/" class="decouvrir">Découvrir</a>
 		</p>
-	</header>
-
-	{/* Hors du header : un élément sticky reste prisonnier de son parent. */}
-	<Progression etapes={etapes} />
-
-	<main class="pipeline">
-		<Etape {...qui}>
-			<p>
-				Je suis étudiant en Master Informatique à l’Université Toulouse III — Paul Sabatier, parcours
-				Sciences du Logiciel. Avant Toulouse, j’ai étudié à Orléans et obtenu ma licence à Bordeaux. Je
-				suis sénégalais, le wolof et le français sont mes deux langues maternelles.
-			</p>
-			<p>
-				Ma spécialisation ne vient pas d’un cursus&nbsp;: je l’ai construite à côté. Quand j’ai constaté que
-				ma formation ne couvrait pas les sujets qui m’intéressaient vraiment — l’infrastructure,
-				l’automatisation, la sécurité applicative — j’ai financé et suivi le DevOps Bootcamp de
-				TechWorld with Nana, je prépare la certification AWS Solutions Architect Associate, et j’ai mené
-				plusieurs projets de bout en bout pour mettre tout ça en pratique.
-			</p>
-			<p>
-				Ce que j’aime dans ce métier, c’est le moment où quelque chose passe de «&nbsp;ça marche sur ma
-				machine&nbsp;» à «&nbsp;c’est en ligne et ça tient&nbsp;». Le reste — le langage, le framework — s’apprend.
-			</p>
-		</Etape>
-
-		<Etape {...missions}>
-			<p>
-				Votre offre décrit trois blocs de missions. Voici comment je les lis, ce que j’apporte sur
-				chacun, et ce que je ne sais pas encore faire.
-			</p>
-
-			<h3>Bloc 1 — Concevoir, développer et faire évoluer des sites web</h3>
-			<p><em>C’est le cœur du stage, et c’est là que j’ai le plus à apprendre.</em></p>
-			<p>
-				J’ai développé des interfaces&nbsp;: une application de traitement d’images avec un front Vue.js et
-				TypeScript sur un backend Spring Boot, un CMS complet en Laravel pour une entreprise de conseil.
-				Je sais lire du HTML, du CSS, du JavaScript et du TypeScript, structurer une application en
-				couches, consommer et exposer des API REST, et travailler avec Git et GitHub au quotidien.
-			</p>
-			<p>
-				Mais je ne me suis jamais spécialisé côté front, et je ne connais pas Astro. Votre offre dit
-				qu’il peut s’apprendre pendant le stage — c’est précisément ce qui m’intéresse. Ce site est
-				d’ailleurs mon premier vrai exercice dans cette direction.
-			</p>
-			<p>
-				Il y a un point sur lequel j’arrive avec un angle particulier&nbsp;: le recueil du besoin. J’ai
-				souvent été le client — celui qui sait ce qu’il veut sans savoir le formuler en termes
-				techniques. Je connais la frustration des deux côtés de cette conversation. Apprendre à être de
-				l’autre côté, à reformuler un besoin flou en périmètre clair, fait partie de ce que je viens
-				chercher.
-			</p>
-
-			<h3>Bloc 2 — Déploiement, exploitation et automatisation</h3>
-			<p><em>C’est ce que je fais déjà.</em></p>
-			<p>
-				Sur mes projets, la chaîne de livraison n’est pas une étape finale mais une partie de la
-				conception. Sur Xëy Invest, une plateforme de financement participatif que j’ai développée de
-				bout en bout, j’ai construit une pipeline GitHub Actions complète&nbsp;: tests automatisés, build et
-				publication d’images Docker, et trois contrôles de sécurité exécutés à chaque commit — détection
-				de secrets exposés, analyse statique du code, scan de vulnérabilités des images.
-			</p>
-			<p>
-				J’ai aussi déployé une API serverless sur AWS (Lambda, API Gateway, DynamoDB, CloudWatch) en
-				Infrastructure as Code, et un site statique sur S3 avec distribution CloudFront, certificat SSL
-				et déploiement automatisé. Lors d’un stage au ministère de l’Éducation nationale du Sénégal,
-				j’ai écrit des scripts d’automatisation Linux pour remplacer des tâches faites à la main, et
-				encadré des stagiaires de licence sur ces sujets.
-			</p>
-			<p>
-				Les briques que vous mentionnez et que je n’ai pas encore pratiquées&nbsp;: Cloudflare en production,
-				la gestion de noms de domaine et de certificats sur des sites clients, et le diagnostic
-				d’incidents sur des systèmes que je n’ai pas construits moi-même. C’est différent de déboguer
-				son propre code, et c’est une des choses que je veux apprendre ici.
-			</p>
-
-			<h3>Bloc 3 — Gouvernance numérique et organisation IT</h3>
-			<p><em>Environ 25&nbsp;% du stage, et ça ne me dérange pas du tout — au contraire.</em></p>
-			<p>
-				Recenser les applications et services d’une organisation, identifier qui en est responsable,
-				documenter les données et les dépendances, transformer un état des lieux en actions
-				priorisées&nbsp;: c’est un travail de modélisation avant d’être un travail de documentation. Il faut
-				comprendre un système existant, poser les bonnes questions, et le rendre lisible.
-			</p>
-			<p>
-				C’est exactement la démarche que j’ai suivie sur SunuDossier, un projet de dossier patient
-				partagé entre établissements de santé que je conçois actuellement. Avant d’écrire une ligne de
-				code, j’ai modélisé l’ensemble en UML — diagrammes de classes et de cas d’utilisation — en
-				explicitant les rôles, les droits d’accès, la journalisation des accès aux données sensibles et
-				les dépendances entre modules. La contrainte de confidentialité des données de santé m’a obligé
-				à traiter ces questions dès la conception, pas après.
-			</p>
-			<p>
-				Je ne prétends pas connaître le RGPD ni pouvoir produire un avis juridique. Votre offre est
-				claire là-dessus&nbsp;: il s’agit d’apprendre à poser les bonnes questions et à structurer
-				l’existant. C’est un travail que j’aime.
-			</p>
-		</Etape>
-
-		<Etape {...projetsEtape}>
-			{projets.map((projet) => <Projet projet={projet} />)}
-		</Etape>
-
-		<Etape {...demarche}>
-			{/* Section 04 : écrite par Ousmane lui-même. Ne pas générer ce texte. */}
-		</Etape>
 	</main>
-
-	<footer class="pied">
-		<ul>
-			<li><a href="https://github.com/Ousmane-D-03" rel="me">GitHub</a></li>
-			<li><a href="https://www.linkedin.com/in/ousmane-sarr-diop-505891278" rel="me">LinkedIn</a></li>
-		</ul>
-	</footer>
 </Base>
 
 <style>
-	.entete,
-	.pipeline,
-	.pied {
-		max-width: var(--largeur-page);
-		margin-inline: auto;
-		padding-inline: var(--marge);
-	}
-
-	.entete {
-		padding-block: 4rem 2.5rem;
+	/* Un écran plein. svh : la hauteur visible quand la barre d’adresse
+	   mobile est déployée, pour que le lien du bas ne passe pas dessous. */
+	.accueil {
+		position: relative;
+		min-height: 100svh;
 		display: grid;
-		gap: 1.5rem;
+		grid-template-rows: 1fr auto;
 	}
 
-	.pipeline {
-		padding-top: 3rem;
+	/* Bloc centré dans l’écran, texte aligné à gauche. */
+	.colonne {
+		width: min(56rem, 100% - 2 * var(--marge));
+		margin-inline: auto;
 	}
 
-	.pied {
-		padding-block: 2rem 4rem;
-	}
-
-	.pied ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: flex;
-		gap: 1.5rem;
+	.centre {
+		align-self: center;
 	}
 
 	h1 {
-		font-size: clamp(2.2rem, 5vw, 3.5rem);
+		font-size: clamp(2.8rem, 8vw, 5.5rem);
+		line-height: 1.02;
 	}
 
 	.accroche {
-		margin: 0;
-		font-size: 1.25rem;
-		max-width: 40ch;
+		margin: 1.5rem 0 0;
+		font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+		max-width: 38ch;
+	}
+
+	.bas {
+		margin-block: 0 clamp(2rem, 6vh, 3.5rem);
+	}
+
+	.decouvrir {
+		font-size: 1.125rem;
+		font-weight: 600;
+		text-underline-offset: 0.3em;
 	}
 </style>
