@@ -1,8 +1,10 @@
 ---
-// Sans 404.html, Cloudflare Pages suppose une application monopage et sert
-// l'accueil (code 200) pour toute adresse inconnue. Cette page produit
-// dist/404.html : Pages la sert avec un vrai code 404.
+// Produit dist/404.html. Sur Cloudflare Workers, elle n'est servie que si
+// la configuration des assets le demande (not_found_handling: "404-page") ;
+// sans elle, une adresse inconnue reçoit un code 404 avec une page vide.
 import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Bouton from '../components/Bouton.astro';
 ---
 
 <Base
@@ -10,55 +12,27 @@ import Base from '../layouts/Base.astro';
 	description="Cette adresse ne correspond à aucune page du site."
 	indexable={false}
 >
-	<main class="introuvable">
-		<div class="centre">
-			<p class="code">404</p>
-			<h1>Page introuvable</h1>
-			<p>Cette adresse ne correspond à aucune page du site.</p>
-			<a href="/" class="retour">Retour à l’accueil</a>
+	<EnTete />
+	<main class="conteneur introuvable">
+		<p class="surtitre">Erreur 404</p>
+		<h1>Page introuvable.</h1>
+		<p class="chapeau">Cette adresse ne correspond à aucune page du site.</p>
+		<div>
+			<Bouton href="/" fleche>Retour à l’accueil</Bouton>
 		</div>
 	</main>
 </Base>
 
 <style>
 	.introuvable {
-		min-height: 100svh;
-		display: grid;
-		align-items: center;
+		padding-block: 64px 112px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
 	}
 
-	.centre {
-		width: min(40rem, 100% - 2 * var(--marge));
-		margin-inline: auto;
-	}
-
-	.code {
-		margin: 0 0 0.5rem;
-		font-family: var(--font-titres);
-		font-weight: 700;
-		color: var(--accent);
-		font-variant-numeric: tabular-nums;
-	}
-
-	h1 {
-		font-size: clamp(2.2rem, 6vw, 3.5rem);
-		margin-bottom: 1rem;
-	}
-
-	/* Même bouton que « Découvrir » sur l'accueil. */
-	.retour {
-		display: inline-block;
-		margin-top: 1.5rem;
-		padding: 0.85em 1.75em;
-		background: var(--accent);
-		color: var(--fond);
-		font-size: 1.0625rem;
-		font-weight: 600;
-		line-height: 1;
-		text-decoration: none;
-	}
-
-	.retour:hover {
-		background: #084a2c;
+	.chapeau {
+		font-size: 20px;
+		color: var(--texte-second);
 	}
 </style>
