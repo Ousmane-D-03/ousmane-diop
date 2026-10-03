@@ -1,91 +1,348 @@
 ---
 import Base from '../layouts/Base.astro';
-import Derive from '../components/Derive.astro';
+import EnTete from '../components/EnTete.astro';
+import Bouton from '../components/Bouton.astro';
+import Terminal from '../components/Terminal.astro';
+import PiedDePage from '../components/PiedDePage.astro';
+
+const enBref = [
+	['Formation', 'M1 Informatique — Sciences du Logiciel, UT3'],
+	['Lieu', 'Toulouse — présentiel'],
+	['Disponibilité', 'Second semestre · 3 mois'],
+	['Langues', 'Français, wolof, anglais (B2)'],
+];
+
+const raisons = [
+	{
+		titre: 'Le web comme fil conducteur',
+		texte:
+			'Mon parcours est surtout backend. Ce stage me fait passer côté site : architecture, composants, performance, accessibilité — avec Astro, que je découvre pour l’occasion.',
+	},
+	{
+		titre: 'Jusqu’à la production',
+		texte:
+			'Déployer, lire des logs, gérer un DNS ou un certificat : c’est ce que je pratique déjà en CI/CD et que je veux maîtriser sur de vrais projets clients.',
+	},
+];
 ---
 
 <Base
 	titre="Ousmane Sarr Diop — candidature Alpha to Omega"
-	description="Candidature de stage d’Ousmane Sarr Diop chez Alpha to Omega."
+	description="Candidature de stage d’Ousmane Sarr Diop chez Alpha to Omega : web, IA et gouvernance numérique, du besoin à la mise en ligne."
 >
-	<main class="accueil">
-		<Derive />
-		<div class="centre">
-			<h1 class="nom">Ousmane Sarr Diop</h1>
-			<p class="accroche">
-				Je viens du backend et de l’infrastructure. Je veux apprendre le web du côté de la production.
+	<EnTete />
+
+	<main>
+		<section class="conteneur ouverture">
+			<div class="pitch">
+				<p class="surtitre">
+					Candidature · Stage web, IA &amp; gouvernance numérique · Alpha to Omega
+				</p>
+				<h1 class="titre-accueil">
+					Du besoin à la mise en ligne, <span class="accent">je vais au bout.</span>
+				</h1>
+				<p class="chapeau">
+					Étudiant en Master 1 Informatique (Sciences du Logiciel) à l’Université Toulouse III. Je
+					construis des applications de bout en bout — backend, CI/CD, sécurité — et je veux
+					maintenant les mettre au service de sites web qui tiennent en production.
+				</p>
+				<div class="actions">
+					<Bouton href="/stage/" fleche>Ce que j’ai compris du stage</Bouton>
+					<Bouton href="/projets/" variante="contour">Voir mes projets</Bouton>
+				</div>
+			</div>
+			<Terminal />
+		</section>
+
+		<section aria-label="En bref" class="bandeau">
+			<dl class="conteneur en-bref">
+				{
+					enBref.map(([libelle, valeur]) => (
+						<div>
+							<dt class="etiquette">{libelle}</dt>
+							<dd>{valeur}</dd>
+						</div>
+					))
+				}
+			</dl>
+		</section>
+
+		<section class="conteneur qui">
+			<p class="surtitre">01 — Qui je suis</p>
+			<h2 class="titre-section">
+				Un profil backend qui veut voir ses projets arriver jusqu’à l’utilisateur.
+			</h2>
+			<p>
+				Je suis en Master 1 Informatique, parcours Sciences du Logiciel, à l’Université Toulouse III —
+				Paul Sabatier, après une Licence à Bordeaux et un premier M1 orienté applications réparties, IA
+				et sécurité à Orléans.
 			</p>
-			<a href="/candidature/" class="decouvrir">Découvrir</a>
-		</div>
+			<p>
+				Ce que j’aime, c’est tenir un projet de bout en bout. Sur Xëy Invest, j’ai écrit le backend,
+				conteneurisé l’ensemble et monté un pipeline qui teste, scanne et publie chaque version. Chez
+				Groupe Trust, j’ai développé un CMS complet pour une entreprise de conseil.
+			</p>
+			<p>
+				Depuis 2022, je donne aussi des cours de maths et de physique-chimie. Ça m’a appris à expliquer
+				simplement un sujet technique — et à vérifier que l’autre a vraiment compris.
+			</p>
+		</section>
+
+		<section class="pourquoi">
+			<div class="conteneur pourquoi-interieur">
+				<div class="pourquoi-tete">
+					<p class="surtitre">02 — Pourquoi ce stage</p>
+					<h2 class="titre-section">Trois raisons, une même logique : de A à Z.</h2>
+				</div>
+				<div class="raisons">
+					{
+						raisons.map(({ titre, texte }, i) => (
+							<article class="raison">
+								<span class="numero">{String(i + 1).padStart(2, '0')}</span>
+								<h3>{titre}</h3>
+								<p>{texte}</p>
+							</article>
+						))
+					}
+					<article class="raison sombre">
+						<span class="numero">03</span>
+						<h3>L’IA, avec un regard critique</h3>
+						<p>
+							J’utilise l’IA pour apprendre et produire plus vite, mais je relis, je teste et je
+							reprends à la main. Ce site en est la preuve :{' '}
+							<a href="/methode/">la méthode est détaillée ici</a>.
+						</p>
+					</article>
+				</div>
+			</div>
+		</section>
 	</main>
+
+	<div class="final">
+		<section class="conteneur appel" aria-labelledby="appel-titre">
+			<h2 id="appel-titre">J’ai lu l’offre en détail. Voici ce que j’en ai compris.</h2>
+			<Bouton href="/stage/" variante="clair" fleche grand>Lire mon analyse du stage</Bouton>
+		</section>
+		<PiedDePage>
+			<Fragment slot="gauche">Site conçu avec Claude et Claude Code · déployé sur Cloudflare Workers</Fragment>
+			<span class="liens">
+				<a href="https://github.com/Ousmane-D-03">GitHub</a>
+				<a href="https://linkedin.com/in/ousmane-sarr-diop-505891278">LinkedIn</a>
+				<a href="mailto:ousmanesarrd@gmail.com">ousmanesarrd@gmail.com</a>
+			</span>
+		</PiedDePage>
+	</div>
 </Base>
 
 <style>
-	/* Un écran plein. svh : la hauteur visible quand la barre d’adresse
-	   mobile est déployée. */
-	.accueil {
-		position: relative;
-		min-height: 100svh;
+	/* ---- Ouverture ---- */
+	.ouverture {
+		padding-block: 72px 96px;
 		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+		gap: 56px;
 		align-items: center;
 	}
 
-	/* Bloc centré dans l’écran, texte aligné à gauche, devant le fond. */
-	.centre {
-		position: relative;
-		width: min(56rem, 100% - 2 * var(--marge));
-		margin-inline: auto;
-		padding-block: 3rem;
+	.pitch {
+		display: flex;
+		flex-direction: column;
+		gap: 28px;
 	}
 
-	h1 {
-		font-size: clamp(2.8rem, 8vw, 5.5rem);
-		/* Même interligne que sur /candidature/ : sinon les proportions du nom
-		   diffèrent (12,7 % mesurés) et le glissement saute. */
-		line-height: 1.05;
-		/* Même nom sur /candidature/ : le nom glisse d’une page à l’autre. */
-		view-transition-name: nom;
-		/* Largeur du texte, pas de la colonne : même proportions sur les deux
-		   pages, sinon les deux images de la transition se décalent. */
-		width: fit-content;
+	.titre-accueil {
+		font-size: clamp(44px, 6vw, 76px);
 	}
 
-	.accroche {
-		margin: 1.5rem 0 0;
-		font-size: clamp(1.15rem, 2.2vw, 1.5rem);
-		max-width: 38ch;
-		view-transition-name: accroche;
-		width: fit-content;
+	.accent {
+		color: var(--accent);
 	}
 
-	/* Bouton plein. Coins carrés comme les jalons et les traits du site.
-	   Texte #f7f8f6 sur #0a5c36 : 7,59:1 ; au survol, vert plus sombre
-	   #084a2c : 9,73:1. Pas de transition de couleur : changement net.
-	   Focus clavier : contour global (2px accent, décalé de 3px). */
-	.decouvrir {
-		display: inline-block;
-		margin-top: 2.5rem;
-		padding: 0.85em 1.75em;
-		background: var(--accent);
-		color: var(--fond);
-		font-size: 1.0625rem;
+	.chapeau {
+		font-size: 20px;
+		line-height: 1.55;
+		color: var(--texte-second);
+		max-width: 540px;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+
+	/* ---- En bref ---- */
+	.bandeau {
+		border-block: 1px solid var(--trait);
+		background: var(--surface);
+	}
+
+	.en-bref {
+		margin-block: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	}
+
+	.en-bref div {
+		padding: 28px 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.en-bref div:first-child {
+		padding-left: 0;
+	}
+
+	.en-bref div:last-child {
+		padding-right: 0;
+	}
+
+	.en-bref dd {
+		margin: 0;
 		font-weight: 600;
-		line-height: 1;
-		text-decoration: none;
 	}
 
-	.decouvrir:hover {
-		background: #084a2c;
+	/* Une colonne : toutes les cases alignées sur la marge. */
+	@media (max-width: 600px) {
+		.en-bref div {
+			padding: 20px 0;
+		}
 	}
 
-	/* Écran étroit : le nom se coupe après « Sarr » sur les deux pages.
-	   Limite en em : elle suit la taille de police, donc même coupure et mêmes
-	   proportions quelle que soit la taille, et le glissement reste propre. */
-	@media (max-width: 32rem) {
-		h1 {
-			max-width: min(8em, 100%);
-			/* « Ousmane Sarr » fait environ 8em : la taille suit la largeur
-			   disponible pour que cette première ligne tienne toujours. */
-			font-size: min(2.8rem, calc((100vw - 2 * var(--marge)) / 8.2));
+	/* ---- Qui je suis ---- */
+	.qui {
+		padding-block: 112px;
+		display: flex;
+		flex-direction: column;
+		gap: 22px;
+	}
+
+	/* Sans la photo de la maquette, le texte occuperait toute la largeur :
+	   limité à une longueur de ligne lisible. */
+	.qui > * {
+		max-width: 760px;
+	}
+
+	.qui p:not(.surtitre) {
+		color: var(--texte-second);
+	}
+
+	/* ---- Pourquoi ce stage ---- */
+	.pourquoi {
+		background: var(--surface);
+		border-top: 1px solid var(--trait);
+	}
+
+	.pourquoi-interieur {
+		padding-block: 112px;
+		display: flex;
+		flex-direction: column;
+		gap: 48px;
+	}
+
+	.pourquoi-tete {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		max-width: 720px;
+	}
+
+	.raisons {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+		gap: 20px;
+	}
+
+	.raison {
+		padding: 32px;
+		border-radius: 18px;
+		background: var(--fond);
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.raison h3 {
+		font-size: 25px;
+		line-height: 1.2;
+	}
+
+	.raison p {
+		color: var(--texte-second);
+	}
+
+	.numero {
+		font-family: var(--font-mono);
+		font-size: 14px;
+		color: var(--texte-discret);
+	}
+
+	.sombre {
+		background: var(--sombre);
+		color: var(--fond);
+	}
+
+	.sombre .numero {
+		color: var(--sur-sombre-discret);
+	}
+
+	.sombre p {
+		color: var(--sur-sombre-second);
+	}
+
+	.sombre a {
+		color: var(--sur-sombre-lien);
+	}
+
+	/* ---- Appel final et pied de page ---- */
+	.final {
+		background: var(--sombre);
+		color: var(--fond);
+	}
+
+	.appel {
+		padding-block: 96px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 32px;
+	}
+
+	.appel h2 {
+		font-size: clamp(30px, 4vw, 46px);
+		line-height: 1.1;
+		letter-spacing: -0.02em;
+		max-width: 640px;
+	}
+
+	.liens {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+	}
+
+	.liens a {
+		color: var(--sur-sombre-second);
+	}
+
+	.liens a:hover {
+		color: var(--fond);
+	}
+
+	@media (max-width: 600px) {
+		.ouverture {
+			padding-block: 40px 64px;
+		}
+
+		.qui,
+		.pourquoi-interieur {
+			padding-block: 72px;
+		}
+
+		.raison {
+			padding: 24px;
 		}
 	}
 </style>
