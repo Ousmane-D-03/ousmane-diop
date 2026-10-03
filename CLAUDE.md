@@ -47,7 +47,7 @@ Valeurs de la maquette (dans `src/styles/global.css`) :
 
 **Écarts autorisés par rapport à la maquette**, uniquement pour l'écran étroit : grilles en `minmax(min(Npx, 100%), 1fr)` pour éviter tout débordement horizontal, marges et espacements réduits sous 600 px. À 1280 px, le rendu doit rester celui de la maquette.
 
-Ne pas ajouter d'animation : la maquette n'en a aucune.
+**Une seule animation, demandée par l'auteur : le terminal de l'accueil** (`Terminal.astro`). Les commandes se tapent, les sorties apparaissent, en environ 5 s. Contraintes : texte complet dans le HTML dès le départ, dévoilé seulement par `clip-path` et `opacity` (hauteur fixe, CLS 0) ; CSS uniquement, aucun JavaScript ; déclarée sous `prefers-reduced-motion: no-preference`, sinon terminal complet et immobile ; curseur qui clignote cinq fois puis s'arrête (WCAG 2.2.2). Ne pas en ajouter d'autre.
 
 ## Structure de fichiers
 

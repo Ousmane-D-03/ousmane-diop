@@ -9,6 +9,14 @@ const stack = [
 	['cloud', 'AWS Lambda · DynamoDB · SAM'],
 	['web', 'HTML · CSS · JS/TS · React · Vue'],
 ];
+
+// Animation d'ouverture, en CSS seulement. Tout le texte est dans le HTML dès
+// le départ et occupe déjà sa place : l'animation ne fait que le dévoiler
+// (clip-path pour la frappe, opacity pour les sorties), la hauteur ne change
+// pas. Instants de départ, en secondes ; frappe : 70 ms par caractère.
+const frappe = (commande: string, debut: number) =>
+	`--n:${commande.length};--debut:${debut}s`;
+const a = (debut: number) => `--debut:${debut}s`;
 ---
 
 <div class="terminal">
@@ -19,10 +27,16 @@ const stack = [
 		<span class="titre">~/portfolio — zsh</span>
 	</div>
 	<div class="ecran">
-		<p><span class="invite">~/portfolio $</span> whoami</p>
-		<p class="sortie espace">Ousmane Sarr Diop — M1 Informatique, UT3</p>
-		<p><span class="invite">~/portfolio $</span> cat stack.txt</p>
-		<dl class="sortie espace">
+		<p>
+			<span class="invite">~/portfolio $</span>{' '}
+			<span class="frappe" style={frappe('whoami', 0.4)}>whoami</span>
+		</p>
+		<p class="sortie espace apparait" style={a(1.1)}>Ousmane Sarr Diop — M1 Informatique, UT3</p>
+		<p class="apparait" style={a(1.5)}>
+			<span class="invite">~/portfolio $</span>{' '}
+			<span class="frappe" style={frappe('cat stack.txt', 1.5)}>cat stack.txt</span>
+		</p>
+		<dl class="sortie espace apparait" style={a(2.7)}>
 			{
 				stack.map(([domaine, outils]) => (
 					<>
@@ -32,10 +46,13 @@ const stack = [
 				))
 			}
 		</dl>
-		<p><span class="invite">~/portfolio $</span> git push</p>
-		<p class="ok">✓ Déployé sur ousmane-diop.ousmanesarrd.workers.dev</p>
-		<p>
-			<span class="invite">~/portfolio $</span>
+		<p class="apparait" style={a(3.1)}>
+			<span class="invite">~/portfolio $</span>{' '}
+			<span class="frappe" style={frappe('git push', 3.1)}>git push</span>
+		</p>
+		<p class="ok apparait" style={a(4.3)}>✓ Déployé sur ousmane-diop.ousmanesarrd.workers.dev</p>
+		<p class="apparait" style={a(4.6)}>
+			<span class="invite">~/portfolio $</span>{' '}
 			<span class="curseur" aria-hidden="true"></span>
 		</p>
 	</div>
@@ -119,6 +136,56 @@ const stack = [
 		height: 17px;
 		background: var(--sur-sombre);
 		vertical-align: -3px;
+	}
+
+	/* La commande occupe exactement sa largeur : n caractères de chasse fixe. */
+	.frappe {
+		display: inline-block;
+	}
+
+	/* Animation d'ouverture. Déclarée seulement sans préférence de mouvement
+	   réduit : sinon (ou si le navigateur ignore ces règles) le terminal est
+	   affiché complet, immobile. « backwards » : avant son instant de départ,
+	   chaque élément est dans l'état de début (masqué) ; ensuite il revient à
+	   son état normal, visible. Aucun JavaScript. */
+	@media (prefers-reduced-motion: no-preference) {
+		/* Frappe : la commande se dévoile caractère par caractère. */
+		.frappe {
+			animation: frappe calc(var(--n) * 70ms) steps(var(--n)) var(--debut) backwards;
+		}
+
+		/* Sorties et nouvelles invites : apparition d'un coup. L'opacité
+		   garde le texte dans l'arbre d'accessibilité et à sa place. */
+		.apparait {
+			animation: apparait 1ms var(--debut) backwards;
+		}
+
+		/* Curseur : clignote cinq fois puis reste fixe (WCAG 2.2.2 : rien ne
+		   clignote plus de cinq secondes). */
+		.curseur {
+			animation: clignote 1s steps(1) 4.6s 5;
+		}
+	}
+
+	@keyframes frappe {
+		from {
+			clip-path: inset(0 100% 0 0);
+		}
+		to {
+			clip-path: inset(0);
+		}
+	}
+
+	@keyframes apparait {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes clignote {
+		50% {
+			opacity: 0;
+		}
 	}
 
 	@media (max-width: 600px) {
