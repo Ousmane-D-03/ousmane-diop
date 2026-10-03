@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import EnTete from '../components/EnTete.astro';
 import Bouton from '../components/Bouton.astro';
 import PiedDePage from '../components/PiedDePage.astro';
-import { journal, bilan } from '../data/journal';
+import { journal, retiens, bilan } from '../data/journal';
 
 const outils = [
 	{
@@ -25,20 +25,15 @@ const outils = [
 ];
 
 // Une case vide ne s'affiche pas, une étape sans case remplie non plus
-// (voir src/data/journal.ts). Numéros calculés sur les étapes affichées.
-// Chaque case garde sa position : la case de droite reste en bleu pâle même
-// quand celle de gauche est vide.
+// (voir src/data/journal.ts) ; l'étape « Déployer » garde sa chaîne.
+// Numéros calculés sur les étapes affichées.
+const remplie = (c: { paragraphes: string[] }) => c.paragraphes.some((p) => p.trim() !== '');
 const etapes = journal
-	.map((etape) => ({
-		titre: etape.titre,
-		cases: etape.cases
-			.map((c, position) => ({ ...c, droite: position === 1 }))
-			.filter((c) => c.texte.trim() !== ''),
-	}))
-	.filter((etape) => etape.cases.length > 0);
+	.map((etape) => ({ ...etape, cases: etape.cases.filter(remplie) }))
+	.filter((etape) => etape.cases.length > 0 || etape.chaine);
 const numero = (i: number) => String(i + 1).padStart(2, '0');
 
-const encadres = bilan.filter((c) => c.texte.trim() !== '');
+const encadres = bilan.filter(remplie);
 ---
 
 <Base
@@ -75,47 +70,62 @@ const encadres = bilan.filter((c) => c.texte.trim() !== '');
 
 				<ol>
 					{
-						etapes.map(({ titre, cases }, i) => (
+						etapes.map(({ titre, cases, chaine }, i) => (
 							<li>
 								<div class="etape-tete">
 									<span class="etape-numero">{numero(i)}</span>
 									<h3>{titre}</h3>
 								</div>
-								<div class="cases">
-									{cases.map(({ libelle, texte, droite }) => (
-										<div class:list={['case', { droite }]}>
-											<span class="case-libelle">{libelle}</span>
-											<span>{texte}</span>
+								<div class="corps-etape">
+									{cases.length > 0 && (
+										<div class:list={['cases', { deux: cases.length === 2 }]}>
+											{cases.map(({ libelle, paragraphes, cote }) => (
+												<div class:list={['case', cote]}>
+													<span class="case-libelle">{libelle}</span>
+													{paragraphes.map((p) => (
+														<p>{p}</p>
+													))}
+												</div>
+											))}
 										</div>
-									))}
+									)}
+									{chaine && (
+										<p class="deploiement">
+											<span>git push</span>
+											<span class="fleche" aria-hidden="true">→</span>
+											<span>build Cloudflare Workers</span>
+											<span class="fleche" aria-hidden="true">→</span>
+											<a href="https://ousmane-diop.ousmanesarrd.workers.dev/">ousmane-diop.ousmanesarrd.workers.dev</a>
+										</p>
+									)}
 								</div>
 							</li>
 						))
 					}
-					<li>
-						<div class="etape-tete">
-							<span class="etape-numero">{numero(etapes.length)}</span>
-							<h3>Déployer</h3>
-						</div>
-						<p class="deploiement">
-							<span>git push</span>
-							<span class="fleche" aria-hidden="true">→</span>
-							<span>build Cloudflare Workers</span>
-							<span class="fleche" aria-hidden="true">→</span>
-							<a href="https://ousmane-diop.ousmanesarrd.workers.dev/">ousmane-diop.ousmanesarrd.workers.dev</a>
-						</p>
-					</li>
 				</ol>
 			</div>
 		</section>
 
 		{
+			remplie(retiens) && (
+				<section class="conteneur retiens" aria-labelledby="retiens-titre">
+					<h2 id="retiens-titre" class="surtitre">{retiens.libelle}</h2>
+					{retiens.paragraphes.map((p) => (
+						<p>{p}</p>
+					))}
+				</section>
+			)
+		}
+
+		{
 			encadres.length > 0 && (
 				<section aria-label="Bilan" class="conteneur bilan">
-					{encadres.map(({ libelle, texte }) => (
+					{encadres.map(({ libelle, paragraphes }) => (
 						<div class="encadre">
 							<h2 class="etiquette">{libelle}</h2>
-							<p>{texte}</p>
+							{paragraphes.map((p) => (
+								<p>{p}</p>
+							))}
 						</div>
 					))}
 				</section>
@@ -262,11 +272,28 @@ const encadres = bilan.filter((c) => c.texte.trim() !== '');
 		line-height: 1.2;
 	}
 
-	.cases {
+	/* Colonne de droite de l'étape : les cases, puis la chaîne de
+	   déploiement pour l'étape « Déployer ». */
+	.corps-etape {
 		flex: 999 1 520px;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+		display: flex;
+		flex-direction: column;
 		gap: 12px;
+	}
+
+	/* Une case : toute la largeur. Deux cases : un tiers / deux tiers sur
+	   écran large, la case de droite (le récit) étant la plus longue ;
+	   l'une sous l'autre sinon. Écart à la maquette (deux colonnes égales)
+	   pour que des textes de longueurs très différentes restent lisibles. */
+	.cases {
+		display: grid;
+		gap: 12px;
+	}
+
+	@media (min-width: 900px) {
+		.cases.deux {
+			grid-template-columns: 1fr 2fr;
+		}
 	}
 
 	.case {
@@ -278,6 +305,10 @@ const encadres = bilan.filter((c) => c.texte.trim() !== '');
 		gap: 6px;
 	}
 
+	.case p + p {
+		margin-top: 10px;
+	}
+
 	.case-libelle {
 		font-family: var(--font-mono);
 		font-size: 12px;
@@ -286,7 +317,7 @@ const encadres = bilan.filter((c) => c.texte.trim() !== '');
 		color: var(--texte-discret);
 	}
 
-	/* Case de droite (« Ce que j'ai fait », « Résultat ») : en bleu pâle. */
+	/* Case de droite (ce que j'ai fait ou constaté) : en bleu pâle. */
 	.case.droite {
 		background: var(--accent-pale);
 	}
@@ -296,7 +327,6 @@ const encadres = bilan.filter((c) => c.texte.trim() !== '');
 	}
 
 	.deploiement {
-		flex: 999 1 520px;
 		padding: 22px 24px;
 		border-radius: 14px;
 		background: var(--sombre);
@@ -317,6 +347,23 @@ const encadres = bilan.filter((c) => c.texte.trim() !== '');
 	.deploiement a,
 	.deploiement a:hover {
 		color: var(--terminal-ok);
+	}
+
+	/* ---- Ce que j'en retiens ---- */
+	.retiens {
+		padding-block: 96px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.retiens p {
+		max-width: 900px;
+		font-family: var(--font-titres);
+		font-size: clamp(24px, 2.6vw, 32px);
+		font-weight: 500;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
 	}
 
 	/* ---- Bilan ---- */

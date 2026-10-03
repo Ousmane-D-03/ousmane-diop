@@ -67,7 +67,7 @@ public/            favicon.ico, apple-touch-icon.png, og.png (monogramme OSD)
 ## Contenu
 
 - Le contenu fait foi tel qu'il est dans la maquette, corrigé des faits validés par l'auteur (Workers et non Pages, disponibilité : second semestre, 3 mois).
-- **Section 04 = le journal de bord et le bilan de la page Méthode (`src/data/journal.ts`).** Texte écrit par l'auteur, intégré mot pour mot : **ne jamais l'écrire, le reformuler ni le compléter.** Une case vide ne s'affiche pas ; une étape sans case remplie non plus. Seuls textes présents qui ne sont pas de lui : ceux de la maquette (étapes « Maquetter les pages » et « Vérifier », colonne de gauche).
+- **Section 04 = le journal de bord de la page Méthode et « Ce que j’en retiens » (`src/data/journal.ts`). Écrite par l’auteur le 3 octobre 2026, intégrée mot pour mot : ne jamais la réécrire, la reformuler ni la compléter.** Seule la typographie est ajustée (apostrophes, espaces insécables, majuscule en début de case). Gabarit : une case pleine largeur, ou deux cases en 1/3 – 2/3 sur écran large ; une case vide ne s’affiche pas. Les encadrés « Difficultés rencontrées » et « Choix techniques » restent vides, donc masqués, tant que l’auteur ne les a pas écrits.
 - Aucun crochet `[ ]` ne doit apparaître sur le site : pas d'emplacement à remplir visible.
 - Liens honnêtes : un libellé ne promet pas plus que sa cible (« Voir mon GitHub » pointe vers le profil, pas vers un dépôt).
 - `contenu-site-a2o.md` et `notes.md` : fichiers locaux, exclus du dépôt, sauvegardés dans `../ousmane-diop-sauvegardes/`.
