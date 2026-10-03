@@ -39,9 +39,11 @@ const image = new URL('/og.png', Astro.site);
 		<meta property="og:image:alt" content={titre} />
 		<meta name="twitter:card" content="summary_large_image" />
 
+		{/* Titres et corps sont visibles dès le haut de page : préchargés.
+		    La chasse fixe ne sert qu'aux petits libellés : chargée normalement. */}
 		<Font cssVariable="--font-titres" preload />
-		{/* Seul le romain est préchargé : l'italique ne sert que plus bas dans la page. */}
-		<Font cssVariable="--font-corps" preload={[{ style: 'normal' }]} />
+		<Font cssVariable="--font-corps" preload />
+		<Font cssVariable="--font-mono" />
 	</head>
 	<body>
 		<slot />

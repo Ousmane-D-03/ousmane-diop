@@ -1,25 +1,49 @@
-/* Variables, reset minimal, typographie de base. */
+/* Variables, reset minimal, typographie de base et motifs communs aux pages.
+   Valeurs reprises de la maquette. Contrastes calculés (WCAG) sur le fond
+   où chaque couleur est utilisée. */
 
 :root {
-	/* Fond clair, gris très légèrement froid (pas de crème). */
-	--fond: #f7f8f6;
-	--texte: #1a1c1a;
-	--texte-discret: #5b615c; /* 5,96:1 sur --fond */
+	/* Fonds */
+	--fond: #f2f3ef;
+	--surface: #ffffff;
+	--surface-grise: #e2e5dd; /* pastilles, lien actif de la navigation */
+	--sombre: #0e1116;
+	--sombre-releve: #1a1f27; /* étapes du pipeline sur fond sombre */
 
-	/* Accent unique. #0a5c36 : 7,59:1 sur --fond (AA et AAA).
-	   Le vert du drapeau (#00853f) ne fait que 4,45:1 : insuffisant en AA. */
-	--accent: #0a5c36;
+	/* Texte */
+	--texte: #0e1116; /* 17,6:1 sur --fond */
+	--texte-second: #3f4650; /* 8,9:1 sur --fond */
+	--texte-discret: #5a616b; /* 5,6:1 sur --fond, 6,2:1 sur blanc */
 
-	--trait: #d4d8d4;
+	/* Sur fond sombre */
+	--sur-sombre: #e6e8eb;
+	--sur-sombre-second: #c9ced6; /* 12,0:1 sur --sombre */
+	--sur-sombre-discret: #9aa3af; /* 7,4:1 sur --sombre */
+	--sur-sombre-lien: #8fa6ff; /* 7,9:1 sur --sombre */
+	--terminal-invite: #f2b347;
+	--terminal-ok: #5fd39a;
 
-	--mesure: 68ch;
-	/* Grille éditoriale de la page de contenu. */
-	--col-numero: 4.5rem;
-	--gouttiere: 2rem;
-	--entre-etapes: clamp(6rem, 11vw, 9rem);
-	/* Largeur totale : numéros + gouttière + texte. */
-	--largeur-page: calc(var(--col-numero) + var(--gouttiere) + var(--mesure));
-	--marge: clamp(1rem, 4vw, 3rem);
+	/* Accent : un seul bleu, et ses deux variantes. */
+	--accent: #2347e0; /* 6,2:1 sur --fond ; blanc sur accent : 6,9:1 */
+	--accent-sombre: #16309f; /* survol, texte sur --accent-pale */
+	--accent-pale: #e3e8fc;
+	--accent-moyen: #afc0f7;
+
+	/* Traits */
+	--trait: #d8dbd3;
+	--trait-fort: #c9cdc4;
+	--trait-sombre: #262b33;
+
+	--largeur: 1200px;
+	--marge: 32px;
+}
+
+/* Écran étroit : marges réduites pour garder de la place au texte. Sans
+   effet au-dessus de 600 px, où la maquette s'applique telle quelle. */
+@media (max-width: 600px) {
+	:root {
+		--marge: 20px;
+	}
 }
 
 *,
@@ -33,39 +57,35 @@ body {
 	background: var(--fond);
 	color: var(--texte);
 	font-family: var(--font-corps);
-	font-size: 1.0625rem;
+	font-size: 17px;
 	line-height: 1.6;
 }
 
 h1,
 h2,
 h3 {
+	margin: 0;
 	font-family: var(--font-titres);
 	font-weight: 700;
-	line-height: 1.15;
-	margin: 0;
 }
 
-h3 {
-	font-size: 1.3rem;
-	font-weight: 500;
-}
-
-h2 + p,
-h3 + p {
-	margin-top: 0.75rem;
+h1 {
+	font-weight: 800;
+	font-size: clamp(42px, 6vw, 72px);
+	line-height: 1.02;
+	letter-spacing: -0.03em;
 }
 
 p {
-	margin: 0 0 1em;
-}
-
-* + h3 {
-	margin-top: 2.5rem;
+	margin: 0;
 }
 
 a {
 	color: var(--accent);
+}
+
+a:hover {
+	color: var(--accent-sombre);
 }
 
 :focus-visible {
@@ -73,57 +93,55 @@ a {
 	outline-offset: 3px;
 }
 
-/* Transition entre l'accueil et la page de contenu : transitions de vue
-   natives du navigateur, sans JavaScript. Le nom et l'accroche, présents
-   sur les deux pages, glissent d'une position à l'autre (view-transition-name
-   dans chaque page) ; le reste apparaît en fondu. Activée seulement sans
-   préférence de mouvement réduit. Navigateur non compatible (Firefox à ce
-   jour) : navigation instantanée, rien de cassé. */
-@media (prefers-reduced-motion: no-preference) {
-	@view-transition {
-		navigation: auto;
-	}
+/* ---- Motifs communs ---- */
+
+/* Colonne centrée de 1200 px, marges latérales. */
+.conteneur {
+	max-width: var(--largeur);
+	margin-inline: auto;
+	padding-inline: var(--marge);
 }
 
-/* Glissement du nom et de l’accroche : 0,7 s, courbe douce aux deux bouts
-   (démarre lentement, accélère, se pose). */
-::view-transition-group(*),
-::view-transition-old(*),
-::view-transition-new(*) {
-	animation-duration: 0.7s;
-	animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+/* Petit texte en chasse fixe, majuscules, au-dessus d'un titre. */
+.surtitre {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--accent);
+	font-weight: 500;
 }
 
-/* Fondu de la page : l’ancienne s’efface avant que la nouvelle n’apparaisse,
-   pour éviter deux textes superposés à mi-parcours. Durée totale : 0,7 s. */
-::view-transition-old(root) {
-	animation-duration: 0.3s;
-	animation-timing-function: ease-out;
+/* Libellé d'une case ou d'une donnée (« La mission », « Formation »…). */
+.etiquette {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--texte-discret);
 }
 
-::view-transition-new(root) {
-	animation-delay: 0.2s;
-	animation-duration: 0.5s;
-	animation-timing-function: ease-in-out;
+.titre-section {
+	font-size: clamp(32px, 4vw, 48px);
+	line-height: 1.08;
+	letter-spacing: -0.02em;
 }
 
-/* Surlignage façon marqueur, statique : vert très pâle, quelques mots
-   seulement. Texte #1a1c1a sur #cfe7d7 : 13,11:1. Aplat uni (pas de
-   dégradé) ; box-decoration-break pour que chaque ligne ait sa marge
-   quand le passage surligné passe à la ligne. */
-mark {
-	background: #cfe7d7;
-	color: inherit;
-	padding: 0.05em 0.15em;
-	-webkit-box-decoration-break: clone;
-	box-decoration-break: clone;
+/* Pastilles de technologies, en chasse fixe. */
+.pastilles {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--texte-second);
 }
 
-/* Code inline (codes couleur de la section 04) : chasse fixe, léger fond.
-   Texte #1a1c1a sur #e8ebe8 : 14,27:1. Polices système : rien à charger. */
-code {
-	font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
-	font-size: 0.9em;
-	background: #e8ebe8;
-	padding: 0.05em 0.3em;
+.pastilles li {
+	padding: 6px 10px;
+	border: 1px solid var(--trait-fort);
+	border-radius: 8px;
 }
