@@ -1,0 +1,392 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Bouton from '../components/Bouton.astro';
+import PiedDePage from '../components/PiedDePage.astro';
+import { journal, bilan } from '../data/journal';
+
+const outils = [
+	{
+		libelle: 'Outil 1',
+		nom: 'Claude',
+		texte: 'Analyse de l’offre, maquettes des pages, structure des contenus.',
+		sombre: true,
+	},
+	{
+		libelle: 'Outil 2',
+		nom: 'Claude Code',
+		texte: 'Écriture du code Astro et CSS, résolution des problèmes, tests, préparation du déploiement.',
+	},
+	{
+		libelle: 'Stack du site',
+		nom: 'Astro · Cloudflare Workers',
+		texte: 'Le framework utilisé chez Alpha to Omega, appris pour l’occasion.',
+	},
+];
+
+// Une case vide ne s'affiche pas, une étape sans case remplie non plus
+// (voir src/data/journal.ts). Numéros calculés sur les étapes affichées.
+// Chaque case garde sa position : la case de droite reste en bleu pâle même
+// quand celle de gauche est vide.
+const etapes = journal
+	.map((etape) => ({
+		titre: etape.titre,
+		cases: etape.cases
+			.map((c, position) => ({ ...c, droite: position === 1 }))
+			.filter((c) => c.texte.trim() !== ''),
+	}))
+	.filter((etape) => etape.cases.length > 0);
+const numero = (i: number) => String(i + 1).padStart(2, '0');
+
+const encadres = bilan.filter((c) => c.texte.trim() !== '');
+---
+
+<Base
+	titre="Méthode IA — comment ce site a été construit · Ousmane Sarr Diop"
+	description="Comment Ousmane Sarr Diop a construit ce site avec l’IA : les outils, ce qu’ils ont proposé, ce qu’il a vérifié et repris à la main."
+>
+	<EnTete />
+
+	<main>
+		<section class="conteneur intro">
+			<p class="surtitre">Méthode · transparence</p>
+			<h1>Comment j’ai construit ce site — avec l’IA, mais pas à sa place.</h1>
+			<p class="chapeau">
+				Pour chaque étape : l’outil utilisé, ce qu’il a proposé, et ce que j’ai vérifié, corrigé ou
+				réécrit moi-même.
+			</p>
+		</section>
+
+		<section aria-label="Outils utilisés" class="conteneur outils">
+			{
+				outils.map(({ libelle, nom, texte, sombre }) => (
+					<div class:list={['outil', { sombre }]}>
+						<span class="etiquette">{libelle}</span>
+						<strong class="outil-nom">{nom}</strong>
+						<span class="outil-texte">{texte}</span>
+					</div>
+				))
+			}
+		</section>
+
+		<section class="journal">
+			<div class="conteneur journal-interieur">
+				<h2 class="titre-journal">Le journal de bord, étape par étape</h2>
+
+				<ol>
+					{
+						etapes.map(({ titre, cases }, i) => (
+							<li>
+								<div class="etape-tete">
+									<span class="etape-numero">{numero(i)}</span>
+									<h3>{titre}</h3>
+								</div>
+								<div class="cases">
+									{cases.map(({ libelle, texte, droite }) => (
+										<div class:list={['case', { droite }]}>
+											<span class="case-libelle">{libelle}</span>
+											<span>{texte}</span>
+										</div>
+									))}
+								</div>
+							</li>
+						))
+					}
+					<li>
+						<div class="etape-tete">
+							<span class="etape-numero">{numero(etapes.length)}</span>
+							<h3>Déployer</h3>
+						</div>
+						<p class="deploiement">
+							<span>git push</span>
+							<span class="fleche" aria-hidden="true">→</span>
+							<span>build Cloudflare Workers</span>
+							<span class="fleche" aria-hidden="true">→</span>
+							<a href="https://ousmane-diop.ousmanesarrd.workers.dev/">ousmane-diop.ousmanesarrd.workers.dev</a>
+						</p>
+					</li>
+				</ol>
+			</div>
+		</section>
+
+		{
+			encadres.length > 0 && (
+				<section aria-label="Bilan" class="conteneur bilan">
+					{encadres.map(({ libelle, texte }) => (
+						<div class="encadre">
+							<h2 class="etiquette">{libelle}</h2>
+							<p>{texte}</p>
+						</div>
+					))}
+				</section>
+			)
+		}
+	</main>
+
+	<div id="contact" class="contact">
+		<section class="conteneur contact-interieur" aria-labelledby="contact-titre">
+			<p class="surtitre">Contact</p>
+			<h2 id="contact-titre">Parlons-en.</h2>
+			<div class="contact-liens">
+				<Bouton href="mailto:ousmanesarrd@gmail.com" variante="clair" grand>ousmanesarrd@gmail.com</Bouton>
+				<Bouton href="https://github.com/Ousmane-D-03" variante="contour-sombre" grand>GitHub</Bouton>
+				<Bouton href="https://linkedin.com/in/ousmane-sarr-diop-505891278" variante="contour-sombre" grand
+					>LinkedIn</Bouton
+				>
+			</div>
+		</section>
+		<PiedDePage>
+			<Fragment slot="gauche">Ousmane Sarr Diop · Toulouse</Fragment>
+			<span>Construit avec Astro · déployé sur Cloudflare Workers</span>
+		</PiedDePage>
+	</div>
+</Base>
+
+<style>
+	/* ---- Introduction ---- */
+	.intro {
+		padding-block: 64px 72px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	h1 {
+		max-width: 920px;
+	}
+
+	.chapeau {
+		font-size: 20px;
+		color: var(--texte-second);
+		max-width: 760px;
+	}
+
+	/* ---- Outils ---- */
+	.outils {
+		padding-bottom: 88px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+		gap: 16px;
+	}
+
+	.outil {
+		padding: 28px;
+		border-radius: 18px;
+		background: var(--surface);
+		border: 1px solid var(--trait);
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.outil-nom {
+		font-family: var(--font-titres);
+		font-size: 26px;
+	}
+
+	.outil-texte {
+		color: var(--texte-second);
+	}
+
+	.outil.sombre {
+		background: var(--sombre);
+		border-color: var(--sombre);
+		color: var(--fond);
+	}
+
+	.sombre .etiquette {
+		color: var(--sur-sombre-discret);
+	}
+
+	.sombre .outil-texte {
+		color: var(--sur-sombre-second);
+	}
+
+	/* ---- Journal ---- */
+	.journal {
+		background: var(--surface);
+		border-block: 1px solid var(--trait);
+	}
+
+	.journal-interieur {
+		padding-block: 96px;
+		display: flex;
+		flex-direction: column;
+		gap: 40px;
+	}
+
+	.titre-journal {
+		font-size: clamp(30px, 4vw, 46px);
+		line-height: 1.08;
+		letter-spacing: -0.02em;
+	}
+
+	ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		border-top: 1.5px solid var(--texte);
+	}
+
+	ol > li {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 24px 40px;
+		padding-block: 36px;
+		border-bottom: 1px solid var(--trait);
+	}
+
+	ol > li:last-child {
+		border-bottom: none;
+	}
+
+	.etape-tete {
+		flex: 1 1 220px;
+		max-width: 280px;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.etape-numero {
+		font-family: var(--font-mono);
+		font-size: 14px;
+		color: var(--accent);
+		font-weight: 600;
+	}
+
+	.etape-tete h3 {
+		font-size: 24px;
+		line-height: 1.2;
+	}
+
+	.cases {
+		flex: 999 1 520px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+		gap: 12px;
+	}
+
+	.case {
+		padding: 20px;
+		border-radius: 14px;
+		background: var(--fond);
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.case-libelle {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--texte-discret);
+	}
+
+	/* Case de droite (« Ce que j'ai fait », « Résultat ») : en bleu pâle. */
+	.case.droite {
+		background: var(--accent-pale);
+	}
+
+	.case.droite .case-libelle {
+		color: var(--accent-sombre);
+	}
+
+	.deploiement {
+		flex: 999 1 520px;
+		padding: 22px 24px;
+		border-radius: 14px;
+		background: var(--sombre);
+		color: var(--sur-sombre);
+		font-family: var(--font-mono);
+		font-size: 14.5px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px 14px;
+		overflow-wrap: anywhere;
+	}
+
+	.fleche {
+		color: var(--sur-sombre-discret);
+	}
+
+	.deploiement a,
+	.deploiement a:hover {
+		color: var(--terminal-ok);
+	}
+
+	/* ---- Bilan ---- */
+	.bilan {
+		padding-block: 96px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+		gap: 20px;
+	}
+
+	.encadre {
+		padding: 36px;
+		border-radius: 18px;
+		background: var(--surface);
+		border: 1px solid var(--trait);
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.encadre h2 {
+		font-weight: 400;
+	}
+
+	.encadre p {
+		font-size: 19px;
+	}
+
+	/* ---- Contact ---- */
+	.contact {
+		background: var(--sombre);
+		color: var(--fond);
+	}
+
+	.contact-interieur {
+		padding-block: 112px 96px;
+		display: flex;
+		flex-direction: column;
+		gap: 36px;
+	}
+
+	.contact .surtitre {
+		color: var(--sur-sombre-lien);
+	}
+
+	.contact h2 {
+		font-weight: 800;
+		font-size: clamp(48px, 8vw, 104px);
+		line-height: 0.98;
+		letter-spacing: -0.035em;
+	}
+
+	.contact-liens {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+
+	@media (max-width: 600px) {
+		.journal-interieur,
+		.bilan {
+			padding-block: 72px;
+		}
+
+		.contact-interieur {
+			padding-block: 72px;
+		}
+
+		.encadre {
+			padding: 24px;
+		}
+	}
+</style>
