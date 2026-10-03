@@ -1,0 +1,80 @@
+---
+// Lien en forme de bouton. Quatre variantes, reprises de la maquette :
+// plein (accent), contour (sur fond clair), clair et contour-sombre (sur
+// fond sombre). « grand » : les boutons de l'appel final et du contact.
+interface Props {
+	href: string;
+	variante?: 'plein' | 'contour' | 'clair' | 'contour-sombre';
+	fleche?: boolean;
+	grand?: boolean;
+}
+
+const { href, variante = 'plein', fleche = false, grand = false } = Astro.props;
+---
+
+<a href={href} class:list={['bouton', variante, { grand }]}>
+	<slot />
+	{
+		fleche && (
+			<svg
+				width="18"
+				height="18"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				aria-hidden="true"
+			>
+				<path d="M5 12h14M13 6l6 6-6 6" />
+			</svg>
+		)
+	}
+</a>
+
+<style>
+	.bouton {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 15px 24px;
+		border-radius: 12px;
+		text-decoration: none;
+		font-weight: 600;
+	}
+
+	.grand {
+		padding: 16px 26px;
+	}
+
+	.plein,
+	.plein:hover {
+		background: var(--accent);
+		color: #ffffff;
+	}
+
+	/* Survol : le bleu plus sombre de la palette (blanc dessus : 11,0:1). */
+	.plein:hover {
+		background: var(--accent-sombre);
+	}
+
+	.contour,
+	.contour:hover {
+		border: 1.5px solid var(--texte);
+		color: var(--texte);
+	}
+
+	.clair,
+	.clair:hover {
+		background: var(--fond);
+		color: var(--texte);
+	}
+
+	.contour-sombre,
+	.contour-sombre:hover {
+		padding-inline: 22px;
+		border: 1.5px solid #3a404a;
+		color: var(--fond);
+	}
+</style>

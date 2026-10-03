@@ -1,0 +1,133 @@
+---
+// Fenêtre de terminal de l'accueil : qui je suis, ma stack, le déploiement.
+// La dernière commande est « git push » : le site se déploie sur Cloudflare
+// Workers à chaque push, quelle que soit la commande exécutée côté Cloudflare.
+const stack = [
+	['backend', 'FastAPI · PostgreSQL · Redis'],
+	['ci/cd', 'GitHub Actions · Docker'],
+	['sécurité', 'Gitleaks · Bandit · Trivy'],
+	['cloud', 'AWS Lambda · DynamoDB · SAM'],
+	['web', 'HTML · CSS · JS/TS · React · Vue'],
+];
+---
+
+<div class="terminal">
+	<div class="barre">
+		<span class="pastille" aria-hidden="true"></span>
+		<span class="pastille" aria-hidden="true"></span>
+		<span class="pastille" aria-hidden="true"></span>
+		<span class="titre">~/portfolio — zsh</span>
+	</div>
+	<div class="ecran">
+		<p><span class="invite">~/portfolio $</span> whoami</p>
+		<p class="sortie espace">Ousmane Sarr Diop — M1 Informatique, UT3</p>
+		<p><span class="invite">~/portfolio $</span> cat stack.txt</p>
+		<dl class="sortie espace">
+			{
+				stack.map(([domaine, outils]) => (
+					<>
+						<dt>{domaine}</dt>
+						<dd>{outils}</dd>
+					</>
+				))
+			}
+		</dl>
+		<p><span class="invite">~/portfolio $</span> git push</p>
+		<p class="ok">✓ Déployé sur ousmane-diop.ousmanesarrd.workers.dev</p>
+		<p>
+			<span class="invite">~/portfolio $</span>
+			<span class="curseur" aria-hidden="true"></span>
+		</p>
+	</div>
+</div>
+
+<style>
+	.terminal {
+		background: var(--sombre);
+		border-radius: 20px;
+		padding-bottom: 28px;
+		box-shadow: 0 30px 60px -30px rgba(14, 17, 22, 0.55);
+		overflow: hidden;
+		font-family: var(--font-mono);
+		font-size: 14.5px;
+		line-height: 1.75;
+		color: var(--sur-sombre);
+	}
+
+	.barre {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 14px 18px;
+		border-bottom: 1px solid var(--trait-sombre);
+	}
+
+	.pastille {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: #3a404a;
+	}
+
+	.titre {
+		margin-left: 10px;
+		color: var(--sur-sombre-discret);
+		font-size: 13px;
+	}
+
+	.ecran {
+		padding: 22px 26px 0;
+		/* L'adresse du site est un seul long mot : coupée plutôt que de
+		   déborder sur écran étroit. */
+		overflow-wrap: anywhere;
+	}
+
+	.invite {
+		color: var(--terminal-invite);
+	}
+
+	.sortie {
+		color: var(--sur-sombre-second);
+	}
+
+	.espace {
+		margin-bottom: 12px;
+	}
+
+	dl {
+		margin-top: 0;
+		display: grid;
+		grid-template-columns: 110px 1fr;
+		column-gap: 12px;
+	}
+
+	dt {
+		color: var(--sur-sombre-lien);
+	}
+
+	dd {
+		margin: 0;
+	}
+
+	.ok {
+		color: var(--terminal-ok);
+	}
+
+	.curseur {
+		display: inline-block;
+		width: 9px;
+		height: 17px;
+		background: var(--sur-sombre);
+		vertical-align: -3px;
+	}
+
+	@media (max-width: 600px) {
+		.ecran {
+			padding-inline: 18px;
+		}
+
+		dl {
+			grid-template-columns: 80px 1fr;
+		}
+	}
+</style>
