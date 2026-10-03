@@ -1,0 +1,255 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Projet from '../components/Projet.astro';
+
+const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b.data.ordre);
+const [vedette, ...autres] = projets;
+
+const apprentissage = ['Astro', 'AWS SAA (prépa)', 'Kubernetes', 'Terraform', 'Ansible'];
+
+const experiences = [
+	{
+		periode: '2026',
+		titre: 'Stagiaire DevOps — Ministère de l’Éducation nationale (Sénégal)',
+		texte:
+			'Scripts d’automatisation Linux à la place de tâches manuelles. Encadrement de stagiaires de Licence et présentation d’introduction à Linux devant l’équipe.',
+	},
+	{
+		periode: '2024',
+		titre: 'Développeur full-stack — Groupe Trust',
+		texte:
+			'Un CMS complet pour une entreprise de conseil : Laravel/PHP 8.1, MySQL, API REST, authentification sécurisée.',
+	},
+	{
+		periode: '2022 – auj.',
+		titre: 'Tuteur particulier — indépendant',
+		texte: 'Maths et physique-chimie au lycée : vulgariser, adapter son explication à chaque élève.',
+	},
+];
+---
+
+<Base
+	titre="Projets — Ousmane Sarr Diop"
+	description="Projets et expériences d’Ousmane Sarr Diop : backend, CI/CD et sécurité, serverless AWS, conception orientée sécurité."
+>
+	<EnTete />
+
+	<main>
+		<section class="conteneur intro">
+			<div class="intro-texte">
+				<p class="surtitre">Projets &amp; expériences</p>
+				<h1>Ce que j’ai construit, de bout en bout.</h1>
+			</div>
+			<a href="https://github.com/Ousmane-D-03" class="github">
+				<svg
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path
+						d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"
+					></path>
+				</svg>
+				github.com/Ousmane-D-03
+			</a>
+		</section>
+
+		<section class="conteneur liste" aria-label="Projets">
+			<Projet projet={vedette} />
+			<div class="paire">
+				{autres.map((projet) => <Projet projet={projet} />)}
+			</div>
+		</section>
+
+		<section class="conteneur experiences">
+			<div class="experiences-tete">
+				<p class="surtitre">Expériences</p>
+				<h2 class="titre-experiences">Coder, automatiser, transmettre.</h2>
+				<div class="apprentissage">
+					<h3 class="etiquette">En apprentissage</h3>
+					<ul>
+						{apprentissage.map((sujet, i) => <li class:list={{ astro: i === 0 }}>{sujet}</li>)}
+					</ul>
+				</div>
+			</div>
+			<ol>
+				{
+					experiences.map(({ periode, titre, texte }) => (
+						<li>
+							<span class="periode">{periode}</span>
+							<div class="experience">
+								<h3>{titre}</h3>
+								<p>{texte}</p>
+							</div>
+						</li>
+					))
+				}
+			</ol>
+		</section>
+	</main>
+</Base>
+
+<style>
+	/* ---- Introduction ---- */
+	.intro {
+		padding-block: 64px 72px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: end;
+		justify-content: space-between;
+		gap: 24px;
+	}
+
+	.intro-texte {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		max-width: 760px;
+	}
+
+	.github,
+	.github:hover {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 14px 20px;
+		border-radius: 12px;
+		border: 1.5px solid var(--texte);
+		color: var(--texte);
+		text-decoration: none;
+		font-weight: 600;
+	}
+
+	/* ---- Projets ---- */
+	.liste {
+		padding-bottom: 40px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	.paire {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+		gap: 24px;
+	}
+
+	/* ---- Expériences ---- */
+	.experiences {
+		padding-block: 88px 112px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+		gap: 56px;
+	}
+
+	.experiences-tete {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.titre-experiences {
+		font-size: clamp(30px, 4vw, 44px);
+		line-height: 1.08;
+		letter-spacing: -0.02em;
+	}
+
+	.apprentissage {
+		margin-top: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.apprentissage h3 {
+		font-weight: 400;
+		line-height: 1.6;
+	}
+
+	.apprentissage ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-family: var(--font-mono);
+		font-size: 13px;
+	}
+
+	.apprentissage li {
+		padding: 6px 10px;
+		border-radius: 8px;
+		background: var(--surface-grise);
+		color: var(--texte-second);
+	}
+
+	/* Astro, le framework de l'entreprise, ressort en bleu. */
+	.apprentissage .astro {
+		background: var(--accent-pale);
+		color: var(--accent-sombre);
+	}
+
+	ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		border-top: 1.5px solid var(--texte);
+	}
+
+	ol li {
+		display: grid;
+		grid-template-columns: 120px 1fr;
+		gap: 20px;
+		padding-block: 28px;
+		border-bottom: 1px solid var(--trait-fort);
+	}
+
+	.periode {
+		font-family: var(--font-mono);
+		font-size: 14px;
+		color: var(--texte-discret);
+		padding-top: 4px;
+	}
+
+	.experience {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.experience h3 {
+		font-size: 22px;
+		line-height: 1.25;
+	}
+
+	.experience p {
+		color: var(--texte-second);
+	}
+
+	@media (max-width: 600px) {
+		.intro {
+			padding-block: 40px 48px;
+		}
+
+		.experiences {
+			padding-block: 72px;
+		}
+
+		/* Période au-dessus du titre plutôt qu'en colonne. */
+		ol li {
+			grid-template-columns: 1fr;
+			gap: 8px;
+		}
+	}
+</style>

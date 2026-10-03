@@ -7,13 +7,17 @@ const projets = defineCollection({
 	loader: glob({ pattern: '*.md', base: './src/content/projets' }),
 	schema: z.object({
 		titre: z.string(),
-		// Ce que le projet montre, tel que formulé dans le titre du contenu.
-		angle: z.string(),
-		// La mission de l'offre qu'il éclaire (« En lien avec : … »).
-		mission: z.string(),
 		ordre: z.number(),
+		// Projet mis en avant : pleine largeur, illustration à droite.
+		vedette: z.boolean().default(false),
+		// Pastilles au-dessus du titre (nature du projet, période, statut).
+		// Le ton fixe la couleur : sombre, gris, ou ambre pour « en conception ».
+		pastilles: z
+			.array(z.object({ texte: z.string(), ton: z.enum(['sombre', 'gris', 'ambre']).default('gris') }))
+			.default([]),
 		stack: z.array(z.string()).default([]),
-		statut: z.enum(['en-cours', 'conception']).optional(),
+		// Schéma propre au projet, dessiné par un composant dédié.
+		illustration: z.enum(['pipeline', 'serverless']).optional(),
 		lien: z.object({ libelle: z.string(), url: z.url() }).optional(),
 	}),
 });

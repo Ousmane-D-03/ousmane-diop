@@ -1,53 +1,151 @@
 ---
+// Une fiche projet, depuis la collection de contenu. Le projet « vedette »
+// occupe toute la largeur, son illustration à droite ; les autres sont des
+// fiches plus compactes, l'illustration sous le texte.
 import { render, type CollectionEntry } from 'astro:content';
+import PipelineCI from './PipelineCI.astro';
+import SchemaServerless from './SchemaServerless.astro';
 
 interface Props {
 	projet: CollectionEntry<'projets'>;
 }
 
 const { projet } = Astro.props;
-const { titre, angle, mission, statut, lien } = projet.data;
+const { titre, vedette, pastilles, stack, illustration, lien } = projet.data;
 const { Content } = await render(projet);
-
-// Libellés repris tels quels du contenu rédigé.
-const statuts = {
-	'en-cours': 'Projet en cours.',
-	conception: 'Phase de conception.',
-};
 ---
 
-<article class="projet" aria-labelledby={`projet-${projet.id}`}>
-	<h3 id={`projet-${projet.id}`}>{titre} — {angle}</h3>
-	<p class="mission">En lien avec&nbsp;: {mission}</p>
-	<Content />
-	{statut && <p class="statut"><em>{statuts[statut]}</em></p>}
-	{lien && <p><a href={lien.url}>{lien.libelle}</a></p>}
+<article class:list={['projet', { vedette }]}>
+	<div class="texte">
+		{
+			pastilles.length > 0 && (
+				<ul class="statuts">
+					{pastilles.map(({ texte, ton }) => (
+						<li class={ton}>{texte}</li>
+					))}
+				</ul>
+			)
+		}
+		<h2>{titre}</h2>
+		<div class="corps"><Content /></div>
+		{!vedette && illustration === 'serverless' && <SchemaServerless />}
+		{
+			stack.length > 0 && (
+				<ul class="pastilles" aria-label="Technologies">
+					{stack.map((outil) => (
+						<li>{outil}</li>
+					))}
+				</ul>
+			)
+		}
+		{
+			lien && (
+				<a href={lien.url} class="lien">
+					{lien.libelle} <span aria-hidden="true">→</span>
+				</a>
+			)
+		}
+	</div>
+	{vedette && illustration === 'pipeline' && <PipelineCI />}
 </article>
 
 <style>
 	.projet {
-		padding-top: 1.5rem;
-		border-top: 1px solid var(--trait);
+		background: var(--surface);
+		border: 1px solid var(--trait);
+		border-radius: 24px;
+		padding: 40px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
 	}
 
-	.projet + .projet {
-		margin-top: 2.5rem;
+	.texte {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
 	}
 
-	/* Étiquette forte : fond vert, texte clair, coins carrés comme le bouton
-	   de l'accueil. #f7f8f6 sur #0a5c36 : 7,59:1. */
-	.mission {
-		display: inline-block;
-		margin: 0.6rem 0 1rem;
-		padding: 0.3em 0.6em;
-		background: var(--accent);
+	.vedette {
+		padding: 48px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+		gap: 48px;
+	}
+
+	.vedette .texte {
+		gap: 18px;
+	}
+
+	.statuts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-family: var(--font-mono);
+		font-size: 13px;
+	}
+
+	.statuts li {
+		padding: 5px 11px;
+		border-radius: 99px;
+	}
+
+	.sombre {
+		background: var(--sombre);
 		color: var(--fond);
-		font-weight: 600;
-		font-size: 0.875rem;
-		line-height: 1.35;
 	}
 
-	.statut {
-		color: var(--texte-discret);
+	.gris {
+		background: var(--surface-grise);
+		color: var(--texte-second);
+	}
+
+	/* Brun foncé sur ambre pâle : 7,5:1. */
+	.ambre {
+		background: #fdf0d5;
+		color: #7a4b00;
+	}
+
+	h2 {
+		font-size: 32px;
+		line-height: 1.1;
+		letter-spacing: -0.02em;
+	}
+
+	.vedette h2 {
+		font-size: clamp(32px, 4vw, 46px);
+		line-height: 1.05;
+	}
+
+	.corps {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		color: var(--texte-second);
+	}
+
+	/* Projet vedette : premier paragraphe en chapeau. */
+	.vedette .corps :global(p:first-child) {
+		font-size: 19px;
+	}
+
+	.lien {
+		align-self: flex-start;
+		padding-block: 12px;
+		font-weight: 600;
+	}
+
+	@media (max-width: 600px) {
+		.projet,
+		.vedette {
+			padding: 24px;
+		}
+
+		.vedette {
+			gap: 32px;
+		}
 	}
 </style>
