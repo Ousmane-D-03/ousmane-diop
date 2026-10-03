@@ -124,7 +124,7 @@ Le contenu rédigé se trouve dans `contenu-site-a2o.md` à la racine du projet 
 
 Trois points de vigilance sur le contenu :
 
-- La section « 04 · Ma démarche » sera **écrite par l'auteur lui-même**, pas générée. Prévoir l'emplacement, ne pas rédiger le texte. C'est le seul endroit du site où sa voix compte vraiment, et c'est précisément ce que l'entreprise évalue.
+- La section 04 est **écrite par l'auteur lui-même** (titre : « Comment j'ai travaillé avec l'IA » ; la navigation garde le libellé court « Ma démarche »). Elle est intégrée mot pour mot : **ne jamais la réécrire, la reformuler ni la compléter**. Seule la typographie (apostrophes, espaces insécables) a été ajustée. C'est le seul endroit du site où sa voix compte vraiment, et c'est précisément ce que l'entreprise évalue.
 - Les faiblesses sont assumées volontairement dans le texte (« je ne connais pas Astro », « c'est là que j'ai le plus à apprendre » sur le front). Ne pas les adoucir ni les supprimer.
 - Les projets sont présentés **par la mission qu'ils éclairent**, pas par leur stack.
 
