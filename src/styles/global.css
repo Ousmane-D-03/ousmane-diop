@@ -118,3 +118,12 @@ mark {
 	-webkit-box-decoration-break: clone;
 	box-decoration-break: clone;
 }
+
+/* Code inline (codes couleur de la section 04) : chasse fixe, léger fond.
+   Texte #1a1c1a sur #e8ebe8 : 14,27:1. Polices système : rien à charger. */
+code {
+	font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Liberation Mono', monospace;
+	font-size: 0.9em;
+	background: #e8ebe8;
+	padding: 0.05em 0.3em;
+}

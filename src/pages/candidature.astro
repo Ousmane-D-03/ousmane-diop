@@ -140,8 +140,71 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 			</Exergue>
 		</Etape>
 
-		<Etape {...demarche}>
-			{/* Section 04 : écrite par Ousmane lui-même. Ne pas générer ce texte. */}
+		{/* Section 04 : texte écrit par Ousmane, intégré mot pour mot. Ne pas le
+		    réécrire. Seule la typographie est ajustée (apostrophes, espaces
+		    insécables), comme pour les sections 01 à 03. Le titre est le sien ;
+		    la navigation garde le libellé court « Ma démarche ». */}
+		<Etape {...demarche} titre="Comment j’ai travaillé avec l’IA">
+			<h3>Les outils, et à quel moment</h3>
+			<p>
+				J’ai utilisé deux outils d’Anthropic. Claude, en conversation, pour la conception&nbsp;:
+				réfléchir à la structure du site (le parcours en quatre étapes, l’ordre des sections) et
+				rédiger les contenus. Claude Code, directement dans mon dépôt, pour le développement&nbsp;:
+				écriture du code Astro et CSS, résolution des problèmes rencontrés en cours de route, tests
+				dans plusieurs navigateurs, préparation du déploiement sur Cloudflare. Claude Code a tenu un
+				carnet de construction pendant tout le projet. Certains des points qui suivent en viennent,
+				d’autres de ce que j’ai vu moi-même en regardant le site.
+			</p>
+
+			<h3>Ce que j’ai dirigé</h3>
+			<p>
+				D’abord l’angle&nbsp;: me présenter comme quelqu’un qui vient du backend, plutôt que comme un
+				développeur front. Ensuite la direction visuelle&nbsp;: j’ai rejeté une maquette entière parce
+				qu’elle faisait trop IA, et refusé les soulignements qui se tracent à l’apparition. Pour la
+				boucle du cycle DevOps, je l’ai trouvée trop petite dans la navigation et j’ai demandé
+				qu’elle passe en grand, en ouverture de page. Une fois en place, je l’ai finalement
+				retirée&nbsp;: la page tenait sans elle, et seule la petite boucle est restée comme
+				indicateur de lecture.
+			</p>
+
+			<h3>Ce qu’il a fallu vérifier</h3>
+			<p>Une bonne partie du travail a consisté à ne pas croire le code sur parole.</p>
+			<p>
+				La barre de progression restait pleine dès le haut de page. Le code source était pourtant
+				correct. C’est au build que le minifieur avait fusionné deux déclarations CSS en une forme
+				que le navigateur rejette en silence, sans erreur dans la console. Le problème n’était
+				visible qu’en lisant le style réellement appliqué dans le navigateur. La correction a
+				consisté à écrire les propriétés une par une.
+			</p>
+			<p>
+				Une capture «&nbsp;mobile&nbsp;» à 390&nbsp;px montrait du texte coupé. En réalité, Edge en
+				mode headless impose une largeur minimale de 504&nbsp;px et rogne l’image. Le défaut venait
+				de l’outil de test, pas du site, ce que j’ai confirmé dans un cadre de 390&nbsp;px réels.
+			</p>
+			<p>
+				En relisant les règles de marque des logos, j’ai constaté que trois d’entre eux (Docker,
+				GitHub Actions, PostgreSQL) étaient affichés en gris, ce que leurs règles interdisent. J’ai
+				retiré tous les logos du site.
+			</p>
+			<p>
+				Le vert du drapeau sénégalais (<code>#00853F</code>) devait servir de couleur d’accent, y
+				compris pour du texte. Calcul fait, il atteint 4,45:1 sur le fond, sous le seuil de 4,5:1
+				exigé pour un texte lisible. J’ai retenu un vert plus profond de la même famille,
+				<code>#0A5C36</code>, à 7,59:1.
+			</p>
+			<p>
+				La transition entre les deux pages dure moins d’une seconde. Pour la voir vraiment, elle a
+				été ralentie dix fois et capturée à intervalles réguliers. Trois défauts sont
+				apparus&nbsp;: le nom qui se dédoublait, l’accroche qui se dédoublait aussi, et un glissement
+				saccadé causé par une différence d’interligne entre les deux pages.
+			</p>
+
+			<h3>Ce que j’en retiens</h3>
+			<p>
+				Mon travail a surtout consisté à décider ce qu’on gardait, puis à contrôler ce que le
+				navigateur affichait vraiment, pas ce que le code promettait. L’IA produit vite du code qui a
+				l’air juste, et c’est justement ce qui oblige à vérifier.
+			</p>
 		</Etape>
 	</main>
 
