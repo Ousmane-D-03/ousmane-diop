@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { projet } = Astro.props;
-const { titre, vedette, pastilles, stack, illustration, lien } = projet.data;
+const { titre, vedette, pastilles, stack, illustration, lien, image } = projet.data;
 const { Content } = await render(projet);
 ---
 
@@ -29,6 +29,26 @@ const { Content } = await render(projet);
 		<h2>{titre}</h2>
 		<div class="corps"><Content /></div>
 		{!vedette && illustration === 'serverless' && <SchemaServerless />}
+		{
+			image && (
+				<figure class="image">
+					{/* Hors du premier écran : chargement différé. À la largeur de la
+					    fiche, le texte d'un diagramme est trop petit : lien vers l'image
+					    en grand, en légende (un seul arrêt au clavier). */}
+					<img
+						src={image.src}
+						alt={image.alt}
+						width={image.largeur}
+						height={image.hauteur}
+						loading="lazy"
+						decoding="async"
+					/>
+					<figcaption>
+						<a href={image.src}>Voir le diagramme en grand</a>
+					</figcaption>
+				</figure>
+			)
+		}
 		{
 			stack.length > 0 && (
 				<ul class="pastilles" aria-label="Technologies">
@@ -130,6 +150,28 @@ const { Content } = await render(projet);
 	/* Projet vedette : premier paragraphe en chapeau. */
 	.vedette .corps :global(p:first-child) {
 		font-size: 19px;
+	}
+
+	.image {
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	/* Dimensions déclarées dans le HTML : la place est réservée avant le
+	   chargement. Le CSS ne fait que l'adapter à la largeur de la fiche. */
+	.image img {
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid var(--trait);
+		border-radius: 12px;
+		background: #ffffff;
+	}
+
+	.image figcaption {
+		font-size: 15px;
 	}
 
 	.lien {

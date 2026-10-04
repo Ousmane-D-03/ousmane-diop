@@ -19,6 +19,11 @@ const projets = defineCollection({
 		// Schéma propre au projet, dessiné par un composant dédié.
 		illustration: z.enum(['pipeline', 'serverless']).optional(),
 		lien: z.object({ libelle: z.string(), url: z.url() }).optional(),
+		// Image du projet (capture, diagramme), servie depuis public/. Dimensions
+		// déclarées pour réserver la place avant chargement (aucun décalage).
+		image: z
+			.object({ src: z.string(), alt: z.string(), largeur: z.number(), hauteur: z.number() })
+			.optional(),
 	}),
 });
 
