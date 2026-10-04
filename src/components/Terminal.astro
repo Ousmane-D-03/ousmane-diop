@@ -1,16 +1,20 @@
 ---
-// Fenêtre de terminal de l'accueil. Rien d'inventé : de vraies commandes
-// sur le dépôt, et leur vraie sortie (vérifiable sur GitHub).
-// - les trois premiers commits du projet (26 septembre) ;
-// - le commit qui a relancé le déploiement le 3 octobre, après neuf push
-//   restés sans effet : Cloudflare surveillait master, je poussais sur main ;
-// - git push : le site se déploie sur Cloudflare Pages à chaque push.
-const premiers = [
-	['b114e7f', 'Brief et contenu de la candidature'],
-	['0dca16c', 'Initialisation du projet Astro 7 (template minimal)'],
-	['2e33253', 'Squelette : layout, polices, variables CSS, quatre étapes du pipeline'],
+// Fenêtre de terminal de l'accueil. Rien d'inventé : deux vraies commandes
+// sur le dépôt et leur vraie sortie, vérifiables sur GitHub.
+// Les commandes visent des commits précis (plage bb17609^..01c88f1, compte
+// jusqu'à 01c88f1) : leur sortie ne changera pas avec les commits suivants,
+// alors qu'un simple « git log » serait faux dès le prochain.
+// - bb17609 : la relance du 3 octobre, après neuf push restés sans effet
+//   (Cloudflare surveillait master, je poussais sur main) ;
+// - c21750a : le passage sur Cloudflare Pages ;
+// - a106845 : la section 04, écrite par moi, intégrée mot pour mot.
+const commits = [
+	['01c88f1', 'Texte réécrit avec mes formulations, terminal avec mon vrai historique'],
+	['c21750a', 'Site déployé sur Cloudflare Pages : ousmane-diop.pages.dev'],
+	['a106845', "Section 04 : journal de bord écrit par l'auteur, intégré mot pour mot"],
+	['9bffbdf', "Terminal de l'accueil animé, en CSS seulement"],
+	['bb17609', 'Relance du build : Cloudflare déploie désormais depuis main'],
 ];
-const relance = ['bb17609', 'Relance du build : Cloudflare déploie désormais depuis main'];
 
 // Animation d'ouverture, en CSS seulement. Tout le texte est dans le HTML dès
 // le départ et occupe déjà sa place : l'animation ne fait que le dévoiler
@@ -20,9 +24,8 @@ const frappe = (commande: string, debut: number) =>
 	`--n:${commande.length};--debut:${debut}s`;
 const a = (debut: number) => `--debut:${debut}s`;
 
-const c1 = 'git log --oneline --reverse | head -3';
-const c2 = 'git log --oneline -1 bb17609';
-const c3 = 'git push';
+const c1 = 'git log --oneline bb17609^..01c88f1';
+const c2 = 'git rev-list --count 01c88f1';
 ---
 
 <div class="terminal">
@@ -39,7 +42,7 @@ const c3 = 'git push';
 		</p>
 		<ul class="sortie espace apparait" style={a(2.3)}>
 			{
-				premiers.map(([hash, message]) => (
+				commits.map(([hash, message]) => (
 					<li>
 						<span class="hash">{hash}</span> {message}
 					</li>
@@ -50,15 +53,8 @@ const c3 = 'git push';
 			<span class="invite">$</span>{' '}
 			<span class="frappe" style={frappe(c2, 2.7)}>{c2}</span>
 		</p>
-		<ul class="sortie espace apparait" style={a(4.3)}>
-			<li><span class="hash">{relance[0]}</span> {relance[1]}</li>
-		</ul>
-		<p class="apparait" style={a(4.7)}>
-			<span class="invite">$</span>{' '}
-			<span class="frappe" style={frappe(c3, 4.7)}>{c3}</span>
-		</p>
-		<p class="ok apparait" style={a(5.4)}>✓ en ligne sur ousmane-diop.pages.dev</p>
-		<p class="apparait" style={a(5.7)}>
+		<p class="sortie espace apparait" style={a(4.3)}>46</p>
+		<p class="apparait" style={a(4.6)}>
 			<span class="invite">$</span>{' '}
 			<span class="curseur" aria-hidden="true"></span>
 		</p>
@@ -137,10 +133,6 @@ const c3 = 'git push';
 		color: var(--sur-sombre-lien);
 	}
 
-	.ok {
-		color: var(--terminal-ok);
-	}
-
 	.curseur {
 		display: inline-block;
 		width: 9px;
@@ -175,7 +167,7 @@ const c3 = 'git push';
 		/* Curseur : clignote cinq fois puis reste fixe (WCAG 2.2.2 : rien ne
 		   clignote plus de cinq secondes). */
 		.curseur {
-			animation: clignote 1s steps(1) 5.7s 5;
+			animation: clignote 1s steps(1) 4.6s 5;
 		}
 	}
 
