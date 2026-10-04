@@ -6,4 +6,6 @@ pastilles:
 illustration: serverless
 ---
 
-Une API REST sans serveur, décrite en Infrastructure as Code (SAM / CloudFormation). Un cache DynamoDB réduit les appels à l’API externe — et donc les coûts.
+API REST serverless sur AWS : Lambda en Python, API Gateway, DynamoDB pour le cache, CloudWatch pour le monitoring. Déploiement en Infrastructure as Code avec SAM et CloudFormation.
+
+Le cache n’était pas un choix esthétique : les appels répétés à l’API externe étaient le principal poste de coût. En architecture serverless, une décision de conception est aussi une décision de facture.

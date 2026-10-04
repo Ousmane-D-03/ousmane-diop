@@ -3,13 +3,15 @@ import Base from '../layouts/Base.astro';
 import EnTete from '../components/EnTete.astro';
 import Bouton from '../components/Bouton.astro';
 
-// Les trois axes de l'offre. Chaque axe : la mission telle que décrite dans
-// l'offre, ce que j'y apporte déjà, ce que je viens y apprendre.
+// Les trois blocs de l'offre. Pour chacun : la mission telle que décrite
+// dans l'offre (liste), puis mon texte : ce que j'apporte, et ce que je ne
+// sais pas encore faire (paragraphes, longueurs inégales assumées).
 const axes = [
 	{
 		id: 'axe-web',
-		numero: 'Axe 1',
-		titre: 'Concevoir, développer et faire évoluer des sites',
+		numero: 'Bloc 1',
+		titre: 'Concevoir, développer et faire évoluer des sites web',
+		accroche: 'C’est le cœur du stage, et c’est là que j’ai le plus à apprendre.',
 		mission: [
 			'Recueillir et reformuler le besoin d’un client',
 			'Définir périmètre, contenus et parcours utilisateurs',
@@ -17,21 +19,18 @@ const axes = [
 			'Maintenir, corriger, optimiser performance, accessibilité et SEO',
 		],
 		apport: [
-			'Un CMS complet en Laravel/PHP livré pour une entreprise de conseil',
-			'HTML, CSS, JavaScript/TypeScript, React, Vue, Vite',
-			'Des API REST conçues et consommées (FastAPI, Spring Boot)',
-			'Modélisation UML et cadrage fonctionnel (SunuDossier)',
+			'J’ai développé des interfaces : une application de traitement d’images avec un front Vue.js et TypeScript sur un backend Spring Boot, un CMS complet en Laravel pour une entreprise de conseil. Je sais lire du HTML, du CSS, du JavaScript et du TypeScript, structurer une application en couches, consommer et exposer des API REST, et travailler avec Git et GitHub au quotidien.',
 		],
 		apprendre: [
-			'Astro et son modèle par composants et îlots',
-			'SEO technique et accessibilité en conditions réelles',
-			'Reformuler un besoin face à un vrai client',
+			'Mais je ne me suis jamais spécialisé côté front, et je ne connais pas Astro. Votre offre dit qu’il peut s’apprendre pendant le stage, et c’est précisément ce qui m’intéresse. Ce site est d’ailleurs mon premier vrai exercice dans cette direction.',
+			'Il y a un point sur lequel j’arrive avec un angle particulier : le recueil du besoin. J’ai souvent été le client, celui qui sait ce qu’il veut sans savoir le dire en termes techniques. Je connais la frustration des deux côtés de cette conversation. Apprendre à être de l’autre côté, à reformuler un besoin flou en périmètre clair, fait partie de ce que je viens chercher.',
 		],
 	},
 	{
 		id: 'axe-deploiement',
-		numero: 'Axe 2',
-		titre: 'Déployer, exploiter, automatiser',
+		numero: 'Bloc 2',
+		titre: 'Déploiement, exploitation et automatisation',
+		accroche: 'C’est ce que je fais déjà.',
 		mission: [
 			'Préparer et réaliser les déploiements',
 			'Gérer domaines, DNS et certificats, notamment sur Cloudflare',
@@ -39,22 +38,18 @@ const axes = [
 			'Lire des logs, diagnostiquer un incident, vérifier les sauvegardes',
 		],
 		apport: [
-			'Un pipeline GitHub Actions : lint, tests, build, publication Docker Hub',
-			'Des scans de sécurité intégrés : Gitleaks, Bandit, Trivy',
-			'Du serverless AWS en Infrastructure as Code, suivi dans CloudWatch',
-			'Des scripts d’automatisation Linux en remplacement de tâches manuelles',
+			'Sur mes projets, la chaîne de livraison n’est pas une étape finale mais une partie de la conception. Sur Xëy Invest, une plateforme de financement participatif que j’ai développée de bout en bout, j’ai construit une pipeline GitHub Actions complète : tests automatisés, build et publication d’images Docker, et trois contrôles de sécurité exécutés à chaque commit : détection de secrets exposés, analyse statique du code, scan de vulnérabilités des images.',
+			'J’ai aussi déployé une API serverless sur AWS (Lambda, API Gateway, DynamoDB, CloudWatch) en Infrastructure as Code, et un site statique sur S3 avec distribution CloudFront, certificat SSL et déploiement automatisé. Lors d’un stage au ministère de l’Éducation nationale du Sénégal, j’ai écrit des scripts d’automatisation Linux pour remplacer des tâches faites à la main, et encadré des stagiaires de licence sur ces sujets.',
 		],
 		apprendre: [
-			'Cloudflare au-delà de Workers : DNS, certificats, règles',
-			'Le diagnostic d’incidents sur des sites en production',
-			'Documenter une procédure de reprise',
+			'Les briques que vous mentionnez et que je n’ai pas encore pratiquées : Cloudflare en production, la gestion de noms de domaine et de certificats sur des sites clients, et le diagnostic d’incidents sur des systèmes que je n’ai pas construits moi-même. C’est différent de déboguer son propre code, et c’est une des choses que je veux apprendre ici.',
 		],
 	},
 	{
 		id: 'axe-gouvernance',
-		numero: 'Axe 3',
+		numero: 'Bloc 3',
 		titre: 'Gouvernance numérique et organisation IT',
-		part: '≈ 25 % du temps',
+		accroche: 'Environ 25\u00a0% du stage, et ça ne me dérange pas du tout. Au contraire.',
 		mission: [
 			'Recenser applications, services, utilisateurs et prestataires',
 			'Cartographier les données et les dépendances',
@@ -62,15 +57,11 @@ const axes = [
 			'Formaliser arrivées, départs, sauvegardes, incidents',
 		],
 		apport: [
-			'Une formation sécurité (M1 ARIAS, Université d’Orléans)',
-			'Une conception orientée sécurité : rôles, journalisation des accès',
-			'De l’authentification JWT en pratique (Xëy Invest)',
-			'L’habitude de documenter et de transmettre (tutorat, encadrement)',
+			'Recenser les applications et services d’une organisation, identifier qui en est responsable, documenter les données et les dépendances, transformer un état des lieux en actions priorisées : c’est un travail de modélisation avant d’être un travail de documentation. Il faut comprendre un système existant, poser les bonnes questions, et le rendre lisible.',
+			'C’est exactement la démarche que j’ai suivie sur SunuDossier, un projet de dossier patient partagé entre établissements de santé que je conçois actuellement. Avant d’écrire une ligne de code, j’ai modélisé l’ensemble en UML (diagrammes de classes et de cas d’utilisation) en explicitant les rôles, les droits d’accès, la journalisation des accès aux données sensibles et les dépendances entre modules. La contrainte de confidentialité des données de santé m’a obligé à traiter ces questions dès la conception, pas après.',
 		],
 		apprendre: [
-			'Mener un état des lieux dans une organisation',
-			'Le RGPD appliqué au quotidien',
-			'Transformer un inventaire en actions priorisées',
+			'Je ne prétends pas connaître le RGPD ni pouvoir produire un avis juridique. Votre offre est claire là-dessus : il s’agit d’apprendre à poser les bonnes questions et à structurer l’existant. C’est un travail que j’aime.',
 		],
 	},
 ];
@@ -83,40 +74,39 @@ const questions = [
 ---
 
 <Base
-	titre="Le stage — ce que j’ai compris · Ousmane Sarr Diop"
-	description="Ma lecture de l’offre de stage d’Alpha to Omega : développement web, déploiement et exploitation, gouvernance numérique."
+	titre="Ce que j’ai compris de vos missions · Ousmane Sarr Diop"
+	description="Les trois blocs de missions du stage chez Alpha to Omega, comment je les lis, ce que j’apporte sur chacun, et ce que je ne sais pas encore faire."
 >
 	<EnTete />
 
 	<main>
 		<section class="conteneur intro">
 			<p class="surtitre">Ma lecture de l’offre</p>
-			<h1>Ce que j’ai compris du stage.</h1>
+			<h1>Ce que j’ai compris de vos missions</h1>
 			<p class="chapeau">
-				Alpha to Omega pilote des projets numériques de bout en bout, sur deux expertises : le web et
-				l’intelligence artificielle. Le stage suit la même logique — le web en est le cœur, avec une
-				ouverture vers l’exploitation technique et la gouvernance numérique.
+				Votre offre décrit trois blocs de missions. Voici comment je les lis, ce que j’apporte sur
+				chacun, et ce que je ne sais pas encore faire.
 			</p>
 		</section>
 
 		<nav aria-label="Répartition du stage" class="conteneur repartition">
 			<div class="barre">
 				<a href="#axe-web" class="part web">
-					<span class="part-numero">Axe 1 · le cœur du stage</span>
+					<span class="part-numero">Bloc 1 · le cœur du stage</span>
 					<span class="part-titre">Conception &amp; développement web</span>
 				</a>
 				<a href="#axe-deploiement" class="part deploiement">
-					<span class="part-numero">Axe 2</span>
+					<span class="part-numero">Bloc 2</span>
 					<span class="part-titre">Déploiement &amp; exploitation</span>
 				</a>
 				<a href="#axe-gouvernance" class="part gouvernance">
-					<span class="part-numero">Axe 3 · ≈ 25 %</span>
+					<span class="part-numero">Bloc 3 · ≈ 25 %</span>
 					<span class="part-titre">Gouvernance numérique</span>
 				</a>
 			</div>
 		</nav>
 
-		<section class="axes" aria-label="Les trois axes du stage">
+		<section class="axes" aria-label="Les trois blocs de missions">
 			<div class="conteneur axes-interieur">
 				{
 					axes.map((axe) => (
@@ -124,48 +114,34 @@ const questions = [
 							<div class="axe-tete">
 								<span class="axe-numero">{axe.numero}</span>
 								<h2>{axe.titre}</h2>
-								{axe.part && <span class="axe-part">{axe.part}</span>}
 							</div>
+							<p class="accroche">{axe.accroche}</p>
 							<div class="colonnes">
 								<div class="col mission">
-									<h3 class="etiquette">La mission</h3>
+									<h3 class="etiquette">La mission, dans l’offre</h3>
 									<ul>{axe.mission.map((point) => <li>{point}</li>)}</ul>
 								</div>
-								<div class="col apport">
-									<h3 class="etiquette">Ce que j’apporte</h3>
-									<ul>{axe.apport.map((point) => <li>{point}</li>)}</ul>
-								</div>
-								<div class="col apprendre">
-									<h3 class="etiquette">Ce que je vais apprendre</h3>
-									<ul>{axe.apprendre.map((point) => <li>{point}</li>)}</ul>
+								<div class="texte">
+									<div class="col apport">
+										<h3 class="etiquette">Ce que j’apporte</h3>
+										{axe.apport.map((p) => <p>{p}</p>)}
+									</div>
+									<div class="col apprendre">
+										<h3 class="etiquette">Ce que je ne sais pas encore faire</h3>
+										{axe.apprendre.map((p) => <p>{p}</p>)}
+									</div>
 								</div>
 							</div>
 						</article>
 					))
 				}
 
-				<div class="lectures">
-					<div class="lecture cadre">
-						<h2 class="etiquette">Ma lecture du cadre</h2>
-						<p>
-							Sur la gouvernance, mon rôle serait de poser les bonnes questions, structurer
-							l’existant et préparer des décisions — pas de rendre seul un avis juridique.
-						</p>
-					</div>
-					<div class="lecture">
-						<h2 class="etiquette">L’IA comme outil de travail</h2>
-						<p>
-							Explorer une doc, comprendre une base de code, préparer des tests — oui. Mais toujours
-							vérifier ce qui sort, et reprendre à la main quand il le faut.
-						</p>
-					</div>
-				</div>
 			</div>
 		</section>
 
 		<section class="conteneur questions">
 			<div class="questions-tete">
-				<p class="surtitre">Curiosité</p>
+				<p class="surtitre">Questions</p>
 				<h2 class="titre-questions">Les questions que j’aimerais vous poser</h2>
 			</div>
 			<ol>
@@ -179,7 +155,7 @@ const questions = [
 				}
 			</ol>
 			<div class="suite">
-				<Bouton href="/projets/" fleche>Voir les projets qui le prouvent</Bouton>
+				<Bouton href="/projets/" fleche>Voir les projets</Bouton>
 			</div>
 		</section>
 	</main>
@@ -306,19 +282,39 @@ const questions = [
 		letter-spacing: -0.02em;
 	}
 
-	.axe-part {
-		font-family: var(--font-mono);
-		font-size: 13px;
-		padding: 6px 12px;
-		border-radius: 99px;
-		background: var(--accent-pale);
-		color: var(--accent-sombre);
-	}
-
+	/* La mission (liste courte, texte de l'offre) à gauche ; mon texte (des
+	   paragraphes, de longueurs inégales) à droite, sur deux tiers. */
 	.colonnes {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
 		gap: 16px;
+		align-items: start;
+	}
+
+	@media (min-width: 900px) {
+		.colonnes {
+			grid-template-columns: 1fr 2fr;
+		}
+	}
+
+	.texte {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	/* La phrase qui dit où j'en suis sur ce bloc. En italique dans mon texte
+	   d'origine ; l'italique n'est pas chargée (une police de plus) : police
+	   des titres à la place. */
+	.accroche {
+		font-family: var(--font-titres);
+		font-size: 22px;
+		font-weight: 500;
+		line-height: 1.35;
+		max-width: 760px;
+	}
+
+	.col p + p {
+		margin-top: -4px;
 	}
 
 	.col {
@@ -376,42 +372,6 @@ const questions = [
 		height: 2px;
 		background: currentColor;
 		opacity: 0.55;
-	}
-
-	/* ---- Les deux lectures ---- */
-	.lectures {
-		padding-top: 64px;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
-		gap: 20px;
-	}
-
-	.lecture {
-		padding: 36px;
-		border-radius: 18px;
-		background: var(--fond);
-		display: flex;
-		flex-direction: column;
-		gap: 14px;
-	}
-
-	.lecture h2 {
-		font-weight: 400;
-	}
-
-	.cadre {
-		background: var(--accent-pale);
-	}
-
-	.cadre h2 {
-		color: var(--accent-sombre);
-	}
-
-	.lecture p {
-		font-family: var(--font-titres);
-		font-size: 24px;
-		font-weight: 500;
-		line-height: 1.35;
 	}
 
 	/* ---- Questions ---- */
@@ -473,14 +433,10 @@ const questions = [
 			padding-block: 48px;
 		}
 
-		.col,
-		.lecture {
+		.col {
 			padding: 24px;
 		}
 
-		.lecture p {
-			font-size: 21px;
-		}
 
 		.questions {
 			padding-block: 72px;

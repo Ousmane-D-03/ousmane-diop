@@ -5,22 +5,21 @@ import Bouton from '../components/Bouton.astro';
 import PiedDePage from '../components/PiedDePage.astro';
 import { journal, retiens, bilan } from '../data/journal';
 
+// Texte de l'auteur (ancienne section 04, « Les outils, et à quel moment »),
+// réparti sur les deux cartes.
 const outils = [
 	{
 		libelle: 'Outil 1',
 		nom: 'Claude',
-		texte: 'Analyse de l’offre, maquettes des pages, structure des contenus.',
+		texte:
+			'En conversation, pour la conception : réfléchir à la structure du site et rédiger les contenus.',
 		sombre: true,
 	},
 	{
 		libelle: 'Outil 2',
 		nom: 'Claude Code',
-		texte: 'Écriture du code Astro et CSS, résolution des problèmes, tests, préparation du déploiement.',
-	},
-	{
-		libelle: 'Stack du site',
-		nom: 'Astro · Cloudflare Workers',
-		texte: 'Le framework utilisé chez Alpha to Omega, appris pour l’occasion.',
+		texte:
+			'Directement dans mon dépôt, pour le développement : écriture du code Astro et CSS, résolution des problèmes rencontrés en cours de route, tests dans plusieurs navigateurs, préparation du déploiement sur Cloudflare.',
 	},
 ];
 
@@ -37,18 +36,19 @@ const encadres = bilan.filter(remplie);
 ---
 
 <Base
-	titre="Méthode IA — comment ce site a été construit · Ousmane Sarr Diop"
-	description="Comment Ousmane Sarr Diop a construit ce site avec l’IA : les outils, ce qu’ils ont proposé, ce qu’il a vérifié et repris à la main."
+	titre="Comment j’ai travaillé avec l’IA · Ousmane Sarr Diop"
+	description="Comment Ousmane Sarr Diop a travaillé avec Claude et Claude Code pour construire ce site, étape par étape."
 >
 	<EnTete />
 
 	<main>
 		<section class="conteneur intro">
-			<p class="surtitre">Méthode · transparence</p>
-			<h1>Comment j’ai construit ce site — avec l’IA, mais pas à sa place.</h1>
+			<p class="surtitre">Méthode IA</p>
+			<h1>Comment j’ai travaillé avec l’IA</h1>
 			<p class="chapeau">
-				Pour chaque étape : l’outil utilisé, ce qu’il a proposé, et ce que j’ai vérifié, corrigé ou
-				réécrit moi-même.
+				J’ai utilisé deux outils d’Anthropic. Claude Code a tenu un carnet de construction pendant tout
+				le projet. Certains des points qui suivent en viennent, d’autres de ce que j’ai vu moi-même en
+				regardant le site.
 			</p>
 		</section>
 
@@ -93,9 +93,9 @@ const encadres = bilan.filter(remplie);
 										<p class="deploiement">
 											<span>git push</span>
 											<span class="fleche" aria-hidden="true">→</span>
-											<span>build Cloudflare Workers</span>
+											<span>build Cloudflare Pages</span>
 											<span class="fleche" aria-hidden="true">→</span>
-											<a href="https://ousmane-diop.ousmanesarrd.workers.dev/">ousmane-diop.ousmanesarrd.workers.dev</a>
+											<a href="https://ousmane-diop.pages.dev/">ousmane-diop.pages.dev</a>
 										</p>
 									)}
 								</div>
@@ -135,8 +135,7 @@ const encadres = bilan.filter(remplie);
 
 	<div id="contact" class="contact">
 		<section class="conteneur contact-interieur" aria-labelledby="contact-titre">
-			<p class="surtitre">Contact</p>
-			<h2 id="contact-titre">Parlons-en.</h2>
+			<h2 id="contact-titre">Me contacter</h2>
 			<div class="contact-liens">
 				<Bouton href="mailto:ousmanesarrd@gmail.com" variante="clair" grand>ousmanesarrd@gmail.com</Bouton>
 				<Bouton href="https://github.com/Ousmane-D-03" variante="contour-sombre" grand>GitHub</Bouton>
@@ -147,7 +146,7 @@ const encadres = bilan.filter(remplie);
 		</section>
 		<PiedDePage>
 			<Fragment slot="gauche">Ousmane Sarr Diop · Toulouse</Fragment>
-			<span>Construit avec Astro · déployé sur Cloudflare Workers</span>
+			<span>Construit avec Astro · déployé sur Cloudflare Pages</span>
 		</PiedDePage>
 	</div>
 </Base>
@@ -403,10 +402,6 @@ const encadres = bilan.filter(remplie);
 		display: flex;
 		flex-direction: column;
 		gap: 36px;
-	}
-
-	.contact .surtitre {
-		color: var(--sur-sombre-lien);
 	}
 
 	.contact h2 {

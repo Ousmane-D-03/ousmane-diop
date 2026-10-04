@@ -6,4 +6,4 @@ pastilles:
 stack: [FastAPI, Celery, React/Vite PWA]
 ---
 
-Un dossier patient partagé pour les hôpitaux publics du Sénégal. Modélisation UML complète, et une architecture pensée sécurité dès le départ : rôles, journalisation des accès, mode hors-ligne.
+Dossier patient partagé entre établissements de santé publics. Modélisation UML complète avant tout développement : classes, cas d’utilisation, rôles et droits d’accès, journalisation des accès, mode hors-ligne.

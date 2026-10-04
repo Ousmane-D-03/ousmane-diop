@@ -6,29 +6,17 @@ import Terminal from '../components/Terminal.astro';
 import PiedDePage from '../components/PiedDePage.astro';
 
 const enBref = [
-	['Formation', 'M1 Informatique — Sciences du Logiciel, UT3'],
-	['Lieu', 'Toulouse — présentiel'],
+	['Formation', 'M1 Informatique, Sciences du Logiciel (UT3)'],
+	['Lieu', 'Toulouse, en présentiel'],
 	['Disponibilité', 'Second semestre · 3 mois'],
 	['Langues', 'Français, wolof, anglais (B2)'],
 ];
 
-const raisons = [
-	{
-		titre: 'Le web comme fil conducteur',
-		texte:
-			'Mon parcours est surtout backend. Ce stage me fait passer côté site : architecture, composants, performance, accessibilité — avec Astro, que je découvre pour l’occasion.',
-	},
-	{
-		titre: 'Jusqu’à la production',
-		texte:
-			'Déployer, lire des logs, gérer un DNS ou un certificat : c’est ce que je pratique déjà en CI/CD et que je veux maîtriser sur de vrais projets clients.',
-	},
-];
 ---
 
 <Base
-	titre="Ousmane Sarr Diop — candidature Alpha to Omega"
-	description="Candidature de stage d’Ousmane Sarr Diop chez Alpha to Omega : web, IA et gouvernance numérique, du besoin à la mise en ligne."
+	titre="Ousmane Sarr Diop · candidature Alpha to Omega"
+	description="Candidature de stage d’Ousmane Sarr Diop chez Alpha to Omega. Je viens du backend, je veux apprendre à faire des sites qui tiennent en production."
 >
 	<EnTete />
 
@@ -39,12 +27,12 @@ const raisons = [
 					Candidature · Stage web, IA &amp; gouvernance numérique · Alpha to Omega
 				</p>
 				<h1 class="titre-accueil">
-					Du besoin à la mise en ligne, <span class="accent">je vais au bout.</span>
+					Je viens du backend,{' '}
+					<span class="accent">je veux apprendre à faire des sites qui tiennent en production.</span>
 				</h1>
 				<p class="chapeau">
-					Étudiant en Master 1 Informatique (Sciences du Logiciel) à l’Université Toulouse III. Je
-					construis des applications de bout en bout — backend, CI/CD, sécurité — et je veux
-					maintenant les mettre au service de sites web qui tiennent en production.
+					Étudiant en Master 1 Informatique à Toulouse. Ce site est ma candidature, et mon premier vrai
+					exercice côté web.
 				</p>
 				<div class="actions">
 					<Bouton href="/stage/" fleche>Ce que j’ai compris du stage</Bouton>
@@ -68,49 +56,63 @@ const raisons = [
 		</section>
 
 		<section class="conteneur qui">
-			<p class="surtitre">01 — Qui je suis</p>
+			<p class="surtitre">Qui je suis</p>
 			<h2 class="titre-section">
-				Un profil backend qui veut voir ses projets arriver jusqu’à l’utilisateur.
+				Ma spécialisation ne vient pas d’un cursus : je l’ai construite à côté.
 			</h2>
 			<p>
-				Je suis en Master 1 Informatique, parcours Sciences du Logiciel, à l’Université Toulouse III —
-				Paul Sabatier, après une Licence à Bordeaux et un premier M1 orienté applications réparties, IA
-				et sécurité à Orléans.
+				Je suis étudiant en Master Informatique à l’Université Toulouse III (Paul Sabatier), parcours
+				Sciences du Logiciel. Avant Toulouse, j’ai étudié à Orléans (M1 ARIAS) et obtenu ma licence à
+				Bordeaux. Je suis sénégalais, le wolof et le français sont mes deux langues maternelles.
 			</p>
 			<p>
-				Ce que j’aime, c’est tenir un projet de bout en bout. Sur Xëy Invest, j’ai écrit le backend,
-				conteneurisé l’ensemble et monté un pipeline qui teste, scanne et publie chaque version. Chez
-				Groupe Trust, j’ai développé un CMS complet pour une entreprise de conseil.
+				Quand j’ai constaté que ma formation ne couvrait pas les sujets qui m’intéressaient vraiment
+				(l’infrastructure, l’automatisation, la sécurité applicative), j’ai financé et suivi le DevOps
+				Bootcamp de TechWorld with Nana, je prépare la certification AWS Solutions Architect Associate,
+				et j’ai mené plusieurs projets de bout en bout pour mettre tout ça en pratique.
 			</p>
 			<p>
-				Depuis 2022, je donne aussi des cours de maths et de physique-chimie. Ça m’a appris à expliquer
-				simplement un sujet technique — et à vérifier que l’autre a vraiment compris.
+				Ce que j’aime dans ce métier, c’est le moment où quelque chose passe de «&nbsp;ça marche sur ma
+				machine&nbsp;» à «&nbsp;c’est en ligne et ça tient&nbsp;». Le reste, le langage, le framework,
+				ça s’apprend.
+			</p>
+			<p>
+				Ce site me l’a rappelé. J’ai poussé neuf commits et le site en ligne ne bougeait pas : Cloudflare
+				surveillait la branche master, moi je poussais sur main. Rien dans les journaux ne le disait.{' '}
+				<a href="/methode/">C’est raconté dans ma méthode</a>.
 			</p>
 		</section>
 
 		<section class="pourquoi">
 			<div class="conteneur pourquoi-interieur">
 				<div class="pourquoi-tete">
-					<p class="surtitre">02 — Pourquoi ce stage</p>
-					<h2 class="titre-section">Trois raisons, une même logique : de A à Z.</h2>
+					<p class="surtitre">Le stage</p>
+					<h2 class="titre-section">Pourquoi ce stage m’intéresse</h2>
 				</div>
 				<div class="raisons">
-					{
-						raisons.map(({ titre, texte }, i) => (
-							<article class="raison">
-								<span class="numero">{String(i + 1).padStart(2, '0')}</span>
-								<h3>{titre}</h3>
-								<p>{texte}</p>
-							</article>
-						))
-					}
-					<article class="raison sombre">
-						<span class="numero">03</span>
-						<h3>L’IA, avec un regard critique</h3>
+					<article class="raison principale">
+						<h3>Le web</h3>
 						<p>
-							J’utilise l’IA pour apprendre et produire plus vite, mais je relis, je teste et je
-							reprends à la main. Ce site en est la preuve :{' '}
-							<a href="/methode/">la méthode est détaillée ici</a>.
+							C’est le cœur du stage, et c’est là que j’ai le plus à apprendre. Je ne me suis jamais
+							spécialisé côté front, et je ne connais pas Astro. Votre offre dit qu’il peut s’apprendre
+							pendant le stage, c’est précisément ce qui m’intéresse.
+						</p>
+						<p>
+							Et il y a le recueil du besoin. J’ai souvent été le client, celui qui sait ce qu’il veut
+							sans savoir le dire en termes techniques. Je connais la frustration des deux côtés de cette
+							conversation. Passer de l’autre côté, apprendre à reformuler un besoin flou en périmètre
+							clair, ça fait partie de ce que je viens chercher.
+						</p>
+					</article>
+					<article class="raison">
+						<h3>Le déploiement</h3>
+						<p>Ça, je le fais déjà. Mais pas encore sur des sites clients.</p>
+					</article>
+					<article class="raison sombre">
+						<h3>L’IA</h3>
+						<p>
+							L’IA produit vite du code qui a l’air juste, et c’est justement ce qui oblige à vérifier.{' '}
+							<a href="/methode/">Comment j’ai travaillé avec elle sur ce site</a>.
 						</p>
 					</article>
 				</div>
@@ -120,11 +122,11 @@ const raisons = [
 
 	<div class="final">
 		<section class="conteneur appel" aria-labelledby="appel-titre">
-			<h2 id="appel-titre">J’ai lu l’offre en détail. Voici ce que j’en ai compris.</h2>
-			<Bouton href="/stage/" variante="clair" fleche grand>Lire mon analyse du stage</Bouton>
+			<h2 id="appel-titre">Ce que j’ai compris des missions, bloc par bloc.</h2>
+			<Bouton href="/stage/" variante="clair" fleche grand>Ma lecture de l’offre</Bouton>
 		</section>
 		<PiedDePage>
-			<Fragment slot="gauche">Site conçu avec Claude et Claude Code · déployé sur Cloudflare Workers</Fragment>
+			<Fragment slot="gauche">Site conçu avec Claude et Claude Code · déployé sur Cloudflare Pages</Fragment>
 			<span class="liens">
 				<a href="https://github.com/Ousmane-D-03">GitHub</a>
 				<a href="https://linkedin.com/in/ousmane-sarr-diop-505891278">LinkedIn</a>
@@ -150,8 +152,11 @@ const raisons = [
 		gap: 28px;
 	}
 
+	/* Une phrase entière plutôt qu’un slogan : plus petite que le titre de
+	   la maquette, pour tenir en quatre à cinq lignes. */
 	.titre-accueil {
-		font-size: clamp(44px, 6vw, 76px);
+		font-size: clamp(32px, 3.6vw, 46px);
+		line-height: 1.08;
 	}
 
 	.accent {
@@ -248,10 +253,21 @@ const raisons = [
 		max-width: 720px;
 	}
 
+	/* Une raison développée à gauche, deux courtes empilées à droite :
+	   volontairement pas trois cartes égales. Une colonne sur écran étroit. */
 	.raisons {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
 		gap: 20px;
+	}
+
+	@media (min-width: 900px) {
+		.raisons {
+			grid-template-columns: 3fr 2fr;
+		}
+
+		.principale {
+			grid-row: span 2;
+		}
 	}
 
 	.raison {
@@ -272,19 +288,9 @@ const raisons = [
 		color: var(--texte-second);
 	}
 
-	.numero {
-		font-family: var(--font-mono);
-		font-size: 14px;
-		color: var(--texte-discret);
-	}
-
 	.sombre {
 		background: var(--sombre);
 		color: var(--fond);
-	}
-
-	.sombre .numero {
-		color: var(--sur-sombre-discret);
 	}
 
 	.sombre p {

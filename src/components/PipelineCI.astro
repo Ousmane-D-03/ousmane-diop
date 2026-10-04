@@ -3,10 +3,10 @@
 // de sécurité sont marqués ; le déploiement continu est encore à faire.
 const etapes = [
 	{ nom: 'Lint', etat: 'ok' },
-	{ nom: 'Tests — pytest', etat: 'ok' },
-	{ nom: 'Secrets — Gitleaks', etat: 'secu' },
-	{ nom: 'SAST — Bandit', etat: 'secu' },
-	{ nom: 'Images — Trivy', etat: 'secu' },
+	{ nom: 'Tests (pytest)', etat: 'ok' },
+	{ nom: 'Secrets (Gitleaks)', etat: 'secu' },
+	{ nom: 'SAST (Bandit)', etat: 'secu' },
+	{ nom: 'Images (Trivy)', etat: 'secu' },
 	{ nom: 'Build → Docker Hub', etat: 'ok' },
 	{ nom: 'Déploiement continu', etat: 'en-cours' },
 ] as const;

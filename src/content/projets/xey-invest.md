@@ -11,6 +11,6 @@ illustration: pipeline
 lien: { libelle: Voir mon GitHub, url: https://github.com/Ousmane-D-03 }
 ---
 
-Une plateforme de crowdinvesting et de tontine digitale. Backend complet en FastAPI — campagnes, investissements, statuts utilisateurs — avec authentification JWT, PostgreSQL, Redis et Docker Compose.
+Plateforme de financement participatif inspirée de la tontine sénégalaise. Backend FastAPI, PostgreSQL, Redis, conteneurisation Docker. Pipeline GitHub Actions avec tests automatisés, build et publication d’images, et contrôles de sécurité intégrés (Gitleaks, Bandit, Trivy).
 
-Chaque push passe par un pipeline qui teste, analyse la sécurité et publie les images. Prochaine étape : le déploiement continu vers un serveur de production.
+Prochaine étape : le déploiement continu vers un serveur de production.

@@ -1,22 +1,28 @@
 ---
-// Fenêtre de terminal de l'accueil : qui je suis, ma stack, le déploiement.
-// La dernière commande est « git push » : le site se déploie sur Cloudflare
-// Workers à chaque push, quelle que soit la commande exécutée côté Cloudflare.
-const stack = [
-	['backend', 'FastAPI · PostgreSQL · Redis'],
-	['ci/cd', 'GitHub Actions · Docker'],
-	['sécurité', 'Gitleaks · Bandit · Trivy'],
-	['cloud', 'AWS Lambda · DynamoDB · SAM'],
-	['web', 'HTML · CSS · JS/TS · React · Vue'],
+// Fenêtre de terminal de l'accueil. Rien d'inventé : de vraies commandes
+// sur le dépôt, et leur vraie sortie (vérifiable sur GitHub).
+// - les trois premiers commits du projet (26 septembre) ;
+// - le commit qui a relancé le déploiement le 3 octobre, après neuf push
+//   restés sans effet : Cloudflare surveillait master, je poussais sur main ;
+// - git push : le site se déploie sur Cloudflare Pages à chaque push.
+const premiers = [
+	['b114e7f', 'Brief et contenu de la candidature'],
+	['0dca16c', 'Initialisation du projet Astro 7 (template minimal)'],
+	['2e33253', 'Squelette : layout, polices, variables CSS, quatre étapes du pipeline'],
 ];
+const relance = ['bb17609', 'Relance du build : Cloudflare déploie désormais depuis main'];
 
 // Animation d'ouverture, en CSS seulement. Tout le texte est dans le HTML dès
 // le départ et occupe déjà sa place : l'animation ne fait que le dévoiler
 // (clip-path pour la frappe, opacity pour les sorties), la hauteur ne change
-// pas. Instants de départ, en secondes ; frappe : 70 ms par caractère.
+// pas. Instants de départ, en secondes ; frappe : 45 ms par caractère.
 const frappe = (commande: string, debut: number) =>
 	`--n:${commande.length};--debut:${debut}s`;
 const a = (debut: number) => `--debut:${debut}s`;
+
+const c1 = 'git log --oneline --reverse | head -3';
+const c2 = 'git log --oneline -1 bb17609';
+const c3 = 'git push';
 ---
 
 <div class="terminal">
@@ -24,35 +30,36 @@ const a = (debut: number) => `--debut:${debut}s`;
 		<span class="pastille" aria-hidden="true"></span>
 		<span class="pastille" aria-hidden="true"></span>
 		<span class="pastille" aria-hidden="true"></span>
-		<span class="titre">~/portfolio — zsh</span>
+		<span class="titre">~/ousmane-diop</span>
 	</div>
 	<div class="ecran">
 		<p>
-			<span class="invite">~/portfolio $</span>{' '}
-			<span class="frappe" style={frappe('whoami', 0.4)}>whoami</span>
+			<span class="invite">$</span>{' '}
+			<span class="frappe" style={frappe(c1, 0.4)}>{c1}</span>
 		</p>
-		<p class="sortie espace apparait" style={a(1.1)}>Ousmane Sarr Diop — M1 Informatique, UT3</p>
-		<p class="apparait" style={a(1.5)}>
-			<span class="invite">~/portfolio $</span>{' '}
-			<span class="frappe" style={frappe('cat stack.txt', 1.5)}>cat stack.txt</span>
-		</p>
-		<dl class="sortie espace apparait" style={a(2.7)}>
+		<ul class="sortie espace apparait" style={a(2.3)}>
 			{
-				stack.map(([domaine, outils]) => (
-					<>
-						<dt>{domaine}</dt>
-						<dd>{outils}</dd>
-					</>
+				premiers.map(([hash, message]) => (
+					<li>
+						<span class="hash">{hash}</span> {message}
+					</li>
 				))
 			}
-		</dl>
-		<p class="apparait" style={a(3.1)}>
-			<span class="invite">~/portfolio $</span>{' '}
-			<span class="frappe" style={frappe('git push', 3.1)}>git push</span>
+		</ul>
+		<p class="apparait" style={a(2.7)}>
+			<span class="invite">$</span>{' '}
+			<span class="frappe" style={frappe(c2, 2.7)}>{c2}</span>
 		</p>
-		<p class="ok apparait" style={a(4.3)}>✓ Déployé sur ousmane-diop.ousmanesarrd.workers.dev</p>
-		<p class="apparait" style={a(4.6)}>
-			<span class="invite">~/portfolio $</span>{' '}
+		<ul class="sortie espace apparait" style={a(4.3)}>
+			<li><span class="hash">{relance[0]}</span> {relance[1]}</li>
+		</ul>
+		<p class="apparait" style={a(4.7)}>
+			<span class="invite">$</span>{' '}
+			<span class="frappe" style={frappe(c3, 4.7)}>{c3}</span>
+		</p>
+		<p class="ok apparait" style={a(5.4)}>✓ en ligne sur ousmane-diop.pages.dev</p>
+		<p class="apparait" style={a(5.7)}>
+			<span class="invite">$</span>{' '}
 			<span class="curseur" aria-hidden="true"></span>
 		</p>
 	</div>
@@ -111,19 +118,23 @@ const a = (debut: number) => `--debut:${debut}s`;
 		margin-bottom: 12px;
 	}
 
-	dl {
-		margin-top: 0;
-		display: grid;
-		grid-template-columns: 110px 1fr;
-		column-gap: 12px;
+	ul {
+		margin-block: 0;
+		padding: 0;
+		list-style: none;
 	}
 
-	dt {
+	/* Un commit par ligne, comme git log --oneline. Trop long pour la
+	   largeur : coupé par des points de suspension à l'affichage, le
+	   message complet reste dans le HTML. */
+	li {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.hash {
 		color: var(--sur-sombre-lien);
-	}
-
-	dd {
-		margin: 0;
 	}
 
 	.ok {
@@ -141,6 +152,7 @@ const a = (debut: number) => `--debut:${debut}s`;
 	/* La commande occupe exactement sa largeur : n caractères de chasse fixe. */
 	.frappe {
 		display: inline-block;
+		white-space: nowrap;
 	}
 
 	/* Animation d'ouverture. Déclarée seulement sans préférence de mouvement
@@ -151,7 +163,7 @@ const a = (debut: number) => `--debut:${debut}s`;
 	@media (prefers-reduced-motion: no-preference) {
 		/* Frappe : la commande se dévoile caractère par caractère. */
 		.frappe {
-			animation: frappe calc(var(--n) * 70ms) steps(var(--n)) var(--debut) backwards;
+			animation: frappe calc(var(--n) * 45ms) steps(var(--n)) var(--debut) backwards;
 		}
 
 		/* Sorties et nouvelles invites : apparition d'un coup. L'opacité
@@ -163,7 +175,7 @@ const a = (debut: number) => `--debut:${debut}s`;
 		/* Curseur : clignote cinq fois puis reste fixe (WCAG 2.2.2 : rien ne
 		   clignote plus de cinq secondes). */
 		.curseur {
-			animation: clignote 1s steps(1) 4.6s 5;
+			animation: clignote 1s steps(1) 5.7s 5;
 		}
 	}
 
@@ -188,13 +200,16 @@ const a = (debut: number) => `--debut:${debut}s`;
 		}
 	}
 
+	/* Écran étroit : 13 px, pour que la plus longue commande (39 caractères
+	   avec l'invite) tienne sur une ligne. */
 	@media (max-width: 600px) {
+		.terminal {
+			font-size: 13px;
+		}
+
 		.ecran {
 			padding-inline: 18px;
 		}
 
-		dl {
-			grid-template-columns: 80px 1fr;
-		}
 	}
 </style>
