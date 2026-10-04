@@ -103,6 +103,12 @@ const encadres = bilan.filter(remplie);
 						))
 					}
 				</ol>
+				{/* Mesure réelle sur le site déployé (Lighthouse 13.5, quatre pages). À
+				    refaire et mettre à jour après un changement qui touche aux pages. */}
+				<p class="mesure">
+					Lighthouse sur ousmane-diop.pages.dev, le 4 octobre 2026 : 100 en accessibilité, bonnes
+					pratiques et SEO sur les quatre pages. Performance : 100 sur ordinateur, 99 sur mobile.
+				</p>
 			</div>
 		</section>
 
@@ -346,6 +352,12 @@ const encadres = bilan.filter(remplie);
 	.deploiement a,
 	.deploiement a:hover {
 		color: var(--terminal-ok);
+	}
+
+	.mesure {
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--texte-discret);
 	}
 
 	/* ---- Ce que j'en retiens ---- */
