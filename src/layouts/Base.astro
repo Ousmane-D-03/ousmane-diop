@@ -5,9 +5,11 @@ import '../styles/global.css';
 interface Props {
 	titre: string;
 	description: string;
+	// false pour la page 404 : ni URL canonique, ni indexation.
+	indexable?: boolean;
 }
 
-const { titre, description } = Astro.props;
+const { titre, description, indexable = true } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site);
 // Open Graph exige une URL absolue.
 const image = new URL('/og.png', Astro.site);
@@ -20,10 +22,9 @@ const image = new URL('/og.png', Astro.site);
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{titre}</title>
 		<meta name="description" content={description} />
-		<link rel="canonical" href={url} />
+		{indexable ? <link rel="canonical" href={url} /> : <meta name="robots" content="noindex" />}
 
-		<link rel="icon" href="/favicon.ico" sizes="32x32" />
-		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 		<meta property="og:type" content="website" />
@@ -37,9 +38,11 @@ const image = new URL('/og.png', Astro.site);
 		<meta property="og:image:alt" content={titre} />
 		<meta name="twitter:card" content="summary_large_image" />
 
+		{/* Titres et corps sont visibles dès le haut de page : préchargés.
+		    La chasse fixe ne sert qu'aux petits libellés : chargée normalement. */}
 		<Font cssVariable="--font-titres" preload />
-		{/* Seul le romain est préchargé : l'italique ne sert que plus bas dans la page. */}
-		<Font cssVariable="--font-corps" preload={[{ style: 'normal' }]} />
+		<Font cssVariable="--font-corps" preload />
+		<Font cssVariable="--font-mono" />
 	</head>
 	<body>
 		<slot />

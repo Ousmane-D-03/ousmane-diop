@@ -1,0 +1,27 @@
+---
+// Pied de page sur fond sombre, en bas de l'accueil et de la page Méthode.
+// Deux zones : « gauche » (slot nommé) et la zone par défaut, à droite.
+---
+
+<footer class="pied">
+	<div class="conteneur ligne">
+		<span><slot name="gauche" /></span>
+		<slot />
+	</div>
+</footer>
+
+<style>
+	.pied {
+		border-top: 1px solid var(--trait-sombre);
+	}
+
+	.ligne {
+		padding-block: 28px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 16px;
+		font-size: 15px;
+		color: var(--sur-sombre-discret);
+	}
+</style>

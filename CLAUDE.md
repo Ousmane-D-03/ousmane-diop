@@ -4,142 +4,85 @@
 
 Un site personnel qui **constitue** une candidature de stage chez Alpha to Omega (A2O), une entreprise toulousaine spécialisée web + IA. L'entreprise ne demande ni CV ni lettre de motivation : le site EST la candidature.
 
-Le site sera déployé sur Cloudflare Pages à l'adresse `ousmane-diop.pages.dev` et cette URL sera transmise à l'entreprise.
+Le site est déployé sur **Cloudflare Pages** à l'adresse `https://ousmane-diop.pages.dev` (le formulaire de candidature exige une adresse en `.pages.dev`). Un ancien déploiement Workers (`ousmane-diop.ousmanesarrd.workers.dev`) existe encore ; ce n'est plus l'adresse du site.
 
 **Auteur :** Ousmane Sarr Diop, étudiant en Master 1 Informatique (parcours Sciences du Logiciel) à l'Université Toulouse III — Paul Sabatier. Profil backend / DevOps / sécurité applicative.
 
 ## Ce que l'entreprise évalue
 
-Ces critères viennent de leurs documents officiels. Ils orientent chaque décision :
+Ces critères viennent de leurs documents officiels :
 
-1. **Transformer un objectif ouvert en résultat clair.** Le brief est volontairement flou (structure, design, nombre de pages libres). Des choix assumés valent mieux qu'un site qui essaie de tout couvrir.
+1. **Transformer un objectif ouvert en résultat clair.**
 2. **Comprendre leurs missions**, pas réciter des motivations génériques.
 3. **Utiliser l'IA avec un regard critique** — savoir reprendre le travail manuellement quand il faut.
-4. **Aller jusqu'au déploiement.** Ils veulent « vérifier que vous savez passer d'un projet local à une application accessible sur Internet ».
+4. **Aller jusqu'au déploiement.** Passer d'un projet local à une application accessible sur Internet.
 
-Conséquence directe : **un site qui sent le template généré par IA est un échec pour cet employeur précisément.** C'est le critère le plus important de ce fichier.
+## Stack
 
-## Stack imposée
-
-- **Astro 7** — c'est le framework maison de l'entreprise. L'auteur ne le connaît pas encore ; c'est assumé et fait partie de l'exercice.
+- **Astro 7** — le framework maison de l'entreprise. Vérifier la documentation à jour avant d'utiliser une API Astro (collections de contenu, API Fonts).
 - Node 24 (`.node-version`), Astro exige ≥ 22.12.
-- Déploiement **Cloudflare Pages** (build déclenché au push sur `main`, commande `npm run build`, sortie `dist/`).
-- Pas de framework CSS lourd (pas de Bootstrap, pas de Tailwind sauf demande explicite). CSS écrit à la main, ou les styles scopés d'Astro.
-- Pas de base de données, pas de backend. Site statique : **pas d'adaptateur Cloudflare** (il ne sert qu'au rendu à la demande).
+- Déploiement Cloudflare Pages, déclenché au push sur `main` (preset Astro : `npm run build`, sortie `dist/`, Node lu dans `.node-version` ; aucun `wrangler.jsonc` ni workflow dans le dépôt). Site statique, **pas d'adaptateur Cloudflare**. Pages sert `404.html` d'office.
+- CSS écrit à la main, styles scopés d'Astro. Pas de framework CSS.
+- Pas de base de données, pas de backend, **aucun JavaScript côté client**.
 
-**Important :** la connaissance d'Astro dans les données d'entraînement peut être en retard sur la version actuelle. Vérifier la documentation à jour avant d'utiliser une API Astro, en particulier les collections de contenu et l'adaptateur Cloudflare.
+## Direction visuelle — la maquette
 
-## Direction visuelle — le pipeline
+Depuis le 3 octobre 2026, le site suit une maquette de quatre pages. Sa **direction visuelle** est validée telle quelle ; son **texte** a été réécrit le 4 octobre avec les formulations de l'auteur (voir Contenu). Le fichier d'origine (export HTML) est hors du dépôt, dans `../ousmane-diop-sauvegardes/`. L'ancienne version (pipeline vertical, boucle DevOps, mots wolof) reste dans l'historique git, jusqu'au commit `e732241`.
 
-Le site est structuré comme un **pipeline de livraison**, en quatre étapes numérotées. Ce n'est pas un thème décoratif : l'auteur vient du DevOps, et le slogan de l'entreprise est « De A à Z, un seul interlocuteur responsable du résultat ». La forme raconte le fond.
+Pages :
 
-```
-01 · Qui je suis  →  02 · Vos missions  →  03 · Mes projets  →  04 · Ma démarche
-```
-
-Deux niveaux :
-
-- **`/` — accueil.** Un écran plein : le nom, l'accroche et le bouton « Découvrir » en un seul bloc centré (texte aligné à gauche). En fond, trois mots wolof (Jàng, Liggéey, Jokko) et six logos d'outils dérivent lentement (`Derive.astro`). C'est la seule page avec une décoration en mouvement.
-- **`/candidature/` — contenu.** Les quatre temps du pipeline, avec la navigation collante et l'indicateur d'avancement qui suit le défilement. Aucune décoration en mouvement.
-
-### Mouvement : ce qui existe, et rien d'autre
-
-| Où | Quoi | Technique |
-|---|---|---|
-| Accueil | Dérive continue des mots et logos de fond | CSS (`transform`), aucun JS |
-| Contenu | Barre d'avancement liée au défilement | CSS (`animation-timeline: scroll()`), masquée si non supportée |
-| Entre les deux pages | Transition d'entrée (0,7 s, courbe douce) : le nom et l'accroche glissent, le reste apparaît en fondu | Transitions de vue natives (`@view-transition`), aucun JS, pas de `<ClientRouter />`. Le nom et l'accroche doivent garder **les mêmes proportions sur les deux pages** (même interligne, même coupure), sinon le glissement saute |
-| Projets (bureau avec souris) | Icônes des outils : apparition en fondu (opacité, 0,35 s) au survol du projet ou au focus dans le projet, dans la colonne des numéros | CSS (`:hover`, `:focus-within`). Sur tactile : icônes affichées en permanence, sans animation. Jamais de révélation au défilement |
-
-Tous sont désactivés par `prefers-reduced-motion: reduce` (la dérive s'arrête, éléments visibles et fixes ; la barre disparaît ; la navigation est instantanée ; les icônes apparaissent sans fondu). **Ne pas en ajouter d'autre.**
-
-Seul JavaScript du site : le marquage de l'étape active (`aria-current`) dans `Progression.astro`, environ 600 octets.
-
-### Décisions arrêtées
-
-| Élément | Choix |
+| Adresse | Page |
 |---|---|
-| Fond | Clair (la majorité des portfolios dev sont sombres — se démarquer) |
-| Titres | Space Grotesk, auto-hébergée via l'API Fonts d'Astro (aucune requête vers Google) |
-| Corps | Inter, idem |
-| Accent | Un seul : vert profond. Double lecture — drapeau sénégalais sans faire du drapeau une décoration, et « build passing » d'une CI |
-| Accent (valeur) | `#0a5c36` : 7,59:1 sur le fond. Le vert du drapeau `#00853f` est refusé (4,45:1, sous AA) |
-| Structure | Progression verticale en étapes, pas des sections empilées. Grille éditoriale sur bureau : colonne étroite des numéros, colonne du texte ; une colonne en mobile |
-| Rythme | Écart entre étapes (6 à 9rem) nettement plus grand qu'à l'intérieur d'une étape |
-| Coins | Carrés partout (jalons, bouton) |
-| Mouvement | Ceux listés ci-dessus, pas plus |
-| Logos de fond | Docker, GitHub Actions, Python, FastAPI, Linux, PostgreSQL (Simple Icons 16.32.0), monochromes dans les gris du site. **Pas d'AWS** : absent de Simple Icons, et le logo officiel ne peut pas être recoloré |
+| `/` | Accueil : titre, terminal, en bref, qui je suis (avec l'anecdote master/main), pourquoi ce stage, appel final |
+| `/stage/` | Ma lecture de l'offre : les trois blocs (mission de l'offre, puis mon texte), mes questions |
+| `/projets/` | Trois projets (collection de contenu), expériences, en apprentissage |
+| `/methode/` | Méthode IA : deux outils, journal de bord, ce que j'en retiens, contact (`#contact`) |
+| `/404` | Page introuvable (`noindex`) |
 
-### Interdits explicites
+Valeurs de la maquette (dans `src/styles/global.css`) :
 
-Ces éléments sont la signature du rendu « IA générique ». Ne jamais les produire :
+- Fond `#f2f3ef`, texte `#0e1116`, accent unique bleu `#2347e0` (6,2:1 sur le fond).
+- Titres Bricolage Grotesque (500/700/800), corps IBM Plex Sans (400/500/600), libellés IBM Plex Mono (400/500/600). Romain seulement. Servies par le site via l'API Fonts d'Astro : aucune requête vers Google.
+- Coins arrondis, surtitres en chasse fixe majuscules, cartes : c'est la maquette, ne pas « corriger ».
 
-- Cartes arrondies identiques alignées en grille
-- Eyebrow en majuscules au-dessus des titres (`NOS SERVICES`)
-- Flèches `→` décoratives en fin de lien ou de carte
-- Dégradés, glassmorphism, ombres portées molles, effets de flou
-- Icônes génériques : fusée, ampoule, chevrons de code, engrenage
-- Le couple fond crème + accent terracotta
-- Toute animation au-delà de celles listées, et en particulier les effets d'apparition sur chaque section au défilement
-- Texte centré sur toute la largeur
+**Écarts autorisés par rapport à la maquette**, uniquement pour l'écran étroit : grilles en `minmax(min(Npx, 100%), 1fr)` pour éviter tout débordement horizontal, marges et espacements réduits sous 600 px. À 1280 px, le rendu doit rester celui de la maquette.
 
-Si une proposition ressemble à un template de portfolio développeur, elle est à rejeter.
+**Une seule animation, demandée par l'auteur : le terminal de l'accueil** (`Terminal.astro`). Les commandes se tapent, les sorties apparaissent, en environ 6 s. **Contenu réel uniquement** : de vraies commandes git sur le dépôt et leur vraie sortie (premiers commits, commit `bb17609`), rien d'inventé. Contraintes : texte complet dans le HTML dès le départ, dévoilé seulement par `clip-path` et `opacity` (hauteur fixe, CLS 0) ; CSS uniquement, aucun JavaScript ; déclarée sous `prefers-reduced-motion: no-preference`, sinon terminal complet et immobile ; curseur qui clignote cinq fois puis s'arrête (WCAG 2.2.2). Ne pas en ajouter d'autre.
 
-## Structure de fichiers attendue
+## Structure de fichiers
 
 ```
 src/
-├── pages/
-│   ├── index.astro          # accueil plein écran
-│   └── candidature.astro    # les quatre étapes (/candidature/)
-├── layouts/
-│   └── Base.astro           # <head>, polices, styles globaux
-├── components/
-│   ├── Derive.astro         # fond animé de l'accueil (mots wolof, logos)
-│   ├── Etape.astro          # un temps du pipeline
-│   ├── Progression.astro    # indicateur de défilement
-│   └── Projet.astro         # une fiche projet (icônes des outils via lib/logos.ts)
-├── lib/
-│   └── logos.ts             # les six logos, source unique (fond de l'accueil et projets)
-├── assets/
-│   └── logos/               # SVG Simple Icons, sans <title> (décoratifs)
-├── content/
-│   └── projets/             # collection de contenu — un fichier par projet
-├── content.config.ts        # schéma de la collection (loader glob)
-└── styles/
-    └── global.css           # variables, typographie, reset, transitions de vue
-public/                      # favicon (jalon du pipeline), apple-touch-icon, og.png
+├── pages/         index, stage, projets, methode, 404
+├── layouts/       Base.astro (head, polices, meta)
+├── components/    EnTete, PiedDePage, Bouton, Terminal, Projet,
+│                  PipelineCI, SchemaServerless
+├── content/projets/   un fichier Markdown par projet
+├── content.config.ts  schéma de la collection
+├── data/journal.ts    journal de bord et bilan de la page Méthode
+└── styles/global.css  variables, base, motifs communs (.conteneur, .surtitre…)
+public/            favicon.ico, apple-touch-icon.png, og.png (monogramme OSD)
 ```
-
-Les six projets sont des données, pas du HTML dupliqué : les définir en collection de contenu et itérer dessus. Champs : titre, angle, mission liée, ordre, stack, statut, lien éventuel ; la description est le corps du fichier Markdown. La stack n'est **pas affichée en texte** (les projets sont présentés par mission) ; elle sert seulement à choisir les icônes d'outils, pour les outils qui ont un logo parmi les six.
 
 ## Contenu
 
-Le contenu rédigé se trouve dans `contenu-site-a2o.md` à la racine du projet (fichier local, exclu du dépôt par `.gitignore`). Il fait autorité — ne pas le réécrire, le mettre en forme.
-
-Trois points de vigilance sur le contenu :
-
-- La section « 04 · Ma démarche » sera **écrite par l'auteur lui-même**, pas générée. Prévoir l'emplacement, ne pas rédiger le texte. C'est le seul endroit du site où sa voix compte vraiment, et c'est précisément ce que l'entreprise évalue.
-- Les faiblesses sont assumées volontairement dans le texte (« je ne connais pas Astro », « c'est là que j'ai le plus à apprendre » sur le front). Ne pas les adoucir ni les supprimer.
-- Les projets sont présentés **par la mission qu'ils éclairent**, pas par leur stack.
+- Le texte reprend les formulations de l'auteur (`contenu-site-a2o.md`) : « Ma spécialisation ne vient pas d'un cursus : je l'ai construite à côté », « je ne connais pas Astro », « c'est là que j'ai le plus à apprendre », « j'ai souvent été le client, celui qui sait ce qu'il veut sans savoir le dire en termes techniques », « ça marche sur ma machine » → « c'est en ligne et ça tient ». Disponibilité : second semestre, 3 mois.
+- **Ce qui fait « texte généré », à ne pas réintroduire** : tirets longs (—) dans la prose (virgule, deux-points, parenthèses ou deux phrases à la place) ; titres-slogans et titres à deux-points qui annoncent une révélation ; structures par trois et cartes numérotées 01/02/03 ; paragraphes tous de la même longueur. L'irrégularité est voulue : on doit entendre quelqu'un.
+- **Section 04 = le journal de bord de la page Méthode et « Ce que j’en retiens » (`src/data/journal.ts`). Écrite par l’auteur le 3 octobre 2026, intégrée mot pour mot : ne jamais la réécrire, la reformuler ni la compléter.** Seule la typographie est ajustée (apostrophes, espaces insécables, majuscule en début de case). Gabarit : une case pleine largeur, ou deux cases en 1/3 – 2/3 sur écran large ; une case vide ne s’affiche pas. Les encadrés « Difficultés rencontrées » et « Choix techniques » restent vides, donc masqués, tant que l’auteur ne les a pas écrits. Les trois tirets longs de ce texte sont les siens : ne pas y toucher sans son accord.
+- Aucun crochet `[ ]` ne doit apparaître sur le site : pas d'emplacement à remplir visible.
+- Liens honnêtes : un libellé ne promet pas plus que sa cible (« Voir mon GitHub » pointe vers le profil, pas vers un dépôt).
+- `contenu-site-a2o.md` et `notes.md` : fichiers locaux, exclus du dépôt, sauvegardés dans `../ousmane-diop-sauvegardes/`.
 
 ## Méthode de travail
 
-- **Commits progressifs.** Un historique qui montre une construction itérative, pas un unique commit « site complet ». L'entreprise peut regarder le dépôt.
-- **Tenir `notes.md`** à la racine (fichier local, exclu du dépôt) : à chaque difficulté rencontrée (problème de déploiement, notion Astro mal comprise, choix abandonné), trois lignes. Ces notes alimenteront la section 04.
-- **Vérifier le rendu réel** avant de déclarer une section terminée. Pas seulement la validité du code.
-- Expliquer chaque décision technique au fil de l'eau — l'auteur doit pouvoir la défendre sans l'avoir subie.
+- **Commits progressifs**, un par étape logique. L'entreprise peut regarder le dépôt.
+- **Tenir `notes.md`** à la racine (local) : chaque difficulté, en quelques lignes. Matière première de la section 04.
+- **Vérifier le rendu réel** (captures à 1280 et 390 px) avant de déclarer une page terminée.
+- Expliquer chaque décision technique : l'auteur doit pouvoir la défendre.
 
 ## Accessibilité et performance
 
-L'offre mentionne explicitement « optimisations de performance, d'accessibilité, de SEO technique ». Le site doit être exemplaire sur ces points, c'est un signal en soi :
-
-- HTML sémantique, un seul `<h1>`, hiérarchie de titres correcte
-- Contrastes conformes WCAG AA (vérifier l'accent vert sur fond clair)
-- Navigation au clavier fonctionnelle, focus visible
-- Chaque mouvement respecte `prefers-reduced-motion`
-- Les éléments décoratifs (fond de l'accueil) sont `aria-hidden`, et les mots y sont écrits en CSS (`content: attr(data-mot)`), pas dans le HTML
-- Polices auto-hébergées (API Fonts d'Astro), `font-display: swap`, préchargement du romain seulement
-- Balises meta : titre, description, Open Graph
-- Pas de JavaScript inutile — Astro n'en envoie aucun par défaut, garder cet avantage
-- Référence Lighthouse : 100 / 100 / 100 / 100 sur les deux pages, mobile et bureau. Toute modification qui fait baisser un score doit être signalée
+- HTML sémantique, un seul `<h1>` par page, hiérarchie de titres correcte.
+- Contrastes WCAG AA, focus visible, navigation au clavier, `aria-current` sur la page courante.
+- Balises meta : titre, description, Open Graph, URL canonique sur `ousmane-diop.pages.dev`.
+- Référence Lighthouse : 100 / 100 / 100 / 100 sur les quatre pages, mobile et bureau. Toute baisse doit être signalée.

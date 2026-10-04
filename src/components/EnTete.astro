@@ -1,0 +1,120 @@
+---
+// Monogramme et navigation principale, en haut de chaque page.
+// Le lien de la page courante reçoit aria-current, déduit de l'URL.
+const liens = [
+	{ href: '/', libelle: 'Accueil' },
+	{ href: '/stage/', libelle: 'Le stage' },
+	{ href: '/projets/', libelle: 'Projets' },
+	{ href: '/methode/', libelle: 'Méthode IA' },
+];
+
+// Astro produit des pages en /stage/ ; une adresse sans barre finale
+// (/stage) est ramenée à la même forme.
+const chemin = Astro.url.pathname.replace(/\/?$/, '/');
+---
+
+<header class="conteneur entete">
+	<a href="/" class="marque">
+		{/* Le monogramme répète le nom : masqué aux lecteurs d'écran. */}
+		<span class="monogramme" aria-hidden="true">OSD</span>
+		<span class="nom">Ousmane Sarr Diop</span>
+	</a>
+	<nav aria-label="Navigation principale">
+		{
+			liens.map(({ href, libelle }) => (
+				<a href={href} aria-current={chemin === href ? 'page' : undefined}>
+					{libelle}
+				</a>
+			))
+		}
+		<a href="/methode/#contact" class="contact">Me contacter</a>
+	</nav>
+</header>
+
+<style>
+	.entete {
+		padding-block: 24px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+	}
+
+	.marque {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		color: var(--texte);
+	}
+
+	.monogramme {
+		width: 44px;
+		height: 44px;
+		border-radius: 12px;
+		background: var(--sombre);
+		color: var(--fond);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: var(--font-mono);
+		font-size: 14px;
+		font-weight: 600;
+	}
+
+	.nom {
+		font-family: var(--font-titres);
+		font-weight: 700;
+		font-size: 19px;
+	}
+
+	nav {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 4px;
+		font-size: 15px;
+		font-weight: 500;
+	}
+
+	nav a {
+		padding: 11px 14px;
+		border-radius: 10px;
+		text-decoration: none;
+		color: var(--texte);
+	}
+
+	/* La maquette ne change pas la couleur au survol dans la navigation. */
+	.marque:hover,
+	nav a:hover {
+		color: var(--texte);
+	}
+
+	nav a[aria-current='page'] {
+		background: var(--surface-grise);
+	}
+
+	nav .contact {
+		padding-inline: 18px;
+		margin-left: 8px;
+		background: var(--sombre);
+	}
+
+	nav .contact,
+	nav .contact:hover {
+		color: #ffffff;
+	}
+
+	/* Écran étroit : la navigation passe sous le nom. Le bouton de contact
+	   perd sa marge, qui le décalait en début de ligne. */
+	@media (max-width: 600px) {
+		nav a {
+			padding-inline: 10px;
+		}
+
+		nav .contact {
+			margin-left: 0;
+		}
+	}
+</style>

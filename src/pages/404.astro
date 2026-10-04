@@ -1,0 +1,38 @@
+---
+// Produit dist/404.html. Cloudflare Pages la sert d'office, avec un vrai
+// code 404, pour toute adresse inconnue (vérifié en ligne). Sans elle, Pages
+// supposerait une application monopage et servirait l'accueil en code 200.
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Bouton from '../components/Bouton.astro';
+---
+
+<Base
+	titre="Page introuvable · Ousmane Sarr Diop"
+	description="Cette adresse ne correspond à aucune page du site."
+	indexable={false}
+>
+	<EnTete />
+	<main class="conteneur introuvable">
+		<p class="surtitre">Erreur 404</p>
+		<h1>Page introuvable.</h1>
+		<p class="chapeau">Cette adresse ne correspond à aucune page du site.</p>
+		<div>
+			<Bouton href="/" fleche>Retour à l’accueil</Bouton>
+		</div>
+	</main>
+</Base>
+
+<style>
+	.introuvable {
+		padding-block: 64px 112px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	.chapeau {
+		font-size: 20px;
+		color: var(--texte-second);
+	}
+</style>

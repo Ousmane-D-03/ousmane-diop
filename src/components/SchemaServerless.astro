@@ -1,0 +1,75 @@
+---
+// Architecture de l'API de traduction : la requête passe par API Gateway
+// jusqu'à la fonction Lambda, qui s'appuie sur trois services.
+---
+
+<figure class="schema" aria-label="Architecture : Client, API Gateway, puis Lambda en Python, qui utilise DynamoDB comme cache, l’API de traduction et CloudWatch pour le monitoring.">
+	<div class="chaine" aria-hidden="true">
+		<span class="bloc">Client</span>
+		<svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6"
+			><path d="M1 7h19M14 1l6 6-6 6"></path></svg
+		>
+		<span class="bloc">API Gateway</span>
+		<svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6"
+			><path d="M1 7h19M14 1l6 6-6 6"></path></svg
+		>
+		<span class="bloc lambda">Lambda · Python</span>
+	</div>
+	<div class="services" aria-hidden="true">
+		<span class="bloc">DynamoDB · cache</span>
+		<span class="bloc">API de traduction</span>
+		<span class="bloc suivi">CloudWatch · monitoring</span>
+	</div>
+</figure>
+
+<style>
+	.schema {
+		margin: 0;
+		background: var(--fond);
+		border-radius: 16px;
+		padding: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		font-family: var(--font-mono);
+		font-size: 13.5px;
+	}
+
+	.chaine {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		color: var(--texte-discret);
+	}
+
+	/* Les services appelés par la fonction, rattachés par un trait pointillé. */
+	.services {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		padding-left: 12px;
+		margin-left: 8px;
+		border-left: 1.5px dashed var(--sur-sombre-discret);
+	}
+
+	.bloc {
+		padding: 10px 12px;
+		border-radius: 10px;
+		background: var(--surface);
+		border: 1px solid var(--trait-fort);
+		color: var(--texte);
+	}
+
+	.lambda {
+		background: var(--accent);
+		border-color: var(--accent);
+		color: #ffffff;
+	}
+
+	.suivi {
+		background: var(--surface-grise);
+		border-color: var(--surface-grise);
+		color: var(--texte-second);
+	}
+</style>

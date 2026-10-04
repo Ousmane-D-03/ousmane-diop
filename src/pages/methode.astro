@@ -1,0 +1,434 @@
+---
+import Base from '../layouts/Base.astro';
+import EnTete from '../components/EnTete.astro';
+import Bouton from '../components/Bouton.astro';
+import PiedDePage from '../components/PiedDePage.astro';
+import { journal, retiens, bilan } from '../data/journal';
+
+// Texte de l'auteur (ancienne section 04, « Les outils, et à quel moment »),
+// réparti sur les deux cartes.
+const outils = [
+	{
+		libelle: 'Outil 1',
+		nom: 'Claude',
+		texte:
+			'En conversation, pour la conception : réfléchir à la structure du site et rédiger les contenus.',
+		sombre: true,
+	},
+	{
+		libelle: 'Outil 2',
+		nom: 'Claude Code',
+		texte:
+			'Directement dans mon dépôt, pour le développement : écriture du code Astro et CSS, résolution des problèmes rencontrés en cours de route, tests dans plusieurs navigateurs, préparation du déploiement sur Cloudflare.',
+	},
+];
+
+// Une case vide ne s'affiche pas, une étape sans case remplie non plus
+// (voir src/data/journal.ts) ; l'étape « Déployer » garde sa chaîne.
+// Numéros calculés sur les étapes affichées.
+const remplie = (c: { paragraphes: string[] }) => c.paragraphes.some((p) => p.trim() !== '');
+const etapes = journal
+	.map((etape) => ({ ...etape, cases: etape.cases.filter(remplie) }))
+	.filter((etape) => etape.cases.length > 0 || etape.chaine);
+const numero = (i: number) => String(i + 1).padStart(2, '0');
+
+const encadres = bilan.filter(remplie);
+---
+
+<Base
+	titre="Comment j’ai travaillé avec l’IA · Ousmane Sarr Diop"
+	description="Comment Ousmane Sarr Diop a travaillé avec Claude et Claude Code pour construire ce site, étape par étape."
+>
+	<EnTete />
+
+	<main>
+		<section class="conteneur intro">
+			<p class="surtitre">Méthode IA</p>
+			<h1>Comment j’ai travaillé avec l’IA</h1>
+			<p class="chapeau">
+				J’ai utilisé deux outils d’Anthropic. Claude Code a tenu un carnet de construction pendant tout
+				le projet. Certains des points qui suivent en viennent, d’autres de ce que j’ai vu moi-même en
+				regardant le site.
+			</p>
+		</section>
+
+		<section aria-label="Outils utilisés" class="conteneur outils">
+			{
+				outils.map(({ libelle, nom, texte, sombre }) => (
+					<div class:list={['outil', { sombre }]}>
+						<span class="etiquette">{libelle}</span>
+						<strong class="outil-nom">{nom}</strong>
+						<span class="outil-texte">{texte}</span>
+					</div>
+				))
+			}
+		</section>
+
+		<section class="journal">
+			<div class="conteneur journal-interieur">
+				<h2 class="titre-journal">Le journal de bord, étape par étape</h2>
+
+				<ol>
+					{
+						etapes.map(({ titre, cases, chaine }, i) => (
+							<li>
+								<div class="etape-tete">
+									<span class="etape-numero">{numero(i)}</span>
+									<h3>{titre}</h3>
+								</div>
+								<div class="corps-etape">
+									{cases.length > 0 && (
+										<div class:list={['cases', { deux: cases.length === 2 }]}>
+											{cases.map(({ libelle, paragraphes, cote }) => (
+												<div class:list={['case', cote]}>
+													<span class="case-libelle">{libelle}</span>
+													{paragraphes.map((p) => (
+														<p>{p}</p>
+													))}
+												</div>
+											))}
+										</div>
+									)}
+									{chaine && (
+										<p class="deploiement">
+											<span>git push</span>
+											<span class="fleche" aria-hidden="true">→</span>
+											<span>build Cloudflare Pages</span>
+											<span class="fleche" aria-hidden="true">→</span>
+											<a href="https://ousmane-diop.pages.dev/">ousmane-diop.pages.dev</a>
+										</p>
+									)}
+								</div>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</section>
+
+		{
+			remplie(retiens) && (
+				<section class="conteneur retiens" aria-labelledby="retiens-titre">
+					<h2 id="retiens-titre" class="surtitre">{retiens.libelle}</h2>
+					{retiens.paragraphes.map((p) => (
+						<p>{p}</p>
+					))}
+				</section>
+			)
+		}
+
+		{
+			encadres.length > 0 && (
+				<section aria-label="Bilan" class="conteneur bilan">
+					{encadres.map(({ libelle, paragraphes }) => (
+						<div class="encadre">
+							<h2 class="etiquette">{libelle}</h2>
+							{paragraphes.map((p) => (
+								<p>{p}</p>
+							))}
+						</div>
+					))}
+				</section>
+			)
+		}
+	</main>
+
+	<div id="contact" class="contact">
+		<section class="conteneur contact-interieur" aria-labelledby="contact-titre">
+			<h2 id="contact-titre">Me contacter</h2>
+			<div class="contact-liens">
+				<Bouton href="mailto:ousmanesarrd@gmail.com" variante="clair" grand>ousmanesarrd@gmail.com</Bouton>
+				<Bouton href="https://github.com/Ousmane-D-03" variante="contour-sombre" grand>GitHub</Bouton>
+				<Bouton href="https://linkedin.com/in/ousmane-sarr-diop-505891278" variante="contour-sombre" grand
+					>LinkedIn</Bouton
+				>
+			</div>
+		</section>
+		<PiedDePage>
+			<Fragment slot="gauche">Ousmane Sarr Diop · Toulouse</Fragment>
+			<span>Construit avec Astro · déployé sur Cloudflare Pages</span>
+		</PiedDePage>
+	</div>
+</Base>
+
+<style>
+	/* ---- Introduction ---- */
+	.intro {
+		padding-block: 64px 72px;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	h1 {
+		max-width: 920px;
+	}
+
+	.chapeau {
+		font-size: 20px;
+		color: var(--texte-second);
+		max-width: 760px;
+	}
+
+	/* ---- Outils ---- */
+	.outils {
+		padding-bottom: 88px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+		gap: 16px;
+	}
+
+	.outil {
+		padding: 28px;
+		border-radius: 18px;
+		background: var(--surface);
+		border: 1px solid var(--trait);
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.outil-nom {
+		font-family: var(--font-titres);
+		font-size: 26px;
+	}
+
+	.outil-texte {
+		color: var(--texte-second);
+	}
+
+	.outil.sombre {
+		background: var(--sombre);
+		border-color: var(--sombre);
+		color: var(--fond);
+	}
+
+	.sombre .etiquette {
+		color: var(--sur-sombre-discret);
+	}
+
+	.sombre .outil-texte {
+		color: var(--sur-sombre-second);
+	}
+
+	/* ---- Journal ---- */
+	.journal {
+		background: var(--surface);
+		border-block: 1px solid var(--trait);
+	}
+
+	.journal-interieur {
+		padding-block: 96px;
+		display: flex;
+		flex-direction: column;
+		gap: 40px;
+	}
+
+	.titre-journal {
+		font-size: clamp(30px, 4vw, 46px);
+		line-height: 1.08;
+		letter-spacing: -0.02em;
+	}
+
+	ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		border-top: 1.5px solid var(--texte);
+	}
+
+	ol > li {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 24px 40px;
+		padding-block: 36px;
+		border-bottom: 1px solid var(--trait);
+	}
+
+	ol > li:last-child {
+		border-bottom: none;
+	}
+
+	.etape-tete {
+		flex: 1 1 220px;
+		max-width: 280px;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.etape-numero {
+		font-family: var(--font-mono);
+		font-size: 14px;
+		color: var(--accent);
+		font-weight: 600;
+	}
+
+	.etape-tete h3 {
+		font-size: 24px;
+		line-height: 1.2;
+	}
+
+	/* Colonne de droite de l'étape : les cases, puis la chaîne de
+	   déploiement pour l'étape « Déployer ». */
+	.corps-etape {
+		flex: 999 1 520px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	/* Une case : toute la largeur. Deux cases : un tiers / deux tiers sur
+	   écran large, la case de droite (le récit) étant la plus longue ;
+	   l'une sous l'autre sinon. Écart à la maquette (deux colonnes égales)
+	   pour que des textes de longueurs très différentes restent lisibles. */
+	.cases {
+		display: grid;
+		gap: 12px;
+	}
+
+	@media (min-width: 900px) {
+		.cases.deux {
+			grid-template-columns: 1fr 2fr;
+		}
+	}
+
+	.case {
+		padding: 20px;
+		border-radius: 14px;
+		background: var(--fond);
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.case p + p {
+		margin-top: 10px;
+	}
+
+	.case-libelle {
+		font-family: var(--font-mono);
+		font-size: 12px;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--texte-discret);
+	}
+
+	/* Case de droite (ce que j'ai fait ou constaté) : en bleu pâle. */
+	.case.droite {
+		background: var(--accent-pale);
+	}
+
+	.case.droite .case-libelle {
+		color: var(--accent-sombre);
+	}
+
+	.deploiement {
+		padding: 22px 24px;
+		border-radius: 14px;
+		background: var(--sombre);
+		color: var(--sur-sombre);
+		font-family: var(--font-mono);
+		font-size: 14.5px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px 14px;
+		overflow-wrap: anywhere;
+	}
+
+	.fleche {
+		color: var(--sur-sombre-discret);
+	}
+
+	.deploiement a,
+	.deploiement a:hover {
+		color: var(--terminal-ok);
+	}
+
+	/* ---- Ce que j'en retiens ---- */
+	.retiens {
+		padding-block: 96px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.retiens p {
+		max-width: 900px;
+		font-family: var(--font-titres);
+		font-size: clamp(24px, 2.6vw, 32px);
+		font-weight: 500;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+	}
+
+	/* ---- Bilan ---- */
+	.bilan {
+		padding-block: 96px;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+		gap: 20px;
+	}
+
+	.encadre {
+		padding: 36px;
+		border-radius: 18px;
+		background: var(--surface);
+		border: 1px solid var(--trait);
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.encadre h2 {
+		font-weight: 400;
+	}
+
+	.encadre p {
+		font-size: 19px;
+	}
+
+	/* ---- Contact ---- */
+	.contact {
+		background: var(--sombre);
+		color: var(--fond);
+	}
+
+	.contact-interieur {
+		padding-block: 112px 96px;
+		display: flex;
+		flex-direction: column;
+		gap: 36px;
+	}
+
+	.contact h2 {
+		font-weight: 800;
+		font-size: clamp(48px, 8vw, 104px);
+		line-height: 0.98;
+		letter-spacing: -0.035em;
+	}
+
+	.contact-liens {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+
+	@media (max-width: 600px) {
+		.journal-interieur,
+		.bilan {
+			padding-block: 72px;
+		}
+
+		.contact-interieur {
+			padding-block: 72px;
+		}
+
+		.encadre {
+			padding: 24px;
+		}
+	}
+</style>

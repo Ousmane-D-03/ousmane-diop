@@ -1,0 +1,215 @@
+---
+// Fenêtre de terminal de l'accueil. Rien d'inventé : de vraies commandes
+// sur le dépôt, et leur vraie sortie (vérifiable sur GitHub).
+// - les trois premiers commits du projet (26 septembre) ;
+// - le commit qui a relancé le déploiement le 3 octobre, après neuf push
+//   restés sans effet : Cloudflare surveillait master, je poussais sur main ;
+// - git push : le site se déploie sur Cloudflare Pages à chaque push.
+const premiers = [
+	['b114e7f', 'Brief et contenu de la candidature'],
+	['0dca16c', 'Initialisation du projet Astro 7 (template minimal)'],
+	['2e33253', 'Squelette : layout, polices, variables CSS, quatre étapes du pipeline'],
+];
+const relance = ['bb17609', 'Relance du build : Cloudflare déploie désormais depuis main'];
+
+// Animation d'ouverture, en CSS seulement. Tout le texte est dans le HTML dès
+// le départ et occupe déjà sa place : l'animation ne fait que le dévoiler
+// (clip-path pour la frappe, opacity pour les sorties), la hauteur ne change
+// pas. Instants de départ, en secondes ; frappe : 45 ms par caractère.
+const frappe = (commande: string, debut: number) =>
+	`--n:${commande.length};--debut:${debut}s`;
+const a = (debut: number) => `--debut:${debut}s`;
+
+const c1 = 'git log --oneline --reverse | head -3';
+const c2 = 'git log --oneline -1 bb17609';
+const c3 = 'git push';
+---
+
+<div class="terminal">
+	<div class="barre">
+		<span class="pastille" aria-hidden="true"></span>
+		<span class="pastille" aria-hidden="true"></span>
+		<span class="pastille" aria-hidden="true"></span>
+		<span class="titre">~/ousmane-diop</span>
+	</div>
+	<div class="ecran">
+		<p>
+			<span class="invite">$</span>{' '}
+			<span class="frappe" style={frappe(c1, 0.4)}>{c1}</span>
+		</p>
+		<ul class="sortie espace apparait" style={a(2.3)}>
+			{
+				premiers.map(([hash, message]) => (
+					<li>
+						<span class="hash">{hash}</span> {message}
+					</li>
+				))
+			}
+		</ul>
+		<p class="apparait" style={a(2.7)}>
+			<span class="invite">$</span>{' '}
+			<span class="frappe" style={frappe(c2, 2.7)}>{c2}</span>
+		</p>
+		<ul class="sortie espace apparait" style={a(4.3)}>
+			<li><span class="hash">{relance[0]}</span> {relance[1]}</li>
+		</ul>
+		<p class="apparait" style={a(4.7)}>
+			<span class="invite">$</span>{' '}
+			<span class="frappe" style={frappe(c3, 4.7)}>{c3}</span>
+		</p>
+		<p class="ok apparait" style={a(5.4)}>✓ en ligne sur ousmane-diop.pages.dev</p>
+		<p class="apparait" style={a(5.7)}>
+			<span class="invite">$</span>{' '}
+			<span class="curseur" aria-hidden="true"></span>
+		</p>
+	</div>
+</div>
+
+<style>
+	.terminal {
+		background: var(--sombre);
+		border-radius: 20px;
+		padding-bottom: 28px;
+		box-shadow: 0 30px 60px -30px rgba(14, 17, 22, 0.55);
+		overflow: hidden;
+		font-family: var(--font-mono);
+		font-size: 14.5px;
+		line-height: 1.75;
+		color: var(--sur-sombre);
+	}
+
+	.barre {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 14px 18px;
+		border-bottom: 1px solid var(--trait-sombre);
+	}
+
+	.pastille {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: #3a404a;
+	}
+
+	.titre {
+		margin-left: 10px;
+		color: var(--sur-sombre-discret);
+		font-size: 13px;
+	}
+
+	.ecran {
+		padding: 22px 26px 0;
+		/* L'adresse du site est un seul long mot : coupée plutôt que de
+		   déborder sur écran étroit. */
+		overflow-wrap: anywhere;
+	}
+
+	.invite {
+		color: var(--terminal-invite);
+	}
+
+	.sortie {
+		color: var(--sur-sombre-second);
+	}
+
+	.espace {
+		margin-bottom: 12px;
+	}
+
+	ul {
+		margin-block: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	/* Un commit par ligne, comme git log --oneline. Trop long pour la
+	   largeur : coupé par des points de suspension à l'affichage, le
+	   message complet reste dans le HTML. */
+	li {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.hash {
+		color: var(--sur-sombre-lien);
+	}
+
+	.ok {
+		color: var(--terminal-ok);
+	}
+
+	.curseur {
+		display: inline-block;
+		width: 9px;
+		height: 17px;
+		background: var(--sur-sombre);
+		vertical-align: -3px;
+	}
+
+	/* La commande occupe exactement sa largeur : n caractères de chasse fixe. */
+	.frappe {
+		display: inline-block;
+		white-space: nowrap;
+	}
+
+	/* Animation d'ouverture. Déclarée seulement sans préférence de mouvement
+	   réduit : sinon (ou si le navigateur ignore ces règles) le terminal est
+	   affiché complet, immobile. « backwards » : avant son instant de départ,
+	   chaque élément est dans l'état de début (masqué) ; ensuite il revient à
+	   son état normal, visible. Aucun JavaScript. */
+	@media (prefers-reduced-motion: no-preference) {
+		/* Frappe : la commande se dévoile caractère par caractère. */
+		.frappe {
+			animation: frappe calc(var(--n) * 45ms) steps(var(--n)) var(--debut) backwards;
+		}
+
+		/* Sorties et nouvelles invites : apparition d'un coup. L'opacité
+		   garde le texte dans l'arbre d'accessibilité et à sa place. */
+		.apparait {
+			animation: apparait 1ms var(--debut) backwards;
+		}
+
+		/* Curseur : clignote cinq fois puis reste fixe (WCAG 2.2.2 : rien ne
+		   clignote plus de cinq secondes). */
+		.curseur {
+			animation: clignote 1s steps(1) 5.7s 5;
+		}
+	}
+
+	@keyframes frappe {
+		from {
+			clip-path: inset(0 100% 0 0);
+		}
+		to {
+			clip-path: inset(0);
+		}
+	}
+
+	@keyframes apparait {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes clignote {
+		50% {
+			opacity: 0;
+		}
+	}
+
+	/* Écran étroit : 13 px, pour que la plus longue commande (39 caractères
+	   avec l'invite) tienne sur une ligne. */
+	@media (max-width: 600px) {
+		.terminal {
+			font-size: 13px;
+		}
+
+		.ecran {
+			padding-inline: 18px;
+		}
+
+	}
+</style>
