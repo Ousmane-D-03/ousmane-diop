@@ -18,7 +18,7 @@ const commits = [
 
 // Animation d'ouverture, en CSS seulement. Tout le texte est dans le HTML dès
 // le départ et occupe déjà sa place : l'animation ne fait que le dévoiler
-// (clip-path pour la frappe, opacity pour les sorties), la hauteur ne change
+// par découpe (clip-path), pour la frappe comme pour les sorties : la hauteur ne change
 // pas. Instants de départ, en secondes ; frappe : 45 ms par caractère.
 const frappe = (commande: string, debut: number) =>
 	`--n:${commande.length};--debut:${debut}s`;
@@ -158,8 +158,11 @@ const c2 = 'git rev-list --count 01c88f1';
 			animation: frappe calc(var(--n) * 45ms) steps(var(--n)) var(--debut) backwards;
 		}
 
-		/* Sorties et nouvelles invites : apparition d'un coup. L'opacité
-		   garde le texte dans l'arbre d'accessibilité et à sa place. */
+		/* Sorties et nouvelles invites : apparition d'un coup, par découpe.
+		   Pas d'opacité : un texte à moitié transparent a un contraste réel
+		   trop faible, et Lighthouse l'a mesuré ainsi sur le site en ligne
+		   (1,21:1, accessibilité à 95). La découpe masque sans toucher aux
+		   couleurs ; le texte reste dans l'arbre d'accessibilité. */
 		.apparait {
 			animation: apparait 1ms var(--debut) backwards;
 		}
@@ -182,7 +185,10 @@ const c2 = 'git rev-list --count 01c88f1';
 
 	@keyframes apparait {
 		from {
-			opacity: 0;
+			clip-path: inset(0 0 100% 0);
+		}
+		to {
+			clip-path: inset(0);
 		}
 	}
 
