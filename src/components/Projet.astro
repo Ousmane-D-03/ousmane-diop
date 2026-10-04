@@ -3,6 +3,7 @@
 // occupe toute la largeur, son illustration à droite ; les autres sont des
 // fiches plus compactes, l'illustration sous le texte.
 import { render, type CollectionEntry } from 'astro:content';
+import { Picture, getImage } from 'astro:assets';
 import PipelineCI from './PipelineCI.astro';
 import SchemaServerless from './SchemaServerless.astro';
 
@@ -11,8 +12,12 @@ interface Props {
 }
 
 const { projet } = Astro.props;
-const { titre, vedette, pastilles, stack, illustration, lien, image } = projet.data;
+const { titre, vedette, pastilles, stack, illustration, lien, image, captures } = projet.data;
 const { Content } = await render(projet);
+
+// Version pleine taille de chaque capture (WebP), pour le lien « voir en
+// grand » : à la largeur de la fiche, le texte d'une capture se lit mal.
+const enGrand = await Promise.all(captures.map((c) => getImage({ src: c.src, format: 'webp' })));
 ---
 
 <article class:list={['projet', { vedette }]}>
@@ -67,6 +72,30 @@ const { Content } = await render(projet);
 		}
 	</div>
 	{vedette && illustration === 'pipeline' && <PipelineCI />}
+	{
+		captures.length > 0 && (
+			<div class="captures">
+				{captures.map(({ src, alt, legende }, i) => (
+					// AVIF puis WebP, deux largeurs ; width et height dans le HTML
+					// (aucun décalage). Sous le premier écran : chargement différé.
+					<figure>
+						<Picture
+							src={src}
+							alt={alt}
+							formats={['avif', 'webp']}
+							widths={[520, 1040]}
+							sizes="(min-width: 900px) 520px, 100vw"
+							loading="lazy"
+							decoding="async"
+						/>
+						<figcaption>
+							{legende} <a href={enGrand[i].src}>Voir en grand</a>
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		)
+	}
 </article>
 
 <style>
@@ -172,6 +201,35 @@ const { Content } = await render(projet);
 
 	.image figcaption {
 		font-size: 15px;
+	}
+
+	/* Captures : sous le texte et le pipeline, sur toute la largeur de la
+	   fiche, côte à côte sur écran large. */
+	.captures {
+		grid-column: 1 / -1;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+		gap: 24px;
+	}
+
+	.captures figure {
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.captures :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+		border: 1px solid var(--trait);
+		border-radius: 12px;
+	}
+
+	.captures figcaption {
+		font-size: 15px;
+		color: var(--texte-second);
 	}
 
 	.lien {

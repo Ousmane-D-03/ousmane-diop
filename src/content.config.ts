@@ -5,7 +5,8 @@ import { z } from 'astro/zod';
 // Un fichier Markdown par projet. Le corps du fichier est la description.
 const projets = defineCollection({
 	loader: glob({ pattern: '*.md', base: './src/content/projets' }),
-	schema: z.object({
+	schema: ({ image }) =>
+		z.object({
 		titre: z.string(),
 		ordre: z.number(),
 		// Projet mis en avant : pleine largeur, illustration à droite.
@@ -24,7 +25,12 @@ const projets = defineCollection({
 		image: z
 			.object({ src: z.string(), alt: z.string(), largeur: z.number(), hauteur: z.number() })
 			.optional(),
-	}),
+		// Captures d'écran (preuves), dans src/assets : Astro les convertit en
+		// AVIF et WebP à plusieurs largeurs, avec leurs dimensions.
+		captures: z
+			.array(z.object({ src: image(), alt: z.string(), legende: z.string() }))
+			.default([]),
+		}),
 });
 
 export const collections = { projets };

@@ -57,11 +57,13 @@ src/
 ├── layouts/       Base.astro (head, polices, meta)
 ├── components/    EnTete, PiedDePage, Bouton, Terminal, Projet,
 │                  PipelineCI, SchemaServerless
+├── assets/projets/    captures (PNG d'origine), converties par Astro en AVIF/WebP
 ├── content/projets/   un fichier Markdown par projet
 ├── content.config.ts  schéma de la collection
 ├── data/journal.ts    journal de bord et bilan de la page Méthode
 └── styles/global.css  variables, base, motifs communs (.conteneur, .surtitre…)
-public/            favicon.ico, apple-touch-icon.png, og.png (monogramme OSD)
+public/            favicon.ico, apple-touch-icon.png, og.png (monogramme OSD),
+                   projets/sunudossier-classes.svg (diagramme PlantUML)
 ```
 
 ## Contenu
@@ -70,7 +72,9 @@ public/            favicon.ico, apple-touch-icon.png, og.png (monogramme OSD)
 - **Ce qui fait « texte généré », à ne pas réintroduire** : tirets longs (—) dans la prose (virgule, deux-points, parenthèses ou deux phrases à la place) ; titres-slogans et titres à deux-points qui annoncent une révélation ; structures par trois et cartes numérotées 01/02/03 ; paragraphes tous de la même longueur. L'irrégularité est voulue : on doit entendre quelqu'un.
 - **Section 04 = le journal de bord de la page Méthode et « Ce que j’en retiens » (`src/data/journal.ts`). Écrite par l’auteur le 3 octobre 2026, intégrée mot pour mot : ne jamais la réécrire, la reformuler ni la compléter.** Seule la typographie est ajustée (apostrophes, espaces insécables, majuscule en début de case). Gabarit : une case pleine largeur, ou deux cases en 1/3 – 2/3 sur écran large ; une case vide ne s’affiche pas. Les encadrés « Difficultés rencontrées » et « Choix techniques » restent vides, donc masqués, tant que l’auteur ne les a pas écrits. Les trois tirets longs de ce texte sont les siens : ne pas y toucher sans son accord.
 - Aucun crochet `[ ]` ne doit apparaître sur le site : pas d'emplacement à remplir visible.
-- Liens honnêtes : un libellé ne promet pas plus que sa cible (« Voir mon GitHub » pointe vers le profil, pas vers un dépôt).
+- Liens honnêtes : un libellé ne promet pas plus que sa cible (« Voir le code sur GitHub » pointe vers le dépôt xey_invest). Xëy Invest n'est **pas encore déployé** : ne jamais le présenter comme en production.
+- Pas de CV téléchargeable : décision de l'auteur (numéro de téléphone, qui resterait dans l'historique git).
+- Les captures sont des preuves : celle des trois échecs avant la réussite compte autant que la réussite.
 - `contenu-site-a2o.md` et `notes.md` : fichiers locaux, exclus du dépôt, sauvegardés dans `../ousmane-diop-sauvegardes/`.
 
 ## Méthode de travail
