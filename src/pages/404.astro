@@ -1,14 +1,14 @@
 ---
-// Produit dist/404.html. Sur Cloudflare Workers, elle n'est servie que si
-// la configuration des assets le demande (not_found_handling: "404-page") ;
-// sans elle, une adresse inconnue reçoit un code 404 avec une page vide.
+// Produit dist/404.html. Cloudflare Pages la sert d'office, avec un vrai
+// code 404, pour toute adresse inconnue (vérifié en ligne). Sans elle, Pages
+// supposerait une application monopage et servirait l'accueil en code 200.
 import Base from '../layouts/Base.astro';
 import EnTete from '../components/EnTete.astro';
 import Bouton from '../components/Bouton.astro';
 ---
 
 <Base
-	titre="Page introuvable — Ousmane Sarr Diop"
+	titre="Page introuvable · Ousmane Sarr Diop"
 	description="Cette adresse ne correspond à aucune page du site."
 	indexable={false}
 >

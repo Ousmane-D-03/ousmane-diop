@@ -3,9 +3,9 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	// Adresse réelle du site, déployé sur Cloudflare Workers. Sert aux URL
+	// Adresse du site, déployé sur Cloudflare Pages. Sert aux URL
 	// canoniques et à l’image Open Graph, qui exigent une adresse absolue.
-	site: 'https://ousmane-diop.ousmanesarrd.workers.dev',
+	site: 'https://ousmane-diop.pages.dev',
 	// CSS toujours intégré à la page : quelques Ko dupliqués d’une page à
 	// l’autre coûtent moins qu’une requête qui bloque l’affichage (au-delà de
 	// 4 Ko, Astro le sortait dans un fichier séparé).
